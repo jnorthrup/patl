@@ -325,7 +325,7 @@ public:
     {
         for (;;)
         {
-            while (!get_qtag() /*&& decis(get_p()->get_skip())*/)
+            while (!get_qtag() && decis(get_p()->get_skip()))
                 iterate(decis(get_p()->get_skip(), side)
                     ? side
                     : word_t(1) ^ side);
