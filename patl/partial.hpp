@@ -29,12 +29,12 @@ public:
     {
         mask_len_ = std::min(maskLen, bit_comp_.bit_length(mask_) - bit_size);
     }
-/*
+
     // устанавливаем макс. глубину продвижения в дереве
     bool operator()(word_t) const
     {
         return true;
-    }*/
+    }
 
     // проверка на возможность присутствия бита со значением id
     // в позиции skip
@@ -91,11 +91,11 @@ public:
     {
         mask_len_ = impl::get_min(maskLen, bit_comp_.bit_length(mask_) - bit_size);
     }
-/*
+
     bool operator()(word_t) const
     {
         return true;
-    }*/
+    }
 
     bool operator()(word_t skip, word_t id) const
     {
@@ -145,7 +145,7 @@ private:
     mutable std::vector<word_t> diff_;
     mutable word_t diff_elem_;
 };
-/*
+
 // Decision-функтор, предназначенный для рекурсивного обхода дерева в ширину
 class fixed_length
 {
@@ -173,7 +173,7 @@ public:
 
 private:
     word_t length_;
-};*/
+};
 
 } // namespace patl
 } // namespace uxn
