@@ -36,7 +36,7 @@ inline word_t get_lowest_bit_id(word_t x)
     _BitScanForward(&r, x);
 #endif
 #else
-    unsigned r = 0;
+    word_t r = 0;
     x &= word_t(0) - x; // isolate lowest bit
 #ifdef PATL_64
     if (x & 0xFFFFFFFF00000000) r += 32; // smth. wrong!
@@ -60,7 +60,7 @@ inline word_t get_highest_bit_id(word_t x)
     _BitScanReverse(&r, x);
 #endif
 #else
-    unsigned r = 0;
+    word_t r = 0;
 #ifdef PATL_64
     if (x & 0xFFFFFFFF00000000) { x >>= 32; r += 32; }
 #endif

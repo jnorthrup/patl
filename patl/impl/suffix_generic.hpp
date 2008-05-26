@@ -110,9 +110,9 @@ public:
     typedef typename super::size_type size_type;
     typedef typename super::iterator iterator;
 
-    static const unsigned delta = T::delta;
+    static const word_t delta = T::delta;
 
-    static const unsigned bit_size = bit_compare::bit_size;
+    static const word_t bit_size = bit_compare::bit_size;
 
     const key_type get_key(const node_type *node_type) const
     {
@@ -205,7 +205,7 @@ public:
 
     void reserve(size_type newSize)
     {
-        unsigned root_pos = trie_.index_of(root_);
+        word_t root_pos = trie_.index_of(root_);
         trie_.reserve(newSize);
         root_ = root_ ? trie_[root_pos] : 0;
     }

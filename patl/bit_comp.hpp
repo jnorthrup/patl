@@ -99,7 +99,7 @@ public:
     {
         if (a == b)
             return ~word_t(0);
-        unsigned i = 0;
+        word_t i = 0;
         for (; a[i] == b[i]; ++i) ;
         return i * bit_size + impl::bit_mismatch_scalar(a[i], b[i]);
     }

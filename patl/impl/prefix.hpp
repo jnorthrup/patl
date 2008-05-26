@@ -67,12 +67,12 @@ public:
         return cont_->get_key(q_);
     }
 
-    const key_type key(unsigned id) const
+    const key_type key(word_t id) const
     {
         return cont_->get_key(q_->get_xlink(id));
     }
 
-    bool leaf(unsigned id) const
+    bool leaf(word_t id) const
     {
         return q_->get_xtag(id) != 0;
     }

@@ -62,7 +62,7 @@ public:
     word_t count_reindex(const key_type from) const
     {
         const key_type last = keys_ + size() * delta;
-        unsigned i = size() - 1;
+        word_t i = size() - 1;
         for (; last + trie_[i]->get_skip() / bit_size >= from; --i, last - delta);
         //printf("reindex(count=%d).(size=%d).", size() - 1 - i, size());
         return size() - 1 - i;

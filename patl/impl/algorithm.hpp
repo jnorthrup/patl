@@ -288,7 +288,7 @@ public:
 
     // find node with nearest key and
     // return the number of first mismatching bit
-    unsigned mismatch(
+    word_t mismatch(
         const bit_compare &bit_comp,
         const key_type &key,
         word_t prefixLen = ~word_t(0))
@@ -331,7 +331,7 @@ public:
                     : word_t(1) ^ side);
             if (!get_p())
                 return;
-            const unsigned skip = decis(SELF->get_key());
+            const word_t skip = decis(SELF->get_key());
             if (skip == ~word_t(0))
                 return;
             ascend(skip);
