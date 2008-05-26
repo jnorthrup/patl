@@ -16,7 +16,7 @@ class node_gen_suffix
 {
 public:
 #ifdef _DEBUG
-    node_gen_suffix<T>(unsigned id)
+    node_gen_suffix<T>(word_t id)
         : id_(id)
     {
     }
@@ -36,7 +36,7 @@ public:
 
 private:
 #ifdef _DEBUG
-    unsigned id_;
+    word_t id_;
 #endif
 };
 
@@ -50,7 +50,7 @@ class suffix_set_traits
     typedef suffix_set_traits<Type, Delta, BitComp, Allocator> this_t;
 
 public:
-    static const unsigned delta = Delta;
+    static const word_t delta = Delta;
     typedef Type key_type;
     typedef Type value_type;
     typedef BitComp bit_compare;

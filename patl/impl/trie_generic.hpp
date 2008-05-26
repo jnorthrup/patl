@@ -218,7 +218,7 @@ public:
         {
             algorithm pal(this, this->root_, 0);
             // find a number of first mismatching bit
-            const unsigned l = pal.mismatch(this->bit_comp_, T::ref_key(val));
+            const word_t l = pal.mismatch(this->bit_comp_, T::ref_key(val));
             // if this number end at infinity
             if (~word_t(0) == l)
                 // then this key already in trie

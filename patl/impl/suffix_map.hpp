@@ -55,7 +55,7 @@ class suffix_map_traits
 
 public:
     typedef Datum mapped_type;
-    static const unsigned delta = Delta;
+    static const word_t delta = Delta;
     typedef Type key_type;
     typedef std::pair<Type, Datum> value_type;
     typedef BitComp bit_compare;

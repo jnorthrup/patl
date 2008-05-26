@@ -62,7 +62,7 @@ public:
         memset(lca_, 0, lca_size_ * sizeof(lca_type));
         lca_map_ = unsigned_alloc_.allocate(lca_size_ + 1);
         // numerate, set I- & L-nodes
-        unsigned num = 0;
+        word_t num = 0;
         algorithm pal(cont_, cont_->root_, 0);
         const algorithm palEnd(cont_, cont_->root_, 1);
         while (pal != palEnd)
