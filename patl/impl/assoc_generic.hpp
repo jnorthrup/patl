@@ -139,10 +139,9 @@ public:
     }
 
     template <typename Decision>
-    class const_partimator
+    struct const_partimator
         : public const_partimator_generic<algorithm, Decision>
     {
-    public:
         explicit const_partimator(
             const Decision &decis = Decision(),
             const algorithm &pal = algorithm())
@@ -157,10 +156,9 @@ public:
     };
 
     template <typename Decision>
-    class partimator
+    struct partimator
         : public partimator_generic<algorithm, Decision>
     {
-    public:
         explicit partimator(
             const Decision &decis = Decision(),
             const algorithm &pal = algorithm())
