@@ -28,7 +28,7 @@ static unsigned bwtSort(unsigned L, unsigned char *dbuff, SuffixSet &sufSet, uns
     for (;;)
     {
         // add next node_type and check for loop
-        const SuffixSet::vertex &v = sufSet.push_back();
+        const SuffixSet::vertex v = sufSet.push_back();
         const unsigned skip = v.skip();
         if (sufSet.size() - 1 + skip / 8 == 2 * L)
         {
