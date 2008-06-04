@@ -78,21 +78,53 @@ int main()
         }
     }
     //
-    typedef patl::suffix_set<char*> SuffixSet;
-    char str[] =
-        //"abrakadabraa";
-        //"xabcyiiizabcqabcyr";
-        //"cxxaxxaxxb";
-        "How many wood would a woodchuck chuck.";
-    //"xgtcacaytgtgacz";
-    SuffixSet suffix(str);
-    for (unsigned i = 0; i != sizeof(str) - 1; ++i)
-        suffix.push_back();
-    for (
-        uxn::patl::super_maxrep_iterator<SuffixSet> mrit(&suffix);
-        !mrit->is_root();
-        ++mrit)
-        printf("\"%s\" x %d\n",
+    {
+        printf("---\n");
+        typedef patl::suffix_set<char*> SuffixSet;
+        char str[] =
+            //"abrakadabraa";
+            //"xabcyiiizabcqabcyr";
+            //"cxxaxxaxxb";
+            "How many wood would a woodchuck chuck.";
+        //"xgtcacaytgtgacz";
+        SuffixSet suffix(str);
+        for (unsigned i = 0; i != sizeof(str) - 1; ++i)
+            suffix.push_back();
+        for (uxn::patl::super_maxrep_iterator<SuffixSet> mrit(&suffix)
+            ; !mrit->is_root()
+            ; ++mrit)
+            printf("\"%s\" x %d\n",
             std::string(mrit->key(), mrit->length()).c_str(),
             mrit.freq());
+    }
+    //
+    {
+        printf("---\n");
+        typedef int typ;
+        //typedef char typ;
+        typedef patl::suffix_set<const typ*> suffix_t;
+        typ arr[] = {10, 5, 6, 7, 5, 6, 7, 89, 64};
+        //typ arr[] = "qweabrabrabraad";
+        //typ arr[] = "qweabrabrrrrd";
+        suffix_t suf(arr, sizeof(arr) / sizeof(arr[0]));
+        const typ *repend = arr;
+        do
+        {
+            const suffix_t::vertex
+                vtx = suf.push_back(),
+                sibl = vtx.sibling();
+            if (suf.size() > 1 && suf.keys() + suf.size() > repend)
+            {
+                const int skip = vtx.skip() / 8 / sizeof(typ);
+                const unsigned
+                    delta = vtx.key() - sibl.key(),
+                    count = skip / delta + 1;
+                if (count > 1)
+                {
+                    printf("begin: %u, length: %u, count: %u\n", sibl.key() - suf.keys(), delta, count);
+                    repend = sibl.key() + delta * count + 1;
+                }
+            }
+        } while (!suf.endpoint());
+    }
 }

@@ -59,7 +59,7 @@ public:
         return pal_.get_qtag() != 0;
     }
 
-    const key_type &key() const
+    key_type key() const
     {
         return pal_.get_key();
     }
@@ -85,7 +85,7 @@ public:
 
     this_t sibling() const
     {
-        return vertex(pal_.sibling());
+        return this_t(pal_.sibling());
     }
 
     this_t &operator++()

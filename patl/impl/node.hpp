@@ -42,7 +42,7 @@ public:
 #endif
     }
 
-    // return node_type left|right id
+    // return node left|right id
     word_t get_parent_id() const
     {
 #ifdef PATL_ALIGNHACK
@@ -52,7 +52,7 @@ public:
 #endif
     }
 
-    // return ptr to node_type son by id
+    // return ptr to node son by id
     const node_type *get_xlink(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -70,7 +70,7 @@ public:
 #endif
     }
 
-    // return tag of node_type son by id
+    // return tag of node son by id
     word_t get_xtag(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -216,7 +216,7 @@ private:
     node_type
         *parent_,
         *link_[2];
-    unsigned char tagsid_;
+    word_t tagsid_;
 #endif
 };
 

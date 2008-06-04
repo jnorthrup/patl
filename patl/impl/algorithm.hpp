@@ -232,7 +232,7 @@ public:
     /// добавляет новый узел \c R в дерево
     void add(node_type *r, word_t b, word_t prefixLen)
     {
-        // add new node_type into trie
+        // add new node into trie
         r->set_parentid(get_q(), get_qid());
         if (!get_qtag())
             get_p()->set_parentid(r, word_t(1) ^ b);
@@ -504,7 +504,7 @@ private:
     node_type *q_; ///< узел \c Q в алгоритме P
     /// определяет, каким потомком является узел \c P
     /// по отношению к узлу \c Q: левым или правым
-    unsigned char qid_;
+    word_t qid_;
 #endif
 };
 
