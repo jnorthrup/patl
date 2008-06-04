@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
                 } while (realSize == blockSize);
                 ::VirtualFree(dbuff, 0, MEM_RELEASE);
             }
-            else if (opId==1) // decode
+            else if (opId == 1) // decode
             {
                 // unsort
                 blockSize = 0;
