@@ -26,7 +26,7 @@ public:
     {
     }
 
-    // return stored value in node_type
+    // return stored value in node
     typename T::value_type &get_value()
     {
         return value_;
@@ -223,7 +223,7 @@ public:
             if (~word_t(0) == l)
                 // then this key already in trie
                 return iter_bool_pair(iterator(vertex(pal)), false);
-            // add new node_type for value with unique key
+            // add new node for value with unique key
             return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
         }
         // if trie is empty then add root
@@ -347,7 +347,7 @@ private:
         {
             // deallocate subtree
             del_tree(pal.get_p());
-            // we must find the node_type with key whose prefix
+            // we must find the node with key whose prefix
             // we erase among nodes from pal.get_q() up to root_
             pal.get_q()->set_xlinktag(pal.get_qid(),
                 pal.get_subtree_node(bit_comp_), 1);
@@ -376,13 +376,13 @@ protected:
         return algorithm(this, root_, 0);
     }
 
-    // add new node_type with unique key
+    // add new node with unique key
     algorithm add(const value_type &val, algorithm &pal, word_t prefixLen)
     {
-        // brave new node_type
+        // brave new node
         node_type *r = alloc_.allocate(1);
         alloc_.construct(r, node_type(val));
-        // add new node_type into trie
+        // add new node into trie
         const word_t b = bit_comp_.get_bit(T::ref_key(val), prefixLen);
         pal.add(r, b, prefixLen);
         ++size_;

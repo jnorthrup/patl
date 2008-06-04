@@ -15,7 +15,6 @@ typedef patl::suffix_set<unsigned char*> SuffixSet;
 
 // L - lenght of sorting buffer
 // dbuff - buffer of lenght 2*L+1, source data in first half
-// node_type - allocated memory for nodes storing, size L
 // in result we have sorted data in first half of dbuff
 // return value - position of zero symbol
 static unsigned bwtSort(unsigned L, unsigned char *dbuff, SuffixSet &sufSet, unsigned &mult)
@@ -27,7 +26,7 @@ static unsigned bwtSort(unsigned L, unsigned char *dbuff, SuffixSet &sufSet, uns
     //
     for (;;)
     {
-        // add next node_type and check for loop
+        // add next node and check for loop
         const SuffixSet::vertex v = sufSet.push_back();
         const unsigned skip = v.skip();
         if (sufSet.size() - 1 + skip / 8 == 2 * L)

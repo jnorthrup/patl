@@ -114,14 +114,9 @@ public:
 
     static const word_t bit_size = bit_compare::bit_size;
 
-    const key_type get_key(const node_type *node_type) const
+    key_type get_key(const node_type *node) const
     {
-        return keys_ + trie_.index_of(node_type) * delta;
-    }
-
-    key_type get_key(const node_type *node_type)
-    {
-        return keys_ + trie_.index_of(node_type) * delta;
+        return keys_ + trie_.index_of(node) * delta;
     }
 
     // constructor
@@ -146,7 +141,7 @@ public:
         return trie_.capacity();
     }
 
-    const key_type keys() const
+    key_type keys() const
     {
         return keys_;
     }
