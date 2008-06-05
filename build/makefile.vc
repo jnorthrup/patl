@@ -1,0 +1,31 @@
+FLAGS = /O2 /Ox /GL /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_WARNINGS" /D "_SCL_SECURE_NO_WARNINGS" /EHsc /MD /W4 /I../.. /Foobj/ /Fe../Release/ /nologo
+
+all: make_dirs patcont build_re insider lz77 maxpals multi_search usort3 word_suffix
+
+make_dirs:
+	if not exist obj md obj
+	if not exist ../Release md ../Release
+
+patcont: ../patl/patcont.cpp
+	cl  $(FLAGS) $**
+
+build_re: ../demos/build_re/build_re.cpp
+	cl $(FLAGS) $**
+
+insider: ../demos/insider/insider.cpp
+	cl $(FLAGS) $**
+
+lz77: ../demos/lz77/lz77.cpp
+	cl $(FLAGS) $**
+
+maxpals: ../demos/maxpals/maxpals.cpp
+	cl $(FLAGS) $**
+
+multi_search: ../demos/multi_search/multi_search.cpp
+	cl $(FLAGS) $**
+
+usort3: ../demos/usort3/usort3.cpp
+	cl $(FLAGS) $**
+
+word_suffix: ../demos/word_suffix/word_suffix.cpp
+	cl $(FLAGS) $**
