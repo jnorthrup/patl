@@ -42,7 +42,7 @@ public:
         {
             if (this->empty()) // если дерево пусто (нет корня)
                 return this->push_back_root(typename super::node_type(
-#ifdef _DEBUG
+#ifdef PATL_DEBUG
                 this->size()
 #endif
                 ));
@@ -50,7 +50,7 @@ public:
                 this->reserve(2 * this->capacity());
         }
         return this->push_back_generic(
-#ifdef _DEBUG
+#ifdef PATL_DEBUG
             typename super::node_type(this->size())
 #else
             // неважно, каким узлом инициализировать

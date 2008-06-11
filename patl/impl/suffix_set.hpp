@@ -15,7 +15,7 @@ class node_gen_suffix
     : public node_generic<node_gen_suffix<T> >
 {
 public:
-#ifdef _DEBUG
+#ifdef PATL_DEBUG
     node_gen_suffix<T>(word_t id)
         : id_(id)
     {
@@ -35,7 +35,7 @@ public:
     }
 
 private:
-#ifdef _DEBUG
+#ifdef PATL_DEBUG
     word_t id_;
 #endif
 };

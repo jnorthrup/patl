@@ -31,6 +31,7 @@ const word_t bits_in_word = 8 * sizeof(word_t);
 
 #ifdef _DEBUG
 
+#define PATL_DEBUG
 #undef PATL_ALIGNHACK
 #undef PATL_INTRINSIC
 
