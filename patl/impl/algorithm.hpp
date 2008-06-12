@@ -24,11 +24,10 @@ namespace impl
 #define SELF static_cast<this_t*>(this)
 #define CSELF static_cast<const this_t*>(this)
 
-/// Базовый класс алгоритмов и хранилище состояния итераторов
 /**
-    В основе своей соответствует алгоритму P, описанному в
-    Д. Кнут, "Искусство программирования", том 3.
-*/
+ * Base class of algorithms & iterator's state store
+ * Algorithm P, described in Knuth's TAOCP, vol. 3, put in a basis
+ */
 template <typename T, typename This>
 class algorithm_generic
 {
@@ -49,8 +48,7 @@ private:
     typedef word_t size_type;
 
 public:
-    /// конструктор по умолчанию для инициализации нулями
-    /// (с указателем на контейнер)
+    /// zero-init default ctor
     algorithm_generic()
 #ifdef PATL_ALIGNHACK
         : qq_(0)
@@ -60,8 +58,8 @@ public:
 #endif
     {
     }
-    /// конструктор для непосредственной инициализации узлом \c Q и индексом \c Qid
-    /// (с указателем на контейнер)
+
+    /// simple init ctor
     algorithm_generic(const node_type *q, word_t qid)
 #ifdef PATL_ALIGNHACK
         : qq_(qid | reinterpret_cast<word_t>(q))
@@ -71,7 +69,8 @@ public:
 #endif
     {
     }
-    /// конструктор компактной инициализации алгоритма
+
+    /// compact init ctor
     algorithm_generic(word_t qq)
 #ifdef PATL_ALIGNHACK
         : qq_(qq)
@@ -82,6 +81,7 @@ public:
     {
     }
 
+    /// return compact representation of algorithm state
     word_t compact() const
     {
         return
@@ -92,7 +92,7 @@ public:
 #endif
     }
 
-    /// равенство двух объектов алгоритма
+    /// equality op
     bool operator==(const this_t &right) const
     {
         return
@@ -108,12 +108,13 @@ public:
         return !(*this == pal);
     }
 
+    /// return sibling of algorithm
 	this_t sibling() const
 	{
 		return CSELF->construct(get_q(), word_t(1) ^ get_qid());
 	}
 
-    /// инвертировать индекс
+    /// toggle index i.e. convert algorithm to its sibling
     void toggle()
     {
 #ifdef PATL_ALIGNHACK
@@ -123,14 +124,19 @@ public:
 #endif
     }
 
+    /// return real prefix length in bits
+    /// NOTE maybe it must be in node_generic
     word_t get_prefix_length() const
     {
         return get_qtag() ? ~word_t(0) : get_p()->get_skip();
     }
 
+    /// analogue to mismatch, for suffix_cont
+    /// TODO rewrite as templated member functions
     template <bool Huge>
     class mismatch_suffix;
 
+    /// classical algorithm P for search place for insert new node
     template <>
     class mismatch_suffix<false>
     {
@@ -145,18 +151,26 @@ public:
         {
         }
 
+        /**
+         * this code faster than one in mismatch_suffix<true>
+         * may used with small suffix_conts
+         */ 
         word_t operator()(
             const key_type &key,
+            /// number of bits in key that certainly match with available in trie
             word_t skip)
         {
+            // trie traverse to the leafs
             pal_.run(bit_comp_, key);
+            // compute skip as the number of first mismatching bit
             skip = align_down<bit_compare::bit_size>(skip) +
                 bit_comp_.bit_mismatch(
                     key + skip / bit_compare::bit_size,
                     static_cast<this_t*>(&pal_)->get_key() +
                     skip / bit_compare::bit_size);
+            // trie ascend to the inserting place
             pal_.ascend(skip);
-            return skip;
+            return skip; // new node mismatching bit number
         }
 
     private:
@@ -178,10 +192,13 @@ public:
         {
         }
 
+        /// this code guarantee amortized linear time for suffix indexing
         word_t operator()(
             const key_type &key,
+            /// number of bits in key that certainly match with available in trie
             word_t skip)
         {
+            // until we achieved the leaf
             while (!pal_.get_qtag())
             {
                 const word_t skip_cur = pal_.get_p()->get_skip();
@@ -190,6 +207,7 @@ public:
                     const key_type &exist_key = static_cast<this_t*>(&pal_)->get_key();
                     for (; skip != skip_cur; ++skip)
                     {
+                        // if we discover mismatch in bits - immediately return its number
                         if (bit_comp_.get_bit(key, skip) != bit_comp_.get_bit(exist_key, skip))
                             return skip;
                     }
@@ -209,8 +227,7 @@ public:
         const bit_compare &bit_comp_;
     };
 
-    /// определение ближайшего к корню узла, на который есть
-    /// обратная ссылка из поддерева, указываемого алгоритмом; O(log N)
+    /// function determine highest node back-referenced by current subtree; O(log n)
     const node_type *get_subtree_node(
         const bit_compare &bit_comp) const
     {
@@ -229,7 +246,7 @@ public:
         return cur;
     }
 
-    /// добавляет новый узел \c R в дерево
+    /// add new node into trie at current position; O(1)
     void add(node_type *r, word_t b, word_t prefixLen)
     {
         // add new node into trie
@@ -242,52 +259,53 @@ public:
         get_q()->set_xlinktag(get_qid(), r, 0);
     }
 
-    /// удаляет узел \c P из дерева
-    /// \return удалённый узел (для освобождения занимаемой им памяти)
+    /**
+     * erase current node from trie; O(1)
+     * \return pointer to erased node for cleanup
+     */
     node_type *erase()
     {
-        // из узла Q на узел P есть обратная связь (Qtag==1)
-        // узлы Q и P могут представлять один и тот же узел
+        // p-node back-referenced from q-node (q-tag == 1)
+        // q- & p-nodes may be the same
         node_type
             *q = get_q(),
             *p = get_p();
-        // узел pBrother - брат узла P
+        // p-brother is the sibling of p-node
         const word_t
             pBrotherId = word_t(1) ^ get_qid(),
             pBrotherTag = q->get_xtag(pBrotherId);
         node_type *pBrother = q->get_xlink(pBrotherId);
-        // возьмём родителя узла Q
+        // take the parent of q-node
         const word_t qParentId = q->get_parent_id();
         node_type *qParent = q->get_parent();
-        // если родитель узла Q существует (т.е. Q - не корень)
+        // if q-parent exist i.e. q-node isn't the root
         if (qParent)
         {
-            // заменим узел Q на узел pBrother
+            // replace q-node with p-brother
             qParent->set_xlinktag(qParentId, pBrother, pBrotherTag);
             if (!pBrotherTag)
                 pBrother->set_parentid(qParent, qParentId);
         }
-        // если узлы P и Q представляют разные узлы
+        // if p- & q-nodes is not the same
         if (q != p)
         {
-            // заменим узел P узлом Q
+            // replace p-node with q-node
             q->set_all_but_value(p);
-            // скорректируем родителя узла P, если он существует
+            // correct p-parent, if one exist
             node_type *pParent = p->get_parent();
             if (pParent)
                 pParent->set_xlinktag(p->get_parent_id(), q, 0);
-            // скорректируем детей узла P
+            // correct p-node children
             if (!p->get_xtag(0))
                 p->get_xlink(0)->set_parentid(q, 0);
             if (!p->get_xtag(1))
                 p->get_xlink(1)->set_parentid(q, 1);
         }
-        // вернём удаляемый узел
+        //
         return p;
     }
 
-    // find node with nearest key and
-    // return the number of first mismatching bit
+    /// find node with nearest key and return the number of first mismatching bit
     word_t mismatch(
         const bit_compare &bit_comp,
         const key_type &key,
@@ -304,22 +322,21 @@ public:
         return l;
     }
 
-    /// спуск по дереву в указанную \c side сторону
+    /// trie descend to the leaves
     void descend(word_t side)
     {
         while (!get_qtag())
             iterate(side);
     }
 
-    /// спуск по дереву, ограниченный длиной префикса
+    /// trie descend to the leaves limited by prefix length
     void descend(word_t side, word_t prefixLen)
     {
         while (!get_qtag() && get_p()->get_skip() < prefixLen)
             iterate(side);
     }
 
-    /// спуск по дереву, управляемый функтором \c decis
-    /// находит первый узел с ключом, удовлетворяющим функтору \c Decision
+    /// trie descend to the leaves driven by decision functor
     template <typename Decision>
     void descend_decision(word_t side, Decision &decis)
     {
@@ -345,7 +362,7 @@ public:
         }
     }
 
-    /// общая часть для всех методов вида \c move<side>
+    /// generic part of all move functions
     void move_generic(word_t side)
     {
         if (get_qid() == side)
@@ -358,23 +375,21 @@ public:
             toggle();
     }
 
-    /// перемещение к предыдущему или следующему узлу, в зависимости от
-    /// \c side (обход дерева в глубину)
+    /// move to the next node
     void move(word_t side)
     {
         move_generic(side);
         descend(word_t(1) ^ side);
     }
 
-    /// перемещение к узлу, ограниченное длиной префикса
+    /// move to the next node limited by prefix length
     void move(word_t side, word_t prefixLen)
     {
         move_generic(side);
         descend(word_t(1) ^ side, prefixLen);
     }
 
-    /// перемещение к узлу, управляемое функтором \c decis
-    /// находит следующий узел с ключом, удовлетворяющим функтору \c Decision
+    /// move to the next node driven by decision functor
     template <typename Decision>
     void move_decision(word_t side, Decision &decis)
     {
@@ -386,27 +401,26 @@ public:
         descend_decision(word_t(1) ^ side, decis);
     }
 
+    /// ascend to parent node
     void ascend()
     {
         node_type *q = get_q();
         init(q->get_parent(), q->get_parent_id());
     }
 
-    /// подъём по дереву к первому узлу, \c skip которого меньше или равен
-    /// заданной длине префикса
+    /// trie ascend to the lowest node whose prefix less or equal than prefix length
     void ascend(sword_t prefixLen)
     {
         for (; static_cast<sword_t>(get_q()->get_skip()) > prefixLen; ascend()) ;
     }
 
-    /// подъём по дереву к первому узлу, \c skip которого строго меньше
-    /// заданной длины префикса
+    /// trie ascend to the lowest node whose prefix less than prefix length
     void ascend_less(sword_t prefixLen)
     {
         for (; static_cast<sword_t>(get_q()->get_skip()) >= prefixLen; ascend()) ;
     }
 
-    /// прогон классического алгоритма P
+    /// one run of the classical algorithm P
     void run(
         const bit_compare &bit_comp,
         const key_type &key)
@@ -415,7 +429,7 @@ public:
             iterate(bit_comp.get_bit(key, get_p()->get_skip()));
     }
 
-    /// прогон классического алгоритма P, ограниченного длиной префикса
+    /// one run of the classical algorithm P limited by prefix length
     void run(
         const bit_compare &bit_comp,
         const key_type &key,
@@ -426,12 +440,13 @@ public:
             iterate(bit_comp.get_bit(key, skip));
     }
 
-    /// одна итерация классического алгоритма P
+    /// one iteration of the classical algorithm P
     void iterate(word_t id)
     {
         init(get_p(), id);
     }
 
+    /// one iteration of the classical algorithm P driven by given key
     void iterate_by_key(
         const bit_compare &bit_comp,
         const key_type &key)
@@ -439,7 +454,7 @@ public:
         iterate(bit_comp.get_bit(key, get_p()->get_skip()));
     }
 
-    /// непосредственная инициализация алгоритма узлом \c Q и индексом \c Qid
+    /// init function
     void init(const node_type *q, word_t qid)
     {
 #ifdef PATL_ALIGNHACK
@@ -450,24 +465,23 @@ public:
 #endif
     }
 
-    /// вычисляет узел \c P
+    /// return p-node
     const node_type *get_p() const
     {
         return get_q()->get_xlink(get_qid());
     }
-    /// вычисляет узел \c P
     node_type *get_p()
     {
         return get_q()->get_xlink(get_qid());
     }
 
-    /// вычисляет тег, соответствующий связи узла \c Q и узла \c P
+    /// return q-tag
     word_t get_qtag() const
     {
         return get_q()->get_xtag(get_qid());
     }
 
-    /// возвращает узел \c Q
+    /// return q-node
     const node_type *get_q() const
     {
 #ifdef PATL_ALIGNHACK
@@ -476,7 +490,6 @@ public:
         return q_;
 #endif
     }
-    /// возвращает узел \c Q
     node_type *get_q()
     {
 #ifdef PATL_ALIGNHACK
@@ -486,7 +499,7 @@ public:
 #endif
     }
 
-    /// возвращает индекс \c Qid
+    /// return distiction bit
     word_t get_qid() const
     {
 #ifdef PATL_ALIGNHACK
@@ -498,12 +511,12 @@ public:
 
 private:
 #ifdef PATL_ALIGNHACK
-    /// совмещённый узел \c Q с индексом \c Qid в младшем бите
+    /// compact representation of algorithm state with distinction bit in lsb
     word_t qq_;
 #else
-    node_type *q_; ///< узел \c Q в алгоритме P
-    /// определяет, каким потомком является узел \c P
-    /// по отношению к узлу \c Q: левым или правым
+    /// q-node
+    node_type *q_;
+    /// distinction bit
     word_t qid_;
 #endif
 };
