@@ -315,24 +315,18 @@ public:
     // find(const key_type&) declarations
     const_iterator find(const key_type &key) const
     {
-        if (root_)
-        {
-            algorithm pal(CSELF, root_, 0);
-            // if number of first mismatching bit end at infinity
-            if (~word_t(0) == pal.mismatch(bit_comp_, key))
-                // then return iterator on finding
-                return const_iterator(vertex(pal));
-        }
+        algorithm pal(CSELF, root_, 0);
+        // if number of first mismatching bit end at infinity
+        if (root_ && ~word_t(0) == pal.mismatch(bit_comp_, key))
+            // then return iterator on finding
+            return const_iterator(vertex(pal));
         return end();
     }
     iterator find(const key_type &key)
     {
-        if (root_)
-        {
-            algorithm pal(CSELF, root_, 0);
-            if (~word_t(0) == pal.mismatch(bit_comp_, key))
-                return iterator(vertex(pal));
-        }
+        algorithm pal(CSELF, root_, 0);
+        if (root_ && ~word_t(0) == pal.mismatch(bit_comp_, key))
+            return iterator(vertex(pal));
         return end();
     }
 
@@ -340,13 +334,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        if (root_)
+        algorithm pal(this, root_, 0);
+        // find a nearest match
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(this, root_, 0);
-            // find a nearest match
-            pal.mismatch(bit_comp_, key, prefixLen);
             pal.template descend(0);
-            return const_iterator(pal);
+            return const_iterator(vertex(pal));
         }
         return end();
     }
@@ -354,12 +347,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        if (root_)
+        algorithm pal(this, root_, 0);
+        // find a nearest match
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(this, root_, 0);
-            pal.mismatch(bit_comp_, key, prefixLen);
             pal.template descend(0);
-            return iterator(pal);
+            return iterator(vertex(pal));
         }
         return end();
     }
@@ -368,13 +361,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        if (root_)
+        algorithm pal(this, root_, 0);
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(this, root_, 0);
-            if (pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
-                pal.template move(1);
+            pal.template move(1);
             pal.template descend(0);
-            return const_iterator(pal);
+            return const_iterator(vertex(pal));
         }
         return end();
     }
@@ -382,13 +374,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        if (root_)
+        algorithm pal(this, root_, 0);
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(this, root_, 0);
-            if (pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
-                pal.template move(1);
+            pal.template move(1);
             pal.template descend(0);
-            return iterator(pal);
+            return iterator(vertex(pal));
         }
         return end();
     }
@@ -402,51 +393,34 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        if (root_)
+        algorithm pal(CSELF, root_, 0);
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(CSELF, root_, 0);
-            if (pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
-            {
-                algorithm lower(pal);
-                lower.descend(0);
-                pal.move(1);
-                pal.descend(0);
-                return const_iter_range(
-                    const_iterator(vertex(lower)),
-                    const_iterator(vertex(pal)));
-            }
-            else
-            {
-                pal.descend(0);
-                return const_iter_range(
-                    const_iterator(vertex(pal)),
-                    const_iterator(vertex(pal)));
-            }
+            algorithm lower(pal);
+            lower.descend(0);
+            pal.move(1);
+            pal.descend(0);
+            return const_iter_range(
+                const_iterator(vertex(lower)),
+                const_iterator(vertex(pal)));
         }
-        return const_iter_range(end(), end());
+        vertex end(algorithm(CSELF, root_, 1));
+        return const_iter_range(this->end(), this->end());
     }
     iter_range equal_range(
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        if (root_)
+        algorithm pal(CSELF, root_, 0);
+        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
         {
-            algorithm pal(CSELF, root_, 0);
-            if (pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
-            {
-                algorithm lower(pal);
-                lower.descend(0);
-                pal.move(1);
-                pal.descend(0);
-                return iter_range(iterator(lower), iterator(pal));
-            }
-            else
-            {
-                pal.descend(0);
-                return iter_range(iterator(pal), iterator(pal));
-            }
+            algorithm lower(pal);
+            lower.descend(0);
+            pal.move(1);
+            pal.descend(0);
+            return iter_range(iterator(lower), iterator(pal));
         }
-        return iter_range(end(), end());
+        return iter_range(this->end(), this->end());
     }
 
     size_type count(const key_type &key, word_t prefixLen = ~word_t(0)) const
