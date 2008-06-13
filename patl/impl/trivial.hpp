@@ -4,9 +4,7 @@
 #include "../config.hpp"
 
 #ifdef PATL_INTRINSIC
-
 #include <intrin.h>
-
 #endif
 
 namespace uxn
@@ -29,58 +27,75 @@ inline word_t bits_but_highest(word_t x)
 inline word_t get_lowest_bit_id(word_t x)
 {
 #ifdef PATL_INTRINSIC
+
     unsigned long r;
 #ifdef PATL_64
     _BitScanForward64(&r, x);
-#else
+#endif // PATL_64
+#ifdef PATL_32
     _BitScanForward(&r, x);
-#endif
-#else
+#endif // PATL_32
+
+#else // PATL_INTRINSIC
+
     word_t r = 0;
     x &= word_t(0) - x; // isolate lowest bit
 #ifdef PATL_64
-    if (x & 0xFFFFFFFF00000000) r += 32; // smth. wrong!
-#endif
+    if (x & 0xFFFFFFFF00000000) r += 32;
+    if (x & 0xFFFF0000FFFF0000) r += 16;
+    if (x & 0xFF00FF00FF00FF00) r += 8;
+    if (x & 0xF0F0F0F0F0F0F0F0) r += 4;
+    if (x & 0xCCCCCCCCCCCCCCCC) r += 2;
+    if (x & 0xAAAAAAAAAAAAAAAA) ++r;
+#endif // PATL_64
+#ifdef PATL_32
     if (x & 0xFFFF0000) r += 16;
     if (x & 0xFF00FF00) r += 8;
     if (x & 0xF0F0F0F0) r += 4;
     if (x & 0xCCCCCCCC) r += 2;
     if (x & 0xAAAAAAAA) ++r;
-#endif
+#endif // PATL_32
+
+#endif // PATL_INTRINSIC
     return r;
 }
 
 inline word_t get_highest_bit_id(word_t x)
 {
 #ifdef PATL_INTRINSIC
+
     unsigned long r;
 #ifdef PATL_64
     _BitScanReverse64(&r, x);
-#else
+#endif // PATL_64
+#ifdef PATL_32
     _BitScanReverse(&r, x);
-#endif
-#else
+#endif // PATL_32
+
+#else // PATL_INTRINSIC
+
     word_t r = 0;
 #ifdef PATL_64
     if (x & 0xFFFFFFFF00000000) { x >>= 32; r += 32; }
-#endif
+#endif // PATL_64
     if (x & 0xFFFF0000) { x >>= 16; r += 16; }
     if (x & 0x0000FF00) { x >>= 8; r += 8; }
     if (x & 0x000000F0) { x >>= 4; r += 4; }
     if (x & 0x0000000C) { x >>= 2; r += 2; }
     if (x & 0x00000002) ++r;
-#endif
+
+#endif // PATL_INTRINSIC
     return r;
 }
 
 template <typename T>
-inline const T &get_min(const T &a, const T &b)
+inline T get_min(T a, T b)
 {
-    return a < b ? a : b;
+    return b < a ? b : a;
 }
 
 template <typename T>
-inline const T &get_max(const T &a, const T &b)
+inline T get_max(T a, T b)
 {
     return a < b ? b : a;
 }
