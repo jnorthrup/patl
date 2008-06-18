@@ -23,13 +23,18 @@ public:
     {
     }
 
+    operator vertex&()
+    {
+        return *pit_;
+    }
+
     pointer operator->()
     {
         return &**this;
     }
     reference operator*()
     {
-        return vtx_.value();
+        return pit_->value();
     }
 
     iterator &operator++()

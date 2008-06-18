@@ -45,28 +45,26 @@ private:
     typename T::value_type value_;
 };
 
-template <typename T>
+template <typename T, typename Container>
 class algorithm_gen
-    : public algorithm_generic<T, algorithm_gen<T> >
+    : public algorithm_generic<T, algorithm_gen<T, Container>, Container>
 {
-    typedef algorithm_generic<T, algorithm_gen<T> > super;
+    typedef algorithm_gen<T, Container> this_t;
+    typedef algorithm_generic<T, this_t, Container> super;
 
 public:
-    typedef typename super::node_type node_type;
-    typedef typename super::value_type value_type;
+    explicit algorithm_gen(const cont_type *cont = 0)
+        : super(cont)
+    {
+    }
 
-    algorithm_gen()
-        : super()
+    algorithm_gen(const cont_type *cont, const node_type *q, word_t qid)
+        : super(cont, q, qid)
     {
     }
-    template <typename Smth>
-    explicit algorithm_gen(const Smth*)
-        : super()
-    {
-    }
-    template <typename Smth>
-    algorithm_gen(const Smth*, const node_type *q, word_t qid)
-        : super(q, qid)
+
+    algorithm_gen(const cont_type *cont, word_t qq)
+        : super(cont, qq)
     {
     }
 
@@ -106,21 +104,22 @@ struct algorithm_gen_traits
 template <
     typename T,
     template <typename> class Node,
-    template <typename> class Algorithm>
+    template <typename, typename> class Algorithm,
+    typename Container>
 struct trie_generic_traits
     : public algorithm_gen_traits<T, Node>
 {
-    typedef Algorithm<algorithm_gen_traits<T, Node> > algorithm;
+    typedef Algorithm<algorithm_gen_traits<T, Node>, Container> algorithm;
 };
 
 template <typename T>
 class trie_generic
     : public assoc_generic<
         trie_generic<T>,
-        trie_generic_traits<T, node_gen, algorithm_gen> >
+        trie_generic_traits<T, node_gen, algorithm_gen, trie_generic<T> > >
 {
     typedef trie_generic<T> this_t;
-    typedef trie_generic_traits<T, node_gen, algorithm_gen> traits;
+    typedef trie_generic_traits<T, node_gen, algorithm_gen, this_t> traits;
     typedef assoc_generic<trie_generic<T>, traits> super;
 
 protected:
@@ -218,7 +217,7 @@ public:
         {
             algorithm pal(this, this->root_, 0);
             // find a number of first mismatching bit
-            const word_t l = pal.mismatch(this->bit_comp_, T::ref_key(val));
+            const word_t l = pal.mismatch(T::ref_key(val));
             // if this number end at infinity
             if (~word_t(0) == l)
                 // then this key already in trie
@@ -263,13 +262,13 @@ public:
         }
         algorithm
             palCur(this, root_, 0),
-            pal(static_cast<algorithm&>(static_cast<vertex&>(first)));
-        const algorithm &palEnd(static_cast<algorithm&>(static_cast<vertex&>(last)));
+            pal((const algorithm&)((const vertex&)first));
+        const algorithm &palEnd((const algorithm&)((const vertex&)last));
         word_t skip = 0;
         while (pal != palEnd)
         {
             palCur.ascend_less(skip);
-            const word_t l = palCur.mismatch(bit_comp_, pal.get_p()->get_key());
+            const word_t l = palCur.mismatch(pal.get_p()->get_key());
             if (~word_t(0) == l)
                 // такой ключ уже есть, по идее нужно применить функтор
                 handler(iterator(vertex(palCur)), const_iterator(vertex(pal)));
@@ -301,7 +300,7 @@ public:
         if (root_)
         {
             algorithm pal(this, root_, 0);
-            if (pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+            if (pal.mismatch(key, prefixLen) >= prefixLen)
             {
                 const size_type pastSize = size();
                 // if erase entire tree
@@ -322,13 +321,13 @@ private:
     {
         if (node)
         {
-            vertex
-                vtx(algorithm(this, node, 0)),
-                vtxEnd(algorithm(this, node, 1));
-            for (vtx.postorder_init(); vtx != vtxEnd; vtx.postorder_incr())
+            postorder_iterator
+                pit(vertex(this, node, 0)),
+                pitEnd(vertex(this, node, 1));
+            for (pit->descend(0); pit != pitEnd; ++pit)
             {
-                if (!vtx.leaf())
-                    del_node(static_cast<algorithm&>(vtx).get_p());
+                if (!pit->leaf())
+                    del_node(static_cast<algorithm&>(*pit).get_p());
             }
         }
     }
@@ -350,7 +349,7 @@ private:
             // we must find the node with key whose prefix
             // we erase among nodes from pal.get_q() up to root_
             pal.get_q()->set_xlinktag(pal.get_qid(),
-                pal.get_subtree_node(bit_comp_), 1);
+                pal.get_subtree_node(), 1);
         }
         erase_node(pal);
     }

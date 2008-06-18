@@ -294,7 +294,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\postorder_iterator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\prefix.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\preorder_iterator.hpp"
 					>
 				</File>
 				<File

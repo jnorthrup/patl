@@ -28,35 +28,37 @@ int main()
     test1.change_root(test1.find("balon"));
     //
     typedef StringSet::vertex vertex;
+    typedef StringSet::preorder_iterator preorder_iterator;
+    typedef StringSet::postorder_iterator postorder_iterator;
     {
-        vertex
+        postorder_iterator
             itBeg = test1.postorder_begin(),
             itEnd = test1.postorder_end(),
             it = itBeg;
-        for (; it != itEnd; it.postorder_incr())
-            printf("%d\t%s\n", it.skip(), it.key().c_str());
+        for (; it != itEnd; ++it)
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
-            it.postorder_decr();
-            printf("%d\t%s\n", it.skip(), it.key().c_str());
+            --it;
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
     }
     //
     printf("\n---\n\n");
     //
     {
-        vertex
+        preorder_iterator
             itBeg = test1.preorder_begin(),
             itEnd = test1.preorder_end(),
             it = itBeg;
-        for (; it != itEnd; it.preorder_incr())
-            printf("%d\t%s\n", it.skip(), it.key().c_str());
+        for (; it != itEnd; ++it)
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
-            it.preorder_decr();
-            printf("%d\t%s\n", it.skip(), it.key().c_str());
+            --it;
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
     }
     //

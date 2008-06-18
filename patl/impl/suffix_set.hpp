@@ -22,14 +22,12 @@ public:
     }
 #endif
 
-    const typename T::value_type &get_value(
-        const typename T::key_type &key) const
+    const typename T::value_type &get_value(const typename T::key_type &key) const
     {
         return key;
     }
 
-    typename T::value_type &get_value(
-        const typename T::key_type &key)
+    typename T::value_type &get_value(const typename T::key_type &key)
     {
         return key;
     }

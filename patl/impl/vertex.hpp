@@ -14,6 +14,7 @@ class vertex_generic
 protected:
     typedef vertex_generic<Algorithm> this_t;
     typedef Algorithm algorithm;
+    typedef typename algorithm::cont_type cont_type;
     typedef typename algorithm::node_type node_type;
 
 public:
@@ -25,8 +26,12 @@ public:
     {
     }
 
-    template <typename Container>
-    vertex_generic(const Container *cont, word_t qq)
+    vertex_generic(const cont_type *cont, const node_type *q, word_t qid)
+        : pal_(cont, q, qid)
+    {
+    }
+
+    vertex_generic(const cont_type *cont, word_t qq)
         : pal_(cont, qq)
     {
     }
@@ -88,105 +93,36 @@ public:
         return this_t(pal_.sibling());
     }
 
-    this_t &operator++()
+    // low-level functions
+
+    word_t get_qid() const
     {
-        do postorder_incr(); // may be preorder_incr();
-        while (!leaf());
-        return *this;
+        return pal_.get_qid();
     }
 
-    this_t operator++(int)
+    word_t get_qtag() const
     {
-        this_t vtx(*this);
-        ++*this;
-        return vtx;
+        return pal_.get_qtag();
     }
 
-    this_t &operator--()
+    void toggle()
     {
-        do postorder_decr(); // may be preorder_decr();
-        while (!leaf());
-        return *this;
-    }
-
-    this_t operator--(int)
-    {
-        this_t vtx(*this);
-        --*this;
-        return vtx;
-    }
-
-    void postorder_init()
-    {
-        if (pal_.get_q())
-            pal_.descend(0);
-        else
-            pal_.toggle();
-    }
-
-    void postorder_incr()
-    {
-        if (pal_.get_qid())
-            pal_.ascend();
-        else
-        {
-            pal_.toggle();
-            pal_.descend(0);
-        }
-    }
-
-    void postorder_decr()
-    {
-        if (pal_.get_qtag())
-        {
-            if (!pal_.get_qid())
-                pal_.ascend();
-            pal_.toggle();
-        }
-        else
-            pal_.iterate(1);
-    }
-
-    template <typename Decision>
-    void partial_match_init(const Decision &decis)
-    {
-    }
-
-    template <typename Decision>
-    void partial_match_incr(const Decision &decis)
-    {
-    }
-
-    void preorder_init()
-    {
-        if (!pal_.get_q())
-            pal_.toggle();
-    }
-
-    void preorder_next_subtree()
-    {
-        while (pal_.get_qid())
-            pal_.ascend();
         pal_.toggle();
     }
 
-    void preorder_incr()
+    void iterate(word_t id)
     {
-        if (pal_.get_qtag())
-            preorder_next_subtree();
-        else
-            pal_.iterate(0);
+        pal_.iterate(id);
     }
 
-    void preorder_decr()
+    void descend(word_t side)
     {
-        if (pal_.get_qid())
-        {
-            pal_.toggle();
-            pal_.descend(1);
-        }
-        else
-            pal_.ascend();
+        pal_.descend(side);
+    }
+
+    void ascend()
+    {
+        pal_.ascend();
     }
 
 protected:

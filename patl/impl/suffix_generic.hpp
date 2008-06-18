@@ -19,31 +19,24 @@ namespace impl
 
 template <typename T, typename Container>
 class algorithm_gen_suffix
-    : public algorithm_generic<T, algorithm_gen_suffix<T, Container> >
+    : public algorithm_generic<T, algorithm_gen_suffix<T, Container>, Container>
 {
-    typedef Container cont_type;
-    typedef algorithm_generic<T, algorithm_gen_suffix<T, Container> > super;
     typedef algorithm_gen_suffix<T, Container> this_t;
+    typedef algorithm_generic<T, this_t, Container> super;
 
 public:
-    typedef typename T::node_type node_type;
-    typedef typename T::value_type value_type;
-
     explicit algorithm_gen_suffix(const cont_type *cont = 0)
-        : cont_(cont)
-        , super()
+        : super(cont)
     {
     }
 
     algorithm_gen_suffix(const cont_type *cont, const node_type *q, word_t qid)
-        : cont_(cont)
-        , super(q, qid)
+        : super(cont, q, qid)
     {
     }
 
     algorithm_gen_suffix(const cont_type *cont, word_t qq)
-        : cont_(cont)
-        , super(qq)
+        : super(cont, qq)
     {
     }
 
@@ -73,9 +66,6 @@ public:
     {
         return cont_->get_key(p);
     }
-
-private:
-    const cont_type *cont_;
 };
 
 template <
@@ -174,7 +164,7 @@ public:
         algorithm pal(this, front, front != root_
             ? bit_comp_.get_bit(keys_, front->get_skip())
             : 0);
-        pal.run(bit_comp_, keys_);
+        pal.run(keys_);
         erase_node(pal);
         trie_.pop_front();
         keys_ += delta;
@@ -187,7 +177,7 @@ public:
         algorithm pal(this, back, back != root_
             ? bit_comp_.get_bit(get_key(back), back->get_skip())
             : 0);
-        pal.run(bit_comp_, get_key(back));
+        pal.run(get_key(back));
         erase_node(pal);
         trie_.pop_back();
     }
@@ -226,7 +216,7 @@ public:
             , key_(begin)
             , skip_(0)
             , pal_(cont, cont->root_, 0)
-            , mismatch_suffix_(pal_, cont->bit_comp_)
+            , mismatch_suffix_(pal_)
         {
             skip_ = mismatch_suffix_(key_, skip_);
         }
@@ -309,7 +299,7 @@ protected:
                 pal.init(pretender, bit_comp_.get_bit(key, pretender->get_skip()));
         }
         //
-        algorithm::mismatch_suffix<true> mismatchSuffix(pal, bit_comp_);
+        algorithm::mismatch_suffix<true> mismatchSuffix(pal);
         skip = mismatchSuffix(key, skip);
         // brave new node
         trie_.push_back(initNode);
