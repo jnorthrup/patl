@@ -1,6 +1,7 @@
 #ifndef PATL_IMPL_CONST_ITERATOR_HPP
 #define PATL_IMPL_CONST_ITERATOR_HPP
 
+#include "postorder_iterator.hpp"
 #include <iterator>
 
 namespace uxn
@@ -18,6 +19,7 @@ class const_iterator
 {
 protected:
     typedef Vertex vertex;
+    typedef postorder_iterator_generic<vertex> postorder_iterator;
 
 public:
     typedef typename Vertex::value_type value_type;
@@ -25,22 +27,18 @@ public:
     typedef const value_type &reference;
 
     explicit const_iterator(const vertex &vtx = vertex())
-        : vtx_(vtx)
+        : pit_(vtx)
     {
     }
 
     operator const vertex&() const
     {
-        return vtx_;
-    }
-    operator vertex&()
-    {
-        return vtx_;
+        return *pit_;
     }
 
     bool operator==(const const_iterator &it) const
     {
-        return vtx_ == it.vtx_;
+        return pit_ == it.pit_;
     }
     bool operator!=(const const_iterator &it) const
     {
@@ -53,12 +51,13 @@ public:
     }
     reference operator*() const
     {
-        return vtx_.value();
+        return pit_->value();
     }
 
     const_iterator &operator++()
     {
-        ++vtx_;
+        do ++pit_;
+        while (!pit_->leaf());
         return *this;
     }
     const_iterator operator++(int)
@@ -70,7 +69,8 @@ public:
 
     const_iterator &operator--()
     {
-        --vtx_;
+        do --pit_;
+        while (!pit_->leaf());
         return *this;
     }
     const_iterator operator--(int)
@@ -81,7 +81,7 @@ public:
     }
 
 protected:
-    vertex vtx_;
+    postorder_iterator pit_;
 };
 
 } // namespace impl

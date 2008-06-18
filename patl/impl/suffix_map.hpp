@@ -20,23 +20,13 @@ public:
     {
     }
 
-    const typename T::value_type &get_value(
-        const typename T::key_type &key) const
+    const typename T::value_type &get_value() const
     {
-        // to avoid C4172: returning address of local variable or temporary
-#pragma warning(push)
-#pragma warning(disable:4172)
-        return std::make_pair(key, datum_);
-#pragma warning(pop)
+        return datum_;
     }
-    typename T::value_type &get_value(
-        const typename T::key_type &key)
+    typename T::value_type &get_value()
     {
-        // to avoid C4172: returning address of local variable or temporary
-#pragma warning(push)
-#pragma warning(disable:4172)
-        return std::make_pair(key, datum_);
-#pragma warning(pop)
+        return datum_;
     }
 
 private:
@@ -57,7 +47,7 @@ public:
     typedef Datum mapped_type;
     static const word_t delta = Delta;
     typedef Type key_type;
-    typedef std::pair<Type, Datum> value_type;
+    typedef Datum value_type;
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;
     typedef node_gen_suffix<this_t> node_type;

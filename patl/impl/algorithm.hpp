@@ -28,7 +28,7 @@ namespace impl
  * Base class of algorithms & iterator's state store
  * Algorithm P, described in Knuth's TAOCP, vol. 3, put in a basis
  */
-template <typename T, typename This>
+template <typename T, typename This, typename Container>
 class algorithm_generic
 {
     typedef This this_t;
@@ -36,6 +36,7 @@ class algorithm_generic
     typedef typename T::allocator_type allocator_type;
 
 public:
+    typedef Container cont_type;
     typedef typename T::key_type key_type;
     typedef typename T::value_type value_type;
     typedef typename T::node_type node_type;
@@ -49,33 +50,36 @@ private:
 
 public:
     /// zero-init default ctor
-    algorithm_generic()
+    explicit algorithm_generic(const cont_type *cont = 0)
+        : cont_(cont)
 #ifdef PATL_ALIGNHACK
-        : qq_(0)
+        , qq_(0)
 #else
-        : q_(0)
+        , q_(0)
         , qid_(0)
 #endif
     {
     }
 
     /// simple init ctor
-    algorithm_generic(const node_type *q, word_t qid)
+    algorithm_generic(const cont_type *cont, const node_type *q, word_t qid)
+        : cont_(cont)
 #ifdef PATL_ALIGNHACK
-        : qq_(qid | reinterpret_cast<word_t>(q))
+        , qq_(qid | reinterpret_cast<word_t>(q))
 #else
-        : q_(const_cast<node_type*>(q))
+        , q_(const_cast<node_type*>(q))
         , qid_(static_cast<unsigned char>(qid))
 #endif
     {
     }
 
     /// compact init ctor
-    algorithm_generic(word_t qq)
+    algorithm_generic(const cont_type *cont, word_t qq)
+        : cont_(cont)
 #ifdef PATL_ALIGNHACK
-        : qq_(qq)
+        , qq_(qq)
 #else
-        : q_(reinterpret_cast<node_type*>(qq & ~word_t(1)))
+        , q_(reinterpret_cast<node_type*>(qq & ~word_t(1)))
         , qid_(static_cast<unsigned char>(qq & word_t(1)))
 #endif
     {
@@ -136,6 +140,11 @@ public:
     template <bool Huge>
     class mismatch_suffix;
 
+    bit_compare bit_comp()
+    {
+        return cont_->bit_comp();
+    }
+
     /// classical algorithm P for search place for insert new node
     template <>
     class mismatch_suffix<false>
@@ -143,11 +152,8 @@ public:
         mismatch_suffix &operator=(const mismatch_suffix&);
 
     public:
-        mismatch_suffix(
-            algorithm_generic &pal,
-            const bit_compare &bit_comp)
+        mismatch_suffix(this_t &pal)
             : pal_(pal)
-            , bit_comp_(bit_comp)
         {
         }
 
@@ -160,13 +166,14 @@ public:
             /// number of bits in key that certainly match with available in trie
             word_t skip)
         {
+            const bit_compare bit_comp = pal_.bit_comp();
             // trie traverse to the leafs
-            pal_.run(bit_comp_, key);
+            pal_.run(key);
             // compute skip as the number of first mismatching bit
             skip = align_down<bit_compare::bit_size>(skip) +
-                bit_comp_.bit_mismatch(
+                bit_comp.bit_mismatch(
                     key + skip / bit_compare::bit_size,
-                    static_cast<this_t*>(&pal_)->get_key() +
+                    pal_.get_key() +
                     skip / bit_compare::bit_size);
             // trie ascend to the inserting place
             pal_.ascend(skip);
@@ -174,8 +181,7 @@ public:
         }
 
     private:
-        algorithm_generic &pal_;
-        const bit_compare &bit_comp_;
+        this_t &pal_;
     };
 
     template <>
@@ -184,11 +190,8 @@ public:
         mismatch_suffix &operator=(const mismatch_suffix&);
 
     public:
-        mismatch_suffix(
-            algorithm_generic &pal,
-            const bit_compare &bit_comp)
+        mismatch_suffix(this_t &pal)
             : pal_(pal)
-            , bit_comp_(bit_comp)
         {
         }
 
@@ -198,38 +201,37 @@ public:
             /// number of bits in key that certainly match with available in trie
             word_t skip)
         {
+            const bit_compare bit_comp = pal_.bit_comp();
             // until we achieved the leaf
             while (!pal_.get_qtag())
             {
                 const word_t skip_cur = pal_.get_p()->get_skip();
                 if (skip <= skip_cur)
                 {
-                    const key_type &exist_key = static_cast<this_t*>(&pal_)->get_key();
+                    const key_type &exist_key = pal_.get_key();
                     for (; skip != skip_cur; ++skip)
                     {
                         // if we discover mismatch in bits - immediately return its number
-                        if (bit_comp_.get_bit(key, skip) != bit_comp_.get_bit(exist_key, skip))
+                        if (bit_comp.get_bit(key, skip) != bit_comp.get_bit(exist_key, skip))
                             return skip;
                     }
                     ++skip;
                 }
-                pal_.iterate_by_key(bit_comp_, key);
+                pal_.iterate_by_key(key);
             }
             return align_down<bit_compare::bit_size>(skip) +
-                bit_comp_.bit_mismatch(
+                bit_comp.bit_mismatch(
                     key + skip / bit_compare::bit_size,
-                    static_cast<this_t*>(&pal_)->get_key() +
+                    pal_.get_key() +
                     skip / bit_compare::bit_size);
         }
 
     private:
-        algorithm_generic &pal_;
-        const bit_compare &bit_comp_;
+        this_t &pal_;
     };
 
     /// function determine highest node back-referenced by current subtree; O(log n)
-    const node_type *get_subtree_node(
-        const bit_compare &bit_comp) const
+    const node_type *get_subtree_node() const
     {
         const node_type
             *cur = get_q(),
@@ -237,7 +239,7 @@ public:
         word_t id = get_qid();
         while (
             parent &&
-            id != bit_comp.get_bit(CSELF->get_key(cur), cur->get_skip()))
+            id != cont_->bit_comp().get_bit(CSELF->get_key(cur), cur->get_skip()))
         {
             id = cur->get_parent_id();
             cur = parent;
@@ -307,15 +309,15 @@ public:
 
     /// find node with nearest key and return the number of first mismatching bit
     word_t mismatch(
-        const bit_compare &bit_comp,
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
+        const bit_compare bit_comp(cont_->bit_comp());
         const word_t len = get_min(prefixLen, bit_comp.bit_length(key));
         if (len == ~word_t(0))
-            run(bit_comp, key);
+            run(key);
         else
-            run(bit_comp, key, len);
+            run(key, len);
         const word_t l = bit_comp.bit_mismatch(key, SELF->get_key());
         if (l != ~word_t(0))
             ascend(l);
@@ -421,37 +423,32 @@ public:
     }
 
     /// one run of the classical algorithm P
-    void run(
-        const bit_compare &bit_comp,
-        const key_type &key)
+    void run(const key_type &key)
     {
+        const bit_compare bit_comp(cont_->bit_comp());
         while (!get_qtag())
             iterate(bit_comp.get_bit(key, get_p()->get_skip()));
     }
 
     /// one run of the classical algorithm P limited by prefix length
-    void run(
-        const bit_compare &bit_comp,
-        const key_type &key,
-        word_t prefixLen)
+    void run(const key_type &key, word_t prefixLen)
     {
         word_t skip;
+        const bit_compare bit_comp(cont_->bit_comp());
         while (!get_qtag() && (skip = get_p()->get_skip()) < prefixLen)
             iterate(bit_comp.get_bit(key, skip));
     }
 
     /// one iteration of the classical algorithm P
-    void iterate(word_t id)
+    void iterate(word_t side)
     {
-        init(get_p(), id);
+        init(get_p(), side);
     }
 
     /// one iteration of the classical algorithm P driven by given key
-    void iterate_by_key(
-        const bit_compare &bit_comp,
-        const key_type &key)
+    void iterate_by_key(const key_type &key)
     {
-        iterate(bit_comp.get_bit(key, get_p()->get_skip()));
+        iterate(cont_->bit_comp().get_bit(key, get_p()->get_skip()));
     }
 
     /// init function
@@ -508,6 +505,9 @@ public:
         return qid_;
 #endif
     }
+
+protected:
+    const cont_type *cont_;
 
 private:
 #ifdef PATL_ALIGNHACK

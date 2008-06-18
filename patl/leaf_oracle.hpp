@@ -12,6 +12,7 @@ class leaf_oracle
     typedef SuffixCont suffix_cont;
     typedef typename suffix_cont::allocator_type allocator_type;
     typedef typename suffix_cont::vertex vertex;
+    typedef typename suffix_cont::const_iterator const_iterator;
     typedef typename suffix_cont::key_type key_type;
 
 public:
@@ -34,11 +35,10 @@ public:
             return;
         leaf_map_ = unsigned_alloc_.allocate(leaf_size_ = cont_->size());
         //
-        for (
-            vertex vtx = cont_->postorder_begin();
-            vtx != cont_->postorder_end();
-            ++vtx)
-            leaf_map_[cont_->index_of(vtx)] = vtx.compact();
+        for (const_iterator cit = cont_->begin()
+            ; cit != cont_->end()
+            ; ++cit)
+            leaf_map_[cont_->index_of((const vertex&)cit)] = ((const vertex&)cit).compact();
     }
 
     vertex operator()(key_type suf) const

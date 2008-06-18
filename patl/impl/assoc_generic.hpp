@@ -1,6 +1,8 @@
 #ifndef PATL_IMPL_ASSOC_GENERIC_HPP
 #define PATL_IMPL_ASSOC_GENERIC_HPP
 
+#include "preorder_iterator.hpp"
+#include "postorder_iterator.hpp"
 #include "iterator.hpp"
 #include "partimator.hpp"
 #include "prefix.hpp"
@@ -28,6 +30,8 @@ protected:
 public:
     typedef prefix_generic<this_t, node_type> prefix;
     typedef vertex_generic<algorithm> vertex;
+    typedef preorder_iterator_generic<vertex> preorder_iterator;
+    typedef postorder_iterator_generic<vertex> postorder_iterator;
     typedef typename T::key_type key_type;
     typedef typename T::value_type value_type;
     typedef typename T::bit_compare bit_compare;
@@ -50,28 +54,29 @@ public:
     {
     }
 
-    vertex postorder_begin() const
+    postorder_iterator postorder_begin() const
     {
-        vertex vtx(algorithm(CSELF, root_, 0));
-        vtx.postorder_init();
-        return vtx;
+        vertex vtx(CSELF, root_, 0);
+        if (root_)
+            vtx.descend(0);
+        else
+            vtx.toggle();
+        return postorder_iterator(vtx);
     }
 
-    vertex postorder_end() const
+    postorder_iterator postorder_end() const
     {
-        return vertex(algorithm(CSELF, root_, 1));
+        return postorder_iterator(vertex(CSELF, root_, 1));
     }
 
-    vertex preorder_begin() const
+    preorder_iterator preorder_begin() const
     {
-        vertex vtx(algorithm(CSELF, root_, 0));
-        vtx.preorder_init();
-        return vtx;
+        return preorder_iterator(vertex(CSELF, root_, root_ ? 0 : 1));
     }
 
-    vertex preorder_end() const
+    preorder_iterator preorder_end() const
     {
-        return vertex(algorithm(CSELF, root_, 1));
+        return preorder_iterator(vertex(CSELF, root_, 1));
     }
 
     typedef const_iterator<vertex> const_iterator;
@@ -81,21 +86,21 @@ public:
     // begin() declarations
     const_iterator begin() const
     {
-        return const_iterator(postorder_begin());
+        return const_iterator(*postorder_begin());
     }
     iterator begin()
     {
-        return iterator(postorder_begin());
+        return iterator(*postorder_begin());
     }
 
     // end() declarations
     const_iterator end() const
     {
-        return const_iterator(postorder_end());
+        return const_iterator(*postorder_end());
     }
     iterator end()
     {
-        return iterator(postorder_end());
+        return iterator(*postorder_end());
     }
 
     class const_reverse_iterator
@@ -325,7 +330,7 @@ public:
     iterator find(const key_type &key)
     {
         algorithm pal(CSELF, root_, 0);
-        if (root_ && ~word_t(0) == pal.mismatch(bit_comp_, key))
+        if (root_ && ~word_t(0) == pal.mismatch(key))
             return iterator(vertex(pal));
         return end();
     }
@@ -336,7 +341,7 @@ public:
     {
         algorithm pal(this, root_, 0);
         // find a nearest match
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
             pal.template descend(0);
             return const_iterator(vertex(pal));
@@ -349,7 +354,7 @@ public:
     {
         algorithm pal(this, root_, 0);
         // find a nearest match
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
             pal.template descend(0);
             return iterator(vertex(pal));
@@ -362,10 +367,10 @@ public:
         word_t prefixLen = ~word_t(0)) const
     {
         algorithm pal(this, root_, 0);
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
-            pal.template move(1);
-            pal.template descend(0);
+            pal.move(1);
+            pal.descend(0);
             return const_iterator(vertex(pal));
         }
         return end();
@@ -375,10 +380,10 @@ public:
         word_t prefixLen = ~word_t(0))
     {
         algorithm pal(this, root_, 0);
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
-            pal.template move(1);
-            pal.template descend(0);
+            pal.move(1);
+            pal.descend(0);
             return iterator(vertex(pal));
         }
         return end();
@@ -394,7 +399,7 @@ public:
         word_t prefixLen = ~word_t(0)) const
     {
         algorithm pal(CSELF, root_, 0);
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
             algorithm lower(pal);
             lower.descend(0);
@@ -404,7 +409,6 @@ public:
                 const_iterator(vertex(lower)),
                 const_iterator(vertex(pal)));
         }
-        vertex end(algorithm(CSELF, root_, 1));
         return const_iter_range(this->end(), this->end());
     }
     iter_range equal_range(
@@ -412,7 +416,7 @@ public:
         word_t prefixLen = ~word_t(0))
     {
         algorithm pal(CSELF, root_, 0);
-        if (root_ && pal.mismatch(bit_comp_, key, prefixLen) >= prefixLen)
+        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
         {
             algorithm lower(pal);
             lower.descend(0);

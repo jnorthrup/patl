@@ -46,7 +46,7 @@ public:
         if (this->root_)
         {
             typename super::algorithm pal(this, this->root_, 0);
-            const word_t l = pal.mismatch(this->bit_comp_, key);
+            const word_t l = pal.mismatch(key);
             if (~word_t(0) == l)
                 return pal.get_value().second;
             return add(std::make_pair(key, Datum()), pal, l).get_value().second;
