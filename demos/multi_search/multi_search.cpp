@@ -34,7 +34,7 @@ static inline unsigned searchInFile(
 	for (unsigned i = 0; i != N; ++i, ++mit)
 	{
 		const char
-			*pattern = static_cast<SuffixSet::vertex>(mit).key(),
+			*pattern = mit->key(),
 			*str = mit.key();
 		//
 		if (*str == '\n')
@@ -42,9 +42,9 @@ static inline unsigned searchInFile(
 			++line;
 			lineBeg = const_cast<char*>(str + 1);
 		}
-		// находится ли ключ между нулями?
+		// находится ли ключ между двумя '\n'?
 		// т.е., найдено ли полное совпадение с одним из ключей?
-		if (!pattern[-1] && !pattern[mit.length()])
+		if ('\n' == pattern[-1] && '\n' == pattern[mit.length()])
 		{
 			const char
 				*stop = "\r\n",
@@ -158,7 +158,6 @@ int main(int argc, char *argv[])
 		printf(" \"%s\"", argv[i]);
 	}
 	printf("\n\n");
-	std::replace(reserv.begin(), reserv.end(), '\n', '\0');
 	SuffixSet suffix(&reserv[1], reserv.length());
 	for (unsigned i = reserv.size() - 2; i; --i)
 		suffix.push_back();
