@@ -19,6 +19,8 @@ class preorder_iterator_generic
 {
 protected:
     typedef Vertex vertex;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
 
 public:
     explicit preorder_iterator_generic(const vertex &vtx = vertex())
@@ -33,6 +35,15 @@ public:
     bool operator!=(const preorder_iterator_generic &it) const
     {
         return !(*this == it);
+    }
+
+    const_pointer operator->() const
+    {
+        return &**this;
+    }
+    const_reference operator*() const
+    {
+        return vtx_;
     }
 
     pointer operator->()

@@ -167,7 +167,7 @@ public:
             word_t skip)
         {
             const bit_compare bit_comp = pal_.bit_comp();
-            // trie traverse to the leafs
+            // trie traverse to the leaves
             pal_.run(key);
             // compute skip as the number of first mismatching bit
             skip = align_down<bit_compare::bit_size>(skip) +
@@ -198,7 +198,7 @@ public:
         /// this code guarantee amortized linear time for suffix indexing
         word_t operator()(
             const key_type &key,
-            /// number of bits in key that certainly match with available in trie
+            /// number of bits in key that certainly match with one exists in trie
             word_t skip)
         {
             const bit_compare bit_comp = pal_.bit_comp();
@@ -222,15 +222,14 @@ public:
             return align_down<bit_compare::bit_size>(skip) +
                 bit_comp.bit_mismatch(
                     key + skip / bit_compare::bit_size,
-                    pal_.get_key() +
-                    skip / bit_compare::bit_size);
+                    pal_.get_key() + skip / bit_compare::bit_size);
         }
 
     private:
         this_t &pal_;
     };
 
-    /// function determine highest node back-referenced by current subtree; O(log n)
+    /// function determine highest node back-referenced from current subtree; O(log n)
     const node_type *get_subtree_node() const
     {
         const node_type

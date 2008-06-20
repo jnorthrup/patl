@@ -210,20 +210,45 @@ public:
     class match_iterator
         : public std::iterator<std::forward_iterator_tag, vertex>
     {
+        typedef const vertex *const_pointer;
+        typedef const vertex &const_reference;
+
     public:
         match_iterator(this_t *cont, const key_type &begin)
             : cont_(cont)
             , key_(begin)
             , skip_(0)
-            , pal_(cont, cont->root_, 0)
-            , mismatch_suffix_(pal_)
+            , vtx_(cont, cont->root_,0)
+            , mismatch_suffix_((algorithm&)vtx_)
         {
             skip_ = mismatch_suffix_(key_, skip_);
         }
 
-        operator vertex() const
+        bool operator==(const match_iterator &it) const
         {
-            return vertex(pal_);
+            return vtx_ == it.vtx_;
+        }
+        bool operator!=(const match_iterator &it) const
+        {
+            return !(*this == it);
+        }
+
+        const_pointer operator->() const
+        {
+            return &**this;
+        }
+        const_reference operator*() const
+        {
+            return vtx_;
+        }
+
+        pointer operator->()
+        {
+            return &**this;
+        }
+        reference operator*()
+        {
+            return vtx_;
         }
 
         word_t skip() const
@@ -245,23 +270,24 @@ public:
         {
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
+            algorithm &pal = (algorithm&)vtx_;
             if (skip_)
             {
                 const node_type
-                    *palP = pal_.get_p(),
+                    *palP = pal.get_p(),
                     *nextQ = palP == cont_->trie_.back()
                         ? cont_->root_
                         : cont_->trie_.following(palP);
-                pal_.init(nextQ, 0);
-                pal_.ascend(skip_);
-                const node_type *pretender = pal_.get_q();
+                pal.init(nextQ, 0);
+                pal.ascend(skip_);
+                const node_type *pretender = pal.get_q();
                 if (pretender != cont_->root_)
-                    pal_.init(
+                    pal.init(
                         pretender,
                         cont_->bit_comp_.get_bit(key_, pretender->get_skip()));
             }
             else
-                pal_.init(cont_->root_, 0);
+                pal.init(cont_->root_, 0);
             //
             skip_ = mismatch_suffix_(key_, skip_);
             return *this;
@@ -278,7 +304,7 @@ public:
         this_t *cont_;
         key_type key_;
         word_t skip_;
-        algorithm pal_;
+        vertex vtx_;
         typename algorithm::mismatch_suffix<Huge> mismatch_suffix_;
     };
 
