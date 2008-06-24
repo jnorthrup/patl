@@ -341,9 +341,10 @@ public:
     {
         algorithm pal(this, root_, 0);
         // find a nearest match
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
-            pal.template descend(0);
+            pal.mismatch(key, prefixLen);
+            pal.descend(0);
             return const_iterator(vertex(pal));
         }
         return end();
@@ -354,9 +355,10 @@ public:
     {
         algorithm pal(this, root_, 0);
         // find a nearest match
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
-            pal.template descend(0);
+            pal.mismatch(key, prefixLen);
+            pal.descend(0);
             return iterator(vertex(pal));
         }
         return end();
@@ -367,9 +369,10 @@ public:
         word_t prefixLen = ~word_t(0)) const
     {
         algorithm pal(this, root_, 0);
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
-            pal.move(1);
+            if (pal.mismatch(key, prefixLen) >= prefixLen)
+                pal.move(1);
             pal.descend(0);
             return const_iterator(vertex(pal));
         }
@@ -380,9 +383,10 @@ public:
         word_t prefixLen = ~word_t(0))
     {
         algorithm pal(this, root_, 0);
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
-            pal.move(1);
+            if (pal.mismatch(key, prefixLen) >= prefixLen)
+                pal.move(1);
             pal.descend(0);
             return iterator(vertex(pal));
         }
@@ -399,10 +403,15 @@ public:
         word_t prefixLen = ~word_t(0)) const
     {
         algorithm pal(CSELF, root_, 0);
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
+            const word_t len = pal.mismatch(key, prefixLen);
             algorithm lower(pal);
             lower.descend(0);
+            if (len < prefixLen)
+                return const_iter_range(
+                    const_iterator(vertex(lower)),
+                    const_iterator(vertex(lower)));
             pal.move(1);
             pal.descend(0);
             return const_iter_range(
@@ -416,13 +425,20 @@ public:
         word_t prefixLen = ~word_t(0))
     {
         algorithm pal(CSELF, root_, 0);
-        if (root_ && pal.mismatch(key, prefixLen) >= prefixLen)
+        if (root_)
         {
+            const word_t len = pal.mismatch(key, prefixLen);
             algorithm lower(pal);
             lower.descend(0);
+            if (len < prefixLen)
+                return iter_range(
+                    iterator(vertex(lower)),
+                    iterator(vertex(lower)));
             pal.move(1);
             pal.descend(0);
-            return iter_range(iterator(lower), iterator(pal));
+            return iter_range(
+                iterator(vertex(lower)),
+                iterator(vertex(pal)));
         }
         return iter_range(this->end(), this->end());
     }
