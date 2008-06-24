@@ -140,11 +140,43 @@ public:
     template <bool Huge>
     class mismatch_suffix;
 
-    bit_compare bit_comp()
+    bit_compare bit_comp() const
     {
         return cont_->bit_comp();
     }
 
+    /// this code guarantee amortized linear time for suffix indexing
+    word_t mismatch_suffix(
+        const key_type key,
+        /// number of bits in key that certainly match with one exists in trie
+        word_t skip)
+    {
+        const bit_compare bcmp = bit_comp();
+        // until we achieved the leaf
+        while (!get_qtag())
+        {
+            const word_t skip_cur = get_p()->get_skip();
+            if (skip <= skip_cur)
+            {
+                const key_type exist_key = CSELF->get_key();
+                for (; skip != skip_cur; ++skip)
+                {
+                    // if we discover mismatch in bits - immediately return its number
+                    if (bcmp.get_bit(key, skip) != bcmp.get_bit(exist_key, skip))
+                        return skip;
+                }
+                ++skip;
+            }
+            iterate_by_key(key);
+        }
+        return align_down<bit_compare::bit_size>(skip) +
+            bcmp.bit_mismatch(
+                key + skip / bit_compare::bit_size,
+                CSELF->get_key() + skip / bit_compare::bit_size);
+    }
+
+/// obsolete
+#if 0
     /// classical algorithm P for search place for insert new node
     template <>
     class mismatch_suffix<false>
@@ -183,51 +215,7 @@ public:
     private:
         this_t &pal_;
     };
-
-    template <>
-    class mismatch_suffix<true>
-    {
-        mismatch_suffix &operator=(const mismatch_suffix&);
-
-    public:
-        mismatch_suffix(this_t &pal)
-            : pal_(pal)
-        {
-        }
-
-        /// this code guarantee amortized linear time for suffix indexing
-        word_t operator()(
-            const key_type &key,
-            /// number of bits in key that certainly match with one exists in trie
-            word_t skip)
-        {
-            const bit_compare bit_comp = pal_.bit_comp();
-            // until we achieved the leaf
-            while (!pal_.get_qtag())
-            {
-                const word_t skip_cur = pal_.get_p()->get_skip();
-                if (skip <= skip_cur)
-                {
-                    const key_type &exist_key = pal_.get_key();
-                    for (; skip != skip_cur; ++skip)
-                    {
-                        // if we discover mismatch in bits - immediately return its number
-                        if (bit_comp.get_bit(key, skip) != bit_comp.get_bit(exist_key, skip))
-                            return skip;
-                    }
-                    ++skip;
-                }
-                pal_.iterate_by_key(key);
-            }
-            return align_down<bit_compare::bit_size>(skip) +
-                bit_comp.bit_mismatch(
-                    key + skip / bit_compare::bit_size,
-                    pal_.get_key() + skip / bit_compare::bit_size);
-        }
-
-    private:
-        this_t &pal_;
-    };
+#endif
 
     /// function determine highest node back-referenced from current subtree; O(log n)
     const node_type *get_subtree_node() const

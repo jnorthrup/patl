@@ -104,7 +104,7 @@ public:
 
     static const word_t bit_size = bit_compare::bit_size;
 
-    key_type get_key(const node_type *node) const
+    const key_type get_key(const node_type *node) const
     {
         return keys_ + trie_.index_of(node) * delta;
     }
@@ -131,12 +131,12 @@ public:
         return trie_.capacity();
     }
 
-    key_type keys() const
+    const key_type keys() const
     {
         return keys_;
     }
 
-    void rebind(key_type keys)
+    void rebind(const key_type keys)
     {
         keys_ = keys;
     }
@@ -219,9 +219,8 @@ public:
             , key_(begin)
             , skip_(0)
             , vtx_(cont, cont->root_,0)
-            , mismatch_suffix_((algorithm&)vtx_)
         {
-            skip_ = mismatch_suffix_(key_, skip_);
+            skip_ = ((algorithm&)vtx_).mismatch_suffix(key_, skip_);
         }
 
         bool operator==(const match_iterator &it) const
@@ -289,7 +288,7 @@ public:
             else
                 pal.init(cont_->root_, 0);
             //
-            skip_ = mismatch_suffix_(key_, skip_);
+            skip_ = pal.mismatch_suffix(key_, skip_);
             return *this;
         }
 
@@ -305,7 +304,6 @@ public:
         key_type key_;
         word_t skip_;
         vertex vtx_;
-        typename algorithm::mismatch_suffix<Huge> mismatch_suffix_;
     };
 
 protected:
@@ -325,8 +323,7 @@ protected:
                 pal.init(pretender, bit_comp_.get_bit(key, pretender->get_skip()));
         }
         //
-        algorithm::mismatch_suffix<true> mismatchSuffix(pal);
-        skip = mismatchSuffix(key, skip);
+        skip = pal.mismatch_suffix(key, skip);
         // brave new node
         trie_.push_back(initNode);
         node_type *r = trie_.back();

@@ -26,6 +26,7 @@ inline word_t bits_but_highest(word_t x)
 
 inline word_t get_lowest_bit_id(word_t x)
 {
+    assert(x);
 #ifdef PATL_INTRINSIC
 
     unsigned long r;
@@ -62,6 +63,7 @@ inline word_t get_lowest_bit_id(word_t x)
 
 inline word_t get_highest_bit_id(word_t x)
 {
+    assert(x);
 #ifdef PATL_INTRINSIC
 
     unsigned long r;
@@ -137,7 +139,7 @@ template <typename Source>
 inline word_t unsigned_cast(Source val)
 {
     return *reinterpret_cast<word_t*>(&val) &
-        ~word_t(1) >> (sizeof(word_t) - sizeof(Source)) * 8;
+        ~word_t(0) >> (sizeof(word_t) - sizeof(Source)) * 8;
 }
 
 template <typename T>
