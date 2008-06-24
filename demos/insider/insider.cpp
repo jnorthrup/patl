@@ -27,6 +27,28 @@ int main()
     test1.merge(test2.begin(), test2.end(), StringSet::void_merge_handler());
     test1.change_root(test1.find("balon"));
     //
+    {
+        typedef StringSet::const_iterator const_iterator;
+        typedef std::pair<const_iterator, const_iterator> pair_cit_cit;
+        pair_cit_cit pcc = test1.equal_range("balda");
+        printf("range of 'balda' (first: %s, limit: %s):\n",
+            pcc.first != test1.end() ? pcc.first->c_str() : "end",
+            pcc.second != test1.end() ? pcc.second->c_str() : "end");
+        for (const_iterator cit = pcc.first; cit != pcc.second; ++cit)
+            printf("\t%s\n", cit->c_str());
+        //
+        printf("\n---\n\n");
+        //
+        pcc = test1.equal_range("balda", 3 * 8);
+        printf("range of 'balda' [3] (first: %s, limit: %s):\n",
+            pcc.first != test1.end() ? pcc.first->c_str() : "end",
+            pcc.second != test1.end() ? pcc.second->c_str() : "end");
+        for (const_iterator cit = pcc.first; cit != pcc.second; ++cit)
+            printf("\t%s\n", cit->c_str());
+    }
+    //
+    printf("\n---\n\n");
+    //
     typedef StringSet::vertex vertex;
     typedef StringSet::preorder_iterator preorder_iterator;
     typedef StringSet::postorder_iterator postorder_iterator;
