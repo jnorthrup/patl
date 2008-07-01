@@ -27,7 +27,7 @@ static inline unsigned searchInFile(
 	if (!huge)
 		return 0;
 	//
-	SuffixSet::match_iterator<false> mit(&suffix, huge);
+	SuffixSet::match_iterator mit(&suffix, huge);
 	unsigned line = 1;
 	char *lineBeg = huge;
 	MatchVector matches;

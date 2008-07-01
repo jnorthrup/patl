@@ -206,7 +206,6 @@ public:
         return ~word_t(0);
     }
 
-    template <bool Huge = true>
     class match_iterator
         : public std::iterator<std::forward_iterator_tag, vertex>
     {
