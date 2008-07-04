@@ -124,7 +124,7 @@ public:
         return byte;
     }
 
-    word_t read_dword()
+    word_t read_word()
     {
         word_t w = static_cast<word_t>(read_byte());
         w |= static_cast<word_t>(read_byte()) << 8;

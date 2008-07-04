@@ -261,30 +261,31 @@ public:
             ++first;
         }
         algorithm
-            palCur(this, root_, 0),
-            pal((const algorithm&)((const vertex&)first));
+            palCur(this, root_, 0)/*,
+            pal((const algorithm&)((const vertex&)first))*/;
+        vertex vtx((const vertex&)first);
         const algorithm &palEnd((const algorithm&)((const vertex&)last));
         word_t skip = 0;
-        while (pal != palEnd)
+        while ((const algorithm&)vtx != palEnd)
         {
             palCur.ascend_less(skip);
-            const word_t l = palCur.mismatch(pal.get_p()->get_key());
+            const word_t l = palCur.mismatch(vtx.key());
             if (~word_t(0) == l)
                 // такой ключ уже есть, по идее нужно применить функтор
-                handler(iterator(vertex(palCur)), const_iterator(vertex(pal)));
+                handler(iterator(vertex(palCur)), const_iterator(vtx));
             else
-                add(pal.get_p()->get_value(), palCur, l);
+                add(vtx.value(), palCur, l);
             // move to the next
-            if (pal.get_qid())
+            if (vtx.get_qid())
             {
-                node_type *cur = pal.get_q();
+                const node_type *cur = ((const algorithm&)vtx).get_q();
                 for (; cur->get_parent_id(); cur = cur->get_parent());
-                pal.init(cur->get_parent(), 1);
+                vtx = vertex(this, cur->get_parent(), 1);
             }
             else
-                pal.toggle();
-            skip = pal.get_q()->get_skip();
-            pal.descend(0);
+                vtx.toggle();
+            skip = ((const algorithm&)vtx).get_q()->get_skip();
+            vtx.descend(0);
         }
     }
 

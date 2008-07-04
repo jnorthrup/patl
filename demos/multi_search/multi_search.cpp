@@ -29,7 +29,7 @@ static inline unsigned searchInFile(
 	//
 	SuffixSet::match_iterator mit(&suffix, huge);
 	unsigned line = 1;
-	char *lineBeg = huge;
+	const char *lineBeg = huge;
 	MatchVector matches;
 	for (unsigned i = 0; i != N; ++i, ++mit)
 	{
@@ -40,7 +40,7 @@ static inline unsigned searchInFile(
 		if (*str == '\n')
 		{
 			++line;
-			lineBeg = const_cast<char*>(str + 1);
+			lineBeg = str + 1;
 		}
 		// находится ли ключ между двумя '\n'?
 		// т.е., найдено ли полное совпадение с одним из ключей?
@@ -54,7 +54,7 @@ static inline unsigned searchInFile(
 					stop,
 					stop + sizeof(stop));
 			std::string lineS(
-				patl::impl::get_max(const_cast<const char*>(lineBeg), str - 12),
+				patl::impl::get_max(lineBeg, str - 12),
 				patl::impl::get_min(lineEnd, str + mit.length() + 12));
 			std::replace(lineS.begin(), lineS.end(), '\t', ' ');
 			matches.push_back(std::make_pair(line, lineS));

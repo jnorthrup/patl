@@ -214,10 +214,9 @@ public:
 
     public:
         match_iterator(this_t *cont, const key_type &begin)
-            : cont_(cont)
-            , key_(begin)
+            : key_(begin)
             , skip_(0)
-            , vtx_(cont, cont->root_,0)
+            , vtx_(cont, cont->root_, 0)
         {
             skip_ = ((algorithm&)vtx_).mismatch_suffix(key_, skip_);
         }
@@ -268,24 +267,25 @@ public:
         {
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
+            const this_t *cont = vtx_.get_cont();
             algorithm &pal = (algorithm&)vtx_;
             if (skip_)
             {
                 const node_type
                     *palP = pal.get_p(),
-                    *nextQ = palP == cont_->trie_.back()
-                        ? cont_->root_
-                        : cont_->trie_.following(palP);
+                    *nextQ = palP == cont->trie_.back()
+                        ? cont->root_
+                        : cont->trie_.following(palP);
                 pal.init(nextQ, 0);
                 pal.ascend(skip_);
                 const node_type *pretender = pal.get_q();
-                if (pretender != cont_->root_)
+                if (pretender != cont->root_)
                     pal.init(
                         pretender,
-                        cont_->bit_comp_.get_bit(key_, pretender->get_skip()));
+                        cont->bit_comp_.get_bit(key_, pretender->get_skip()));
             }
             else
-                pal.init(cont_->root_, 0);
+                pal.init(cont->root_, 0);
             //
             skip_ = pal.mismatch_suffix(key_, skip_);
             return *this;
@@ -299,7 +299,6 @@ public:
         }
 
     private:
-        this_t *cont_;
         key_type key_;
         word_t skip_;
         vertex vtx_;
@@ -329,7 +328,7 @@ protected:
         // add new node into trie
         const word_t bit = bit_comp_.get_bit(key, skip);
         pal.add(r, bit, skip);
-        return vertex(algorithm(this, r, bit));
+        return vertex(this, r, bit);
     }
 
     vertex push_back_root(const node_type &initNode)
@@ -337,7 +336,7 @@ protected:
         trie_.push_back(initNode);
         root_ = trie_.back();
         root_->init_root();
-        return vertex(algorithm(this, root_, 0));
+        return vertex(this, root_, 0);
     }
 
     void erase_node(algorithm &pal)

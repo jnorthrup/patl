@@ -93,7 +93,93 @@ public:
         return this_t(pal_.sibling());
     }
 
+    /// trie descend to the leaves
+    void descend(word_t side)
+    {
+        while (!get_qtag())
+            iterate(side);
+    }
+
+    /// trie descend to the leaves limited by prefix length
+    void descend(word_t side, word_t prefixLen)
+    {
+        while (!get_qtag() && pal_.get_p()->get_skip() < prefixLen)
+            iterate(side);
+    }
+
+    /// trie descend to the leaves driven by decision functor
+    template <typename Decision>
+    void descend_decision(word_t side, Decision &decis)
+    {
+        for (;;)
+        {
+            while (!get_qtag() && decis(pal_.get_p()->get_skip()))
+                iterate(decis(pal_.get_p()->get_skip(), side)
+                    ? side
+                    : word_t(1) ^ side);
+            if (!pal_.get_p())
+                return;
+            const word_t skip = decis(key());
+            if (skip == ~word_t(0))
+                return;
+            pal_.ascend(skip);
+            do move_generic(word_t(1) ^ side);
+            while (
+                pal_.get_q()->get_parent() &&
+                //pal_.get_q()->get_skip() != ~word_t(0) &&
+                !decis(pal_.get_q()->get_skip(), get_qid()));
+            /*if (!pal_.get_q()->get_parent())
+            return;*/
+        }
+    }
+
+    /// generic part of all move functions
+    void move_generic(word_t side)
+    {
+        if (get_qid() == side)
+        {
+            node_type *cur = pal_.get_q();
+            for (; cur->get_parent_id() == side; cur = cur->get_parent()) ;
+            pal_.init(cur->get_parent(), side);
+        }
+        else
+            toggle();
+    }
+
+    /// move to the next leaf
+    void move(word_t side)
+    {
+        move_generic(side);
+        descend(word_t(1) ^ side);
+    }
+
+    /// move to the next leaf limited by prefix length
+    void move(word_t side, word_t prefixLen)
+    {
+        move_generic(side);
+        descend(word_t(1) ^ side, prefixLen);
+    }
+
+    /// move to the next node driven by decision functor
+    template <typename Decision>
+    void move_decision(word_t side, Decision &decis)
+    {
+        do move_generic(side);
+        while (
+            pal_.get_q()->get_parent() &&
+            //pal_.get_q()->get_skip() != ~word_t(0) &&
+            !decis(pal_.get_q()->get_skip(), get_qid()));
+        descend_decision(word_t(1) ^ side, decis);
+    }
+
     // low-level functions
+
+    word_t mismatch(
+        const key_type &key,
+        word_t prefixLen = ~word_t(0))
+    {
+        return pal_.mismatch(key, prefixLen);
+    }
 
     word_t get_qid() const
     {
@@ -115,14 +201,14 @@ public:
         pal_.iterate(id);
     }
 
-    void descend(word_t side)
-    {
-        pal_.descend(side);
-    }
-
     void ascend()
     {
         pal_.ascend();
+    }
+
+    const cont_type *get_cont() const
+    {
+        return pal_.get_cont();
     }
 
 protected:

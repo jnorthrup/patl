@@ -10,12 +10,12 @@ namespace patl
 namespace impl
 {
 
-template <typename Algorithm, typename Decision>
+template <typename Vertex, typename Decision>
 class partimator_generic
-    : public const_partimator_generic<Algorithm, Decision>
+    : public const_partimator_generic<Vertex, Decision>
 {
-    typedef const_partimator_generic<Algorithm, Decision> super;
-    typedef partimator_generic<Algorithm, Decision> this_t;
+    typedef const_partimator_generic<Vertex, Decision> super;
+    typedef partimator_generic<Vertex, Decision> this_t;
 
 public:
     typedef value_type *pointer;
@@ -23,37 +23,39 @@ public:
 
     explicit partimator_generic(
         const Decision &decis = Decision(),
-        const algorithm &pal = algorithm())
-        : super(decis, pal)
+        const vertex &vtx = vertex())
+        : super(decis, vtx)
     {
     }
 
     iterator begin() const
     {
-        algorithm pal(*this);
-        pal.template descend<0>();
-        return iterator(pal);
+        vertex vtx(*this);
+        vtx.descend(0);
+        return iterator(vtx);
     }
+
     iterator end() const
     {
-        algorithm pal(*this);
-        pal.template move<1>();
-        return iterator(pal);
+        vertex vtx(*this);
+        vtx.move(1);
+        return iterator(vtx);
     }
 
     template <typename Decis2>
-    partimator_generic<algorithm, Decis2> begin(const Decis2 &decis) const
+    partimator_generic<vertex, Decis2> begin(const Decis2 &decis) const
     {
-        algorithm pal(*this);
-        pal.descend_decision(0, decis);
-        return partimator_generic<algorithm, Decis2>(decis, pal);
+        vertex vtx(*this);
+        vtx.descend_decision(0, decis);
+        return partimator_generic<vertex, Decis2>(decis, vtx);
     }
+
     template <typename Decis2>
-    partimator_generic<algorithm, Decis2> end(const Decis2 &decis) const
+    partimator_generic<vertex, Decis2> end(const Decis2 &decis) const
     {
-        algorithm pal(*this);
-        pal.move_decision(1, decis);
-        return partimator_generic<algorithm, Decis2>(decis, pal);
+        vertex vtx(*this);
+        vtx.move_decision(1, decis);
+        return partimator_generic<vertex, Decis2>(decis, vtx);
     }
 
     pointer operator->()
@@ -62,7 +64,7 @@ public:
     }
     reference operator*()
     {
-        return this->pal_.get_value();
+        return vtx_.value();
     }
 
     this_t &operator++()

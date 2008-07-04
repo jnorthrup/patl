@@ -162,11 +162,11 @@ int main(int argc, char *argv[])
                 unsigned *vect = 0;
                 for (; bufIn.is_data(); )
                 {
-                    const unsigned rsRead = bufIn.read_dword();
+                    const unsigned rsRead = bufIn.read_word();
                     realSize = rsRead & 0x7FFFFFFF;
                     unsigned mult = 1;
                     if (realSize != rsRead)
-                        realSize /= mult = bufIn.read_dword();
+                        realSize /= mult = bufIn.read_word();
                     if (realSize > blockSize)
                     {
                         if (blockSize)
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
                                 PAGE_READWRITE));
                         blockSize = realSize;
                     }
-                    const unsigned zeroId = bufIn.read_dword();
+                    const unsigned zeroId = bufIn.read_word();
                     bufIn.read_bytes(dbuff, realSize);
                     tim.start();
                     bwtUnsort(realSize, dbuff, zeroId, vect);

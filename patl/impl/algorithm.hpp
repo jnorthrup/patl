@@ -135,11 +135,6 @@ public:
         return get_qtag() ? ~word_t(0) : get_p()->get_skip();
     }
 
-    /// analogue to mismatch, for suffix_cont
-    /// TODO rewrite as templated member functions
-    template <bool Huge>
-    class mismatch_suffix;
-
     bit_compare bit_comp() const
     {
         return cont_->bit_comp();
@@ -175,8 +170,11 @@ public:
                 CSELF->get_key() + skip / bit_compare::bit_size);
     }
 
-/// obsolete
-#if 0
+#if 0 // obsolete
+    /// analogue to mismatch, for suffix_cont
+    template <bool Huge>
+    class mismatch_suffix;
+
     /// classical algorithm P for search place for insert new node
     template <>
     class mismatch_suffix<false>
@@ -205,8 +203,7 @@ public:
             skip = align_down<bit_compare::bit_size>(skip) +
                 bit_comp.bit_mismatch(
                     key + skip / bit_compare::bit_size,
-                    pal_.get_key() +
-                    skip / bit_compare::bit_size);
+                    pal_.get_key() + skip / bit_compare::bit_size);
             // trie ascend to the inserting place
             pal_.ascend(skip);
             return skip; // new node mismatching bit number
@@ -226,7 +223,7 @@ public:
         word_t id = get_qid();
         while (
             parent &&
-            id != cont_->bit_comp().get_bit(CSELF->get_key(cur), cur->get_skip()))
+            id != bit_comp().get_bit(CSELF->get_key(cur), cur->get_skip()))
         {
             id = cur->get_parent_id();
             cur = parent;
@@ -255,7 +252,7 @@ public:
     node_type *erase()
     {
         // p-node back-referenced from q-node (q-tag == 1)
-        // q- & p-nodes may be the same
+        // q- & p-node may be the same
         node_type
             *q = get_q(),
             *p = get_p();
@@ -299,7 +296,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        const bit_compare bit_comp(cont_->bit_comp());
+        const bit_compare bit_comp(bit_comp());
         const word_t len = get_min(prefixLen, bit_comp.bit_length(key));
         if (len == ~word_t(0))
             run(key);
@@ -309,85 +306,6 @@ public:
         if (l != ~word_t(0))
             ascend(l);
         return l;
-    }
-
-    /// trie descend to the leaves
-    void descend(word_t side)
-    {
-        while (!get_qtag())
-            iterate(side);
-    }
-
-    /// trie descend to the leaves limited by prefix length
-    void descend(word_t side, word_t prefixLen)
-    {
-        while (!get_qtag() && get_p()->get_skip() < prefixLen)
-            iterate(side);
-    }
-
-    /// trie descend to the leaves driven by decision functor
-    template <typename Decision>
-    void descend_decision(word_t side, Decision &decis)
-    {
-        for (;;)
-        {
-            while (!get_qtag() && decis(get_p()->get_skip()))
-                iterate(decis(get_p()->get_skip(), side)
-                    ? side
-                    : word_t(1) ^ side);
-            if (!get_p())
-                return;
-            const word_t skip = decis(SELF->get_key());
-            if (skip == ~word_t(0))
-                return;
-            ascend(skip);
-            do move_generic(word_t(1) ^ side);
-            while (
-                get_q()->get_parent() &&
-                //get_q()->get_skip() != ~word_t(0) &&
-                !decis(get_q()->get_skip(), get_qid()));
-            /*if (!get_q()->get_parent())
-            return;*/
-        }
-    }
-
-    /// generic part of all move functions
-    void move_generic(word_t side)
-    {
-        if (get_qid() == side)
-        {
-            node_type *cur = get_q();
-            for (; cur->get_parent_id() == side; cur = cur->get_parent()) ;
-            init(cur->get_parent(), side);
-        }
-        else
-            toggle();
-    }
-
-    /// move to the next node
-    void move(word_t side)
-    {
-        move_generic(side);
-        descend(word_t(1) ^ side);
-    }
-
-    /// move to the next node limited by prefix length
-    void move(word_t side, word_t prefixLen)
-    {
-        move_generic(side);
-        descend(word_t(1) ^ side, prefixLen);
-    }
-
-    /// move to the next node driven by decision functor
-    template <typename Decision>
-    void move_decision(word_t side, Decision &decis)
-    {
-        do move_generic(side);
-        while (
-            get_q()->get_parent() &&
-            //get_q()->get_skip() != ~word_t(0) &&
-            !decis(get_q()->get_skip(), get_qid()));
-        descend_decision(word_t(1) ^ side, decis);
     }
 
     /// ascend to parent node
@@ -412,7 +330,7 @@ public:
     /// one run of the classical algorithm P
     void run(const key_type &key)
     {
-        const bit_compare bit_comp(cont_->bit_comp());
+        const bit_compare bit_comp(bit_comp());
         while (!get_qtag())
             iterate(bit_comp.get_bit(key, get_p()->get_skip()));
     }
@@ -421,7 +339,7 @@ public:
     void run(const key_type &key, word_t prefixLen)
     {
         word_t skip;
-        const bit_compare bit_comp(cont_->bit_comp());
+        const bit_compare bit_comp(bit_comp());
         while (!get_qtag() && (skip = get_p()->get_skip()) < prefixLen)
             iterate(bit_comp.get_bit(key, skip));
     }
@@ -435,7 +353,7 @@ public:
     /// one iteration of the classical algorithm P driven by given key
     void iterate_by_key(const key_type &key)
     {
-        iterate(cont_->bit_comp().get_bit(key, get_p()->get_skip()));
+        iterate(bit_comp().get_bit(key, get_p()->get_skip()));
     }
 
     /// init function
@@ -491,6 +409,11 @@ public:
 #else
         return qid_;
 #endif
+    }
+
+    const cont_type *get_cont() const
+    {
+        return cont_;
     }
 
 protected:

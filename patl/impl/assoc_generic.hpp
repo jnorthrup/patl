@@ -1,6 +1,7 @@
 #ifndef PATL_IMPL_ASSOC_GENERIC_HPP
 #define PATL_IMPL_ASSOC_GENERIC_HPP
 
+#include "levelorder_iterator.hpp"
 #include "preorder_iterator.hpp"
 #include "postorder_iterator.hpp"
 #include "iterator.hpp"
@@ -30,6 +31,7 @@ protected:
 public:
     typedef prefix_generic<this_t, node_type> prefix;
     typedef vertex_generic<algorithm> vertex;
+    typedef levelorder_iterator_generic<vertex> levelorder_iterator;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
     typedef postorder_iterator_generic<vertex> postorder_iterator;
     typedef typename T::key_type key_type;
@@ -77,6 +79,21 @@ public:
     preorder_iterator preorder_end() const
     {
         return preorder_iterator(vertex(CSELF, root_, 1));
+    }
+
+    levelorder_iterator levelorder_begin(word_t limit) const
+    {
+        vertex vtx(CSELF, root_, 0);
+        if (root_)
+            vtx.descend(0, limit);
+        else
+            vtx.toggle();
+        return levelorder_iterator(vtx);
+    }
+
+    levelorder_iterator levelorder_end(word_t limit) const
+    {
+        return levelorder_iterator(vertex(CSELF, root_, 1));
     }
 
     typedef const_iterator<vertex> const_iterator;
@@ -145,16 +162,16 @@ public:
 
     template <typename Decision>
     struct const_partimator
-        : public const_partimator_generic<algorithm, Decision>
+        : public const_partimator_generic<vertex, Decision>
     {
         explicit const_partimator(
             const Decision &decis = Decision(),
-            const algorithm &pal = algorithm())
-            : const_partimator_generic(decis, pal)
+            const vertex &vtx = vertex())
+            : const_partimator_generic(decis, vtx)
         {
         }
 
-        const_partimator(const const_partimator_generic<algorithm, Decision> &obj)
+        const_partimator(const const_partimator_generic<vertex, Decision> &obj)
             : const_partimator_generic(obj)
         {
         }
@@ -162,16 +179,16 @@ public:
 
     template <typename Decision>
     struct partimator
-        : public partimator_generic<algorithm, Decision>
+        : public partimator_generic<vertex, Decision>
     {
         explicit partimator(
             const Decision &decis = Decision(),
-            const algorithm &pal = algorithm())
-            : partimator_generic(decis, pal)
+            const vertex &vtx = vertex())
+            : partimator_generic(decis, vtx)
         {
         }
 
-        partimator(const partimator_generic<algorithm, Decision> &obj)
+        partimator(const partimator_generic<vertex, Decision> &obj)
             : partimator_generic(obj)
         {
         }
@@ -181,18 +198,18 @@ public:
     template <typename Decision>
     const_partimator<Decision> begin(const Decision &decis) const
     {
-        algorithm pal(CSELF, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
-            pal.descend_decision(0, decis);
-        return const_partimator<Decision>(decis, pal);
+            vtx.descend_decision(0, decis);
+        return const_partimator<Decision>(decis, vtx);
     }
     template <typename Decision>
     partimator<Decision> begin(const Decision &decis)
     {
-        algorithm pal(CSELF, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
-            pal.descend_decision(0, decis);
-        return partimator<Decision>(decis, pal);
+            vtx.descend_decision(0, decis);
+        return partimator<Decision>(decis, vtx);
     }
 
     // end() partimator declarations
@@ -201,14 +218,14 @@ public:
     {
         return const_partimator<Decision>(
             decis,
-            algorithm(CSELF, root_, 1));
+            vertex(CSELF, root_, 1));
     }
     template <typename Decision>
     partimator<Decision> end(const Decision &decis)
     {
         return partimator<Decision>(
             decis,
-            algorithm(CSELF, root_, 1));
+            vertex(CSELF, root_, 1));
     }
 
     template <typename Decision>
@@ -320,18 +337,18 @@ public:
     // find(const key_type&) declarations
     const_iterator find(const key_type &key) const
     {
-        algorithm pal(CSELF, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         // if number of first mismatching bit end at infinity
-        if (root_ && ~word_t(0) == pal.mismatch(bit_comp_, key))
+        if (root_ && ~word_t(0) == vtx.mismatch(key))
             // then return iterator on finding
-            return const_iterator(vertex(pal));
+            return const_iterator(vtx);
         return end();
     }
     iterator find(const key_type &key)
     {
-        algorithm pal(CSELF, root_, 0);
-        if (root_ && ~word_t(0) == pal.mismatch(key))
-            return iterator(vertex(pal));
+        vertex vtx(CSELF, root_, 0);
+        if (root_ && ~word_t(0) == vtx.mismatch(key))
+            return iterator(vtx);
         return end();
     }
 
@@ -339,13 +356,13 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        algorithm pal(this, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         // find a nearest match
         if (root_)
         {
-            pal.mismatch(key, prefixLen);
-            pal.descend(0);
-            return const_iterator(vertex(pal));
+            vtx.mismatch(key, prefixLen);
+            vtx.descend(0);
+            return const_iterator(vtx);
         }
         return end();
     }
@@ -353,13 +370,13 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        algorithm pal(this, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         // find a nearest match
         if (root_)
         {
-            pal.mismatch(key, prefixLen);
-            pal.descend(0);
-            return iterator(vertex(pal));
+            vtx.mismatch(key, prefixLen);
+            vtx.descend(0);
+            return iterator(vtx);
         }
         return end();
     }
@@ -368,13 +385,13 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        algorithm pal(this, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
         {
-            if (pal.mismatch(key, prefixLen) >= prefixLen)
-                pal.move(1);
-            pal.descend(0);
-            return const_iterator(vertex(pal));
+            if (vtx.mismatch(key, prefixLen) >= prefixLen)
+                vtx.move(1);
+            vtx.descend(0);
+            return const_iterator(vtx);
         }
         return end();
     }
@@ -382,13 +399,13 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        algorithm pal(this, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
         {
-            if (pal.mismatch(key, prefixLen) >= prefixLen)
-                pal.move(1);
-            pal.descend(0);
-            return iterator(vertex(pal));
+            if (vtx.mismatch(key, prefixLen) >= prefixLen)
+                vtx.move(1);
+            vtx.descend(0);
+            return iterator(vtx);
         }
         return end();
     }
@@ -402,45 +419,45 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        algorithm pal(CSELF, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
         {
-            const word_t len = pal.mismatch(key, prefixLen);
-            algorithm lower(pal);
+            const word_t len = vtx.mismatch(key, prefixLen);
+            vertex lower(vtx);
             lower.descend(0);
             if (len < prefixLen)
                 return const_iter_range(
-                    const_iterator(vertex(lower)),
-                    const_iterator(vertex(lower)));
-            pal.move(1);
-            pal.descend(0);
+                    const_iterator(lower),
+                    const_iterator(lower));
+            vtx.move(1);
+            vtx.descend(0);
             return const_iter_range(
-                const_iterator(vertex(lower)),
-                const_iterator(vertex(pal)));
+                const_iterator(lower),
+                const_iterator(vtx));
         }
-        return const_iter_range(this->end(), this->end());
+        return const_iter_range(end(), end());
     }
     iter_range equal_range(
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        algorithm pal(CSELF, root_, 0);
+        vertex vtx(CSELF, root_, 0);
         if (root_)
         {
-            const word_t len = pal.mismatch(key, prefixLen);
-            algorithm lower(pal);
+            const word_t len = vtx.mismatch(key, prefixLen);
+            vertex lower(vtx);
             lower.descend(0);
             if (len < prefixLen)
                 return iter_range(
-                    iterator(vertex(lower)),
-                    iterator(vertex(lower)));
-            pal.move(1);
-            pal.descend(0);
+                    iterator(lower),
+                    iterator(lower));
+            vtx.move(1);
+            vtx.descend(0);
             return iter_range(
-                iterator(vertex(lower)),
-                iterator(vertex(pal)));
+                iterator(lower),
+                iterator(vtx));
         }
-        return iter_range(this->end(), this->end());
+        return iter_range(end(), end());
     }
 
     size_type count(const key_type &key, word_t prefixLen = ~word_t(0)) const
