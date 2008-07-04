@@ -122,7 +122,7 @@ private:
         il_ = reinterpret_cast<word_t>(pL) | word_t(1);
     }
 
-    word_t num_, il_, a_; // il_ - pointer to I- or L-node_type
+    word_t num_, il_, a_; // il_ - pointer to I- or L-node
 };
 
 } // namespace impl

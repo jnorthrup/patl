@@ -63,48 +63,50 @@ public:
         lca_map_ = unsigned_alloc_.allocate(lca_size_ + 1);
         // numerate, set I- & L-nodes
         word_t num = 0;
-        algorithm pal(cont_, cont_->root_, 0);
-        const algorithm palEnd(cont_, cont_->root_, 1);
-        while (pal != palEnd)
+        /*algorithm pal(cont_, cont_->root_, 0);
+        const algorithm palEnd(cont_, cont_->root_, 1);*/
+        vertex vtx(cont_, cont_->root_, 0);
+        const vertex vtxEnd(cont_, cont_->root_, 1);
+        while (vtx != vtxEnd)
         {
             // descend to the leaves
-            for (; !pal.get_qtag(); pal.iterate(0))
-                get_by(pal)->numerate(++num);
+            for (; !vtx.get_qtag(); vtx.iterate(0))
+                get_by((const algorithm&)vtx)->numerate(++num);
             //
-            lca_type *cur = get_by(pal);
+            lca_type *cur = get_by((const algorithm&)vtx);
             cur->numerate(++num);
             cur->set_inode();
             // move to the next
-            if (pal.get_qid())
+            if (vtx.get_qid())
             {
-                while (pal.get_q()->get_parent_id())
+                while (((const algorithm&)vtx).get_q()->get_parent_id())
                 {
-                    pal.ascend();
-                    get_by(pal)->setup_i(this);
+                    vtx.ascend();
+                    get_by((const algorithm&)vtx)->setup_i(this);
                 }
                 //
-                pal.init(pal.get_q()->get_parent(), 0);
-                get_by(pal)->setup_i(this);
-                pal.toggle();
+                //pal.init(((const algorithm&)vtx).get_q()->get_parent(), 0);
+                vtx = vertex(cont_, ((const algorithm&)vtx).get_q()->get_parent(), 0);
+                get_by((const algorithm&)vtx)->setup_i(this);
             }
-            else
-                pal.toggle();
+            vtx.toggle();
         }
         // num - last numerator
         lca_root_h_ = impl::get_highest_bit_id(num);
         // set A bits
-        pal.init(cont_->root_, 0);
-        lca_type *cur = get_by(pal);
+        //pal.init(cont_->root_, 0);
+        vtx = vertex(cont_, cont_->root_, 0);
+        lca_type *cur = get_by((const algorithm&)vtx);
         cur->set_root_a();
-        if (!pal.get_qtag())
-            pal.iterate(0);
-        for (; pal != palEnd; pal.move_generic(1))
+        if (!vtx.get_qtag())
+            vtx.iterate(0);
+        for (; vtx != vtxEnd; vtx.move_generic(1))
         {
             // descend to the leaves
-            for (; !pal.get_qtag(); pal.iterate(0))
-                get_by(pal)->setup_a(this);
+            for (; !vtx.get_qtag(); vtx.iterate(0))
+                get_by((const algorithm&)vtx)->setup_a(this);
             //
-            get_by(pal)->setup_a(this);
+            get_by((const algorithm&)vtx)->setup_a(this);
         }
         // generate map: number -> index
         for (word_t i = 0; i != lca_size_; ++i)

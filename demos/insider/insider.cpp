@@ -31,6 +31,11 @@ int main()
         typedef StringSet::const_iterator const_iterator;
         typedef std::pair<const_iterator, const_iterator> pair_cit_cit;
         pair_cit_cit pcc = test1.equal_range("balda");
+        const_iterator
+            low_cit = test1.lower_bound("balda"),
+            upp_cit = test1.upper_bound("balda");
+        printf("equal == <lower, upper>: %s\n",
+            pcc == std::make_pair(low_cit, upp_cit) ? "true" : "false");
         printf("range of 'balda' (first: %s, limit: %s):\n",
             pcc.first != test1.end() ? pcc.first->c_str() : "end",
             pcc.second != test1.end() ? pcc.second->c_str() : "end");
@@ -40,6 +45,10 @@ int main()
         printf("\n---\n\n");
         //
         pcc = test1.equal_range("balda", 3 * 8);
+        low_cit = test1.lower_bound("balda", 3 * 8);
+        upp_cit = test1.upper_bound("balda", 3 * 8);
+        printf("equal == <lower, upper>: %s\n",
+            pcc == std::make_pair(low_cit, upp_cit) ? "true" : "false");
         printf("range of 'balda' [3] (first: %s, limit: %s):\n",
             pcc.first != test1.end() ? pcc.first->c_str() : "end",
             pcc.second != test1.end() ? pcc.second->c_str() : "end");

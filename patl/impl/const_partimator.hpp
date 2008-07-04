@@ -11,16 +11,16 @@ namespace patl
 namespace impl
 {
 
-template <typename Algorithm, typename Decision>
+template <typename Vertex, typename Decision>
 class const_partimator_generic
     : public std::iterator<
         std::bidirectional_iterator_tag,
-        typename Algorithm::value_type>
+        typename Vertex::value_type>
 {
-    typedef const_partimator_generic<Algorithm, Decision> this_t;
+    typedef const_partimator_generic<Vertex, Decision> this_t;
 
 protected:
-    typedef Algorithm algorithm;
+    typedef Vertex vertex;
 
 public:
     typedef const value_type *pointer;
@@ -28,53 +28,55 @@ public:
 
     explicit const_partimator_generic(
         const Decision &decis = Decision(),
-        const algorithm &pal = algorithm())
+        const vertex &vtx = vertex())
         : decis_(decis)
-        , pal_(pal)
+        , vtx_(vtx)
     {
     }
 
-    operator algorithm() const
+    operator const vertex&() const
     {
-        return pal_;
+        return vtx_;
     }
 
     bool leaf() const
     {
-        return pal_.get_qtag() == 1ul;
+        return vtx_.get_qtag() == word_t(1);
     }
 
-    const_iterator<algorithm> begin() const
+    const_iterator<vertex> begin() const
     {
-        algorithm pal(pal_);
-        pal.template descend<0>();
-        return const_iterator<algorithm, value_type>(pal);
+        vertex vtx(vtx_);
+        vtx.descend(0);
+        return const_iterator<vertex>(vtx);
     }
-    const_iterator<algorithm> end() const
+
+    const_iterator<vertex> end() const
     {
-        algorithm pal(pal_);
-        pal.template move<1>();
-        return const_iterator<algorithm, value_type>(pal);
+        vertex vtx(vtx_);
+        vtx.move(1);
+        return const_iterator<vertex>(vtx);
     }
 
     template <typename Decis2>
-    const_partimator_generic<algorithm, Decis2> begin(const Decis2 &decis) const
+    const_partimator_generic<vertex, Decis2> begin(const Decis2 &decis) const
     {
-        algorithm pal(pal_);
-        pal.template descend_decision<0>(decis);
-        return const_partimator_generic<algorithm, Decis2>(decis, pal);
+        vertex vtx(vtx_);
+        vtx.descend_decision(0, decis);
+        return const_partimator_generic<vertex, Decis2>(decis, vtx);
     }
+
     template <typename Decis2>
-    const_partimator_generic<algorithm, Decis2> end(const Decis2 &decis) const
+    const_partimator_generic<vertex, Decis2> end(const Decis2 &decis) const
     {
-        algorithm pal(pal_);
-        pal.template move_decision<1>(decis);
-        return const_partimator_generic<algorithm, Decis2>(decis, pal);
+        vertex vtx(vtx_);
+        vtx.move_decision(1, decis);
+        return const_partimator_generic<vertex, Decis2>(decis, vtx);
     }
 
     bool operator==(const this_t &pt) const
     {
-        return pal_ == pt.pal_;
+        return vtx_ == pt.vtx_;
     }
     bool operator!=(const this_t &pt) const
     {
@@ -87,12 +89,12 @@ public:
     }
     reference operator*() const
     {
-        return pal_.get_value();
+        return this->vtx_.value();
     }
 
     this_t &operator++()
     {
-        pal_.move_decision(1, decis_);
+        this->vtx_.move_decision(1, decis_);
         return *this;
     }
     this_t operator++(int)
@@ -104,7 +106,7 @@ public:
 
     this_t &operator--()
     {
-        pal_.move_decision(0, decis_);
+        this->vtx_.move_decision(0, decis_);
         return *this;
     }
     this_t operator--(int)
@@ -118,7 +120,7 @@ private:
     Decision decis_;
 
 protected:
-    algorithm pal_;
+    vertex vtx_;
 };
 
 } // namespace impl

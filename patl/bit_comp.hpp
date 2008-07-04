@@ -15,6 +15,10 @@ template <typename T>
 class bit_comparator
 {
 public:
+    // optional; used in non-scalar bit_comparator's
+    // NOTE must be power of 2 for proper work of mismatch_suffix
+    static const word_t bit_size;
+
     // return key length in bits, ~word_t(0) if infinite
     word_t bit_length(const T&) const;
 
@@ -132,6 +136,8 @@ public:
 class asciiz_bit_comparator
 {
 public:
+    static const word_t bit_size = 8;
+
     word_t bit_length(const char *s) const
     {
         const char *beg = s;

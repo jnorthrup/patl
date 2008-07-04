@@ -156,54 +156,50 @@ public:
     }
 
 private:
-    class reserve_functor
+    struct reserve_functor
     {
-        // to avoid warning C4512
-        reserve_functor &operator=(const reserve_functor&);
-
-    public:
-        reserve_functor(const cont_type &cont, pointer newHead)
+        reserve_functor(const cont_type *cont, pointer new_head)
             : cont_(cont)
-            , newHead_(newHead)
+            , new_head_(new_head)
         {
         }
 
-        pointer operator()(const_pointer oldPtr) const
+        pointer operator()(const_pointer old_ptr) const
         {
-            return newHead_ + cont_.index_of(oldPtr);
+            return new_head_ + cont_->index_of(old_ptr);
         }
 
     private:
-        const cont_type &cont_;
-        pointer newHead_;
+        const cont_type *cont_;
+        pointer new_head_;
     };
 
 public:
     // резервировать новый размер кольцевого буфера
     void reserve(
-        sword_t newSize,
+        sword_t new_size,
         // указатель на функцию-член для корректировки
         // внутренних указателей элемента на другие элементы
         // того же кольцевого буфера
-        void (Type::*memFun)(const reserve_functor&) = &Type::realloc)
+        void (Type::*mem_fun)(const reserve_functor&) = &Type::realloc)
     {
         // если новый размер кольца больше старого
-        if (newSize > tail_ - head_)
+        if (new_size > tail_ - head_)
         {
             // выделяем место под новый буфер
             pointer
-                newHead = alloc_.allocate(newSize),
-                newEnd = newHead;
+                new_head = alloc_.allocate(new_size),
+                new_end = new_head;
             // создаём функтор для корректировки внутренних указателей
-            reserve_functor functor(*this, newHead);
+            reserve_functor functor(this, new_head);
             // пробегаем по всем элементам кольца
             pointer cur = begin_;
             if (size_) do
             {
                 // правим внутренние указатели каждого элемента
-                (cur->*memFun)(functor);
+                (cur->*mem_fun)(functor);
                 // конструируем новый элемент и инициализируем старым
-                alloc_.construct(newEnd++, *cur);
+                alloc_.construct(new_end++, *cur);
                 // разрушаем старый
                 alloc_.destroy(cur);
                 // следующий элемент и заворачивание в кольцо
@@ -213,8 +209,8 @@ public:
             // освобождаем память под старым кольцом
             alloc_.deallocate(head_, tail_ - head_);
             // инициализируем внутренние указатели новыми значениями
-            begin_ = head_ = newHead;
-            tail_ = head_ + newSize;
+            begin_ = head_ = new_head;
+            tail_ = head_ + new_size;
             end_ = begin_ + size_; // size_ остался прежним
         }
     }

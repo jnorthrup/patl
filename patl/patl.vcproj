@@ -290,6 +290,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\levelorder_iterator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\node.hpp"
 					>
 				</File>
