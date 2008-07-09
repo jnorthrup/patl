@@ -28,36 +28,6 @@ public:
     {
     }
 
-    iterator begin() const
-    {
-        vertex vtx(*this);
-        vtx.descend(0);
-        return iterator(vtx);
-    }
-
-    iterator end() const
-    {
-        vertex vtx(*this);
-        vtx.move(1);
-        return iterator(vtx);
-    }
-
-    template <typename Decis2>
-    partimator_generic<vertex, Decis2> begin(const Decis2 &decis) const
-    {
-        vertex vtx(*this);
-        vtx.descend_decision(0, decis);
-        return partimator_generic<vertex, Decis2>(decis, vtx);
-    }
-
-    template <typename Decis2>
-    partimator_generic<vertex, Decis2> end(const Decis2 &decis) const
-    {
-        vertex vtx(*this);
-        vtx.move_decision(1, decis);
-        return partimator_generic<vertex, Decis2>(decis, vtx);
-    }
-
     pointer operator->()
     {
         return &**this;

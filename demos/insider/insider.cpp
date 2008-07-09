@@ -61,10 +61,11 @@ int main()
     typedef StringSet::vertex vertex;
     typedef StringSet::preorder_iterator preorder_iterator;
     typedef StringSet::postorder_iterator postorder_iterator;
+    const vertex vtx_root(&test1);
     {
         postorder_iterator
-            itBeg = test1.postorder_begin(),
-            itEnd = test1.postorder_end(),
+            itBeg = vtx_root.postorder_begin(),
+            itEnd = vtx_root.postorder_end(),
             it = itBeg;
         for (; it != itEnd; ++it)
             printf("%d\t%s\n", it->skip(), it->key().c_str());
@@ -80,8 +81,8 @@ int main()
     //
     {
         preorder_iterator
-            itBeg = test1.preorder_begin(),
-            itEnd = test1.preorder_end(),
+            itBeg = vtx_root.preorder_begin(),
+            itEnd = vtx_root.preorder_end(),
             it = itBeg;
         for (; it != itEnd; ++it)
             printf("%d\t%s\n", it->skip(), it->key().c_str());
@@ -116,9 +117,9 @@ int main()
         typedef patl::suffix_set<char*> SuffixSet;
         char str[] =
             //"abrakadabraa";
-            //"xabcyiiizabcqabcyr";
+            "xabcyiiizabcqabcyr";
             //"cxxaxxaxxb";
-            "How many wood would a woodchuck chuck.";
+            //"How many wood would a woodchuck chuck.";
         //"xgtcacaytgtgacz";
         SuffixSet suffix(str);
         for (unsigned i = 0; i != sizeof(str) - 1; ++i)

@@ -56,68 +56,28 @@ public:
     {
     }
 
-    postorder_iterator postorder_begin() const
-    {
-        vertex vtx(CSELF, root_, 0);
-        if (root_)
-            vtx.descend(0);
-        else
-            vtx.toggle();
-        return postorder_iterator(vtx);
-    }
+    typedef const_iterator_generic<vertex> const_iterator;
 
-    postorder_iterator postorder_end() const
-    {
-        return postorder_iterator(vertex(CSELF, root_, 1));
-    }
-
-    preorder_iterator preorder_begin() const
-    {
-        return preorder_iterator(vertex(CSELF, root_, root_ ? 0 : 1));
-    }
-
-    preorder_iterator preorder_end() const
-    {
-        return preorder_iterator(vertex(CSELF, root_, 1));
-    }
-
-    levelorder_iterator levelorder_begin(word_t limit) const
-    {
-        vertex vtx(CSELF, root_, 0);
-        if (root_)
-            vtx.descend(0, limit);
-        else
-            vtx.toggle();
-        return levelorder_iterator(vtx);
-    }
-
-    levelorder_iterator levelorder_end(word_t limit) const
-    {
-        return levelorder_iterator(vertex(CSELF, root_, 1));
-    }
-
-    typedef const_iterator<vertex> const_iterator;
-
-    typedef iterator<vertex> iterator;
+    typedef iterator_generic<vertex> iterator;
 
     // begin() declarations
     const_iterator begin() const
     {
-        return const_iterator(*postorder_begin());
+        return const_iterator(*vertex(CSELF).postorder_begin());
     }
     iterator begin()
     {
-        return iterator(*postorder_begin());
+        return iterator(*vertex(CSELF).postorder_begin());
     }
 
     // end() declarations
     const_iterator end() const
     {
-        return const_iterator(*postorder_end());
+        return const_iterator(*vertex(CSELF).postorder_end());
     }
     iterator end()
     {
-        return iterator(*postorder_end());
+        return iterator(*vertex(CSELF).postorder_end());
     }
 
     class const_reverse_iterator

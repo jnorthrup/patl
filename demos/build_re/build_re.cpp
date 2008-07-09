@@ -1,74 +1,29 @@
-#include <string>
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/partial.hpp>
 
 namespace patl = uxn::patl;
 
 template <typename Iter>
-void printRegexp(unsigned length, const Iter &beg, const Iter &end)
+void printRegexp(word_t length, const Iter &beg, const Iter &end)
 {
 	for (Iter cur = beg; cur != end; ++cur)
 	{
 		if (beg != cur)
 			printf("|");
-		if (cur.leaf())
-			printf("%s", cur->substr(length - 1).c_str());
+		if (cur->leaf())
+			printf("%s", cur->key().substr(length).c_str());
 		else
 		{
-			printf("%c", (*cur)[length - 1]);
-			unsigned nextLen = length + 1;
-			const patl::fixed_length fl(8 * nextLen);
+            const word_t next_len = cur->next_skip() / 8;
+			printf("%s", cur->key().substr(length, next_len - length).c_str());
 			Iter
-				it1 = cur.begin(fl),
-				it2 = cur.end(fl);
-			while (++Iter(it1) == it2)
-			{
-				printf("%c", (*cur)[nextLen++ - 1]);
-				const patl::fixed_length fl(8 * nextLen);
-				it1 = cur.begin(fl);
-				it2 = cur.end(fl);
-			}
+				it1 = cur->levelorder_begin(8 * (next_len + 1)),
+				it2 = cur->levelorder_end(8 * (next_len + 1));
 			printf("(");
-			const bool question = !(*it1)[nextLen - 1];
+			const bool question = it1->key().size() == next_len;
 			if (question)
 				++it1;
-			printRegexp(nextLen, it1, it2);
-			printf(")");
-			if (question)
-				printf("?");
-		}
-	}
-}
-
-template <typename Iter>
-void printRegexpRev(unsigned length, const Iter &beg, const Iter &end)
-{
-	for (Iter cur = beg; cur != end; ++cur)
-	{
-		if (beg != cur)
-			printf("|");
-		if (cur.leaf())
-			printf("%s", cur->substr(length - 1).c_str());
-		else
-		{
-			printf("%c", (*cur)[length - 1]);
-			unsigned nextLen = length + 1;
-			const patl::fixed_length fl(8 * nextLen);
-			Iter
-				it1 = cur.rbegin(fl),
-				it2 = cur.rend(fl);
-			while (++Iter(it1) == it2)
-			{
-				printf("%c", (*cur)[nextLen++ - 1]);
-				const patl::fixed_length fl(8 * nextLen);
-				it1 = cur.rbegin(fl);
-				it2 = cur.rend(fl);
-			}
-			printf("(");
-			const bool question = !(*(--Iter(it2)))[nextLen - 1];
-			if (question)
-				--it2;
-			printRegexpRev(nextLen, it1, it2);
+            printRegexp(next_len, it1, it2);
 			printf(")");
 			if (question)
 				printf("?");
@@ -86,19 +41,16 @@ int main()
 		"namespace", "new", "operator", "private", "protected", "public", 
 		"register", "reinterpret_cast", "return", "short", "signed", "sizeof",
 		"static", "static_cast", "struct", "switch", "template", "this", "throw",
-		"true", "try", "typedef", "typeid", "typename", "union", "unsigned", 
+		"true", "try", "typedef", "typeid", "typename", "union", "word_t", 
 		"using", "virtual", "void", "volatile", "wchar_t", "while"};
 
 	typedef patl::trie_set<std::string> ReservSet;
+    typedef ReservSet::vertex vertex;
 	ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
 
-	const patl::fixed_length fl(8);
-	printf("*** Forward:\n");
-	printRegexp(1, rvset.begin(fl), rvset.end(fl));
-	printf("\n");
-
-	printf("*** Backward:\n");
-	printRegexpRev(1, rvset.rbegin(fl), rvset.rend(fl));
+	printf("*** Regexp:\n");
+    const vertex vtx(&rvset);
+	printRegexp(0, vtx.levelorder_begin(8), vtx.levelorder_end(8));
 	printf("\n");
 
 	return 0;

@@ -267,7 +267,7 @@ public:
         {
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
-            const this_t *cont = vtx_.get_cont();
+            const this_t *cont = vtx_.cont();
             algorithm &pal = (algorithm&)vtx_;
             if (skip_)
             {

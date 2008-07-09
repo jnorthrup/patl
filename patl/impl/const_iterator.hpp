@@ -12,11 +12,13 @@ namespace impl
 {
 
 template <typename Vertex>
-class const_iterator
+class const_iterator_generic
     : public std::iterator<
         std::bidirectional_iterator_tag,
         typename Vertex::value_type>
 {
+    typedef const_iterator_generic<Vertex> this_t;
+
 protected:
     typedef Vertex vertex;
     typedef postorder_iterator_generic<vertex> postorder_iterator;
@@ -26,7 +28,7 @@ public:
     typedef const value_type *pointer;
     typedef const value_type &reference;
 
-    explicit const_iterator(const vertex &vtx = vertex())
+    explicit const_iterator_generic(const vertex &vtx = vertex())
         : pit_(vtx)
     {
     }
@@ -36,11 +38,11 @@ public:
         return *pit_;
     }
 
-    bool operator==(const const_iterator &it) const
+    bool operator==(const this_t &it) const
     {
         return pit_ == it.pit_;
     }
-    bool operator!=(const const_iterator &it) const
+    bool operator!=(const this_t &it) const
     {
         return !(*this == it);
     }
@@ -54,28 +56,28 @@ public:
         return pit_->value();
     }
 
-    const_iterator &operator++()
+    this_t &operator++()
     {
         do ++pit_;
         while (!pit_->leaf());
         return *this;
     }
-    const_iterator operator++(int)
+    this_t operator++(int)
     {
-        const_iterator it(*this);
+        this_t it(*this);
         ++*this;
         return it;
     }
 
-    const_iterator &operator--()
+    this_t &operator--()
     {
         do --pit_;
         while (!pit_->leaf());
         return *this;
     }
-    const_iterator operator--(int)
+    this_t operator--(int)
     {
-        const_iterator it(*this);
+        this_t it(*this);
         --*this;
         return it;
     }

@@ -15,22 +15,13 @@ class prefix_generic
     typedef Node node_type;
     typedef typename Container::key_type key_type;
 
-    static const word_t bit_size = Container::bit_size;
+    static const word_t bit_size = Container::bit_compare::bit_size;
 
 public:
     explicit prefix_generic(const Container *cont, const node_type *q)
         : cont_(cont)
         , q_(q)
     {
-    }
-
-    bool operator==(const node_type *b) const
-    {
-        return q_ == b;
-    }
-    bool operator!=(const node_type *b) const
-    {
-        return !operator==(b);
     }
 
     bool operator==(const this_t &b) const
@@ -40,6 +31,11 @@ public:
     bool operator!=(const this_t &b) const
     {
         return !operator==(b);
+    }
+
+    operator const node_type*() const
+    {
+        return q_;
     }
 
     const Container *cont() const

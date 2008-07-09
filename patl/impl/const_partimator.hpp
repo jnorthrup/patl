@@ -39,41 +39,6 @@ public:
         return vtx_;
     }
 
-    bool leaf() const
-    {
-        return vtx_.get_qtag() == word_t(1);
-    }
-
-    const_iterator<vertex> begin() const
-    {
-        vertex vtx(vtx_);
-        vtx.descend(0);
-        return const_iterator<vertex>(vtx);
-    }
-
-    const_iterator<vertex> end() const
-    {
-        vertex vtx(vtx_);
-        vtx.move(1);
-        return const_iterator<vertex>(vtx);
-    }
-
-    template <typename Decis2>
-    const_partimator_generic<vertex, Decis2> begin(const Decis2 &decis) const
-    {
-        vertex vtx(vtx_);
-        vtx.descend_decision(0, decis);
-        return const_partimator_generic<vertex, Decis2>(decis, vtx);
-    }
-
-    template <typename Decis2>
-    const_partimator_generic<vertex, Decis2> end(const Decis2 &decis) const
-    {
-        vertex vtx(vtx_);
-        vtx.move_decision(1, decis);
-        return const_partimator_generic<vertex, Decis2>(decis, vtx);
-    }
-
     bool operator==(const this_t &pt) const
     {
         return vtx_ == pt.vtx_;
