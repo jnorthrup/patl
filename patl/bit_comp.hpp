@@ -169,9 +169,11 @@ template<>
 class bit_comparator<char>
 {
 public:
+    static const word_t bit_size = 8 * sizeof(char);
+
     word_t bit_length(char) const
     {
-        return 8 * sizeof(char);
+        return bit_size;
     }
 
     word_t get_bit(char val, word_t id) const
@@ -193,9 +195,11 @@ template<>
 class bit_comparator<unsigned char>
 {
 public:
+    static const word_t bit_size = 8 * sizeof(unsigned char);
+
     word_t bit_length(unsigned char) const
     {
-        return 8 * sizeof(unsigned char);
+        return bit_size;
     }
 
     word_t get_bit(unsigned char val, word_t id) const
@@ -217,9 +221,11 @@ template<>
 class bit_comparator<wchar_t>
 {
 public:
+    static const word_t bit_size = 8 * sizeof(wchar_t);
+
     word_t bit_length(wchar_t) const
     {
-        return 8 * sizeof(wchar_t);
+        return bit_size;
     }
 
     word_t get_bit(wchar_t val, word_t id) const
@@ -241,9 +247,11 @@ template<>
 class bit_comparator<word_t>
 {
 public:
+    static const word_t bit_size = 8 * sizeof(word_t);
+
     word_t bit_length(word_t) const
     {
-        return 8 * sizeof(word_t);
+        return bit_size;
     }
 
     word_t get_bit(word_t val, word_t id) const
@@ -264,9 +272,11 @@ template<>
 class bit_comparator<sword_t>
 {
 public:
+    static const word_t bit_size = 8 * sizeof(sword_t);
+
     word_t bit_length(sword_t) const
     {
-        return 8 * sizeof(sword_t);
+        return bit_size;
     }
 
     word_t get_bit(sword_t val, word_t id) const

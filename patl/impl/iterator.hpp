@@ -11,15 +11,17 @@ namespace impl
 {
 
 template <typename Vertex>
-class iterator
-    : public const_iterator<Vertex>
+class iterator_generic
+    : public const_iterator_generic<Vertex>
 {
+    typedef iterator_generic<vertex> this_t;
+
 public:
     typedef value_type *pointer;
     typedef value_type &reference;
 
-    explicit iterator(const vertex &vtx = vertex())
-        : const_iterator(vtx)
+    explicit iterator_generic(const vertex &vtx = vertex())
+        : const_iterator_generic(vtx)
     {
     }
 
@@ -37,26 +39,26 @@ public:
         return pit_->value();
     }
 
-    iterator &operator++()
+    this_t &operator++()
     {
-        ++(*(const_iterator*)this);
+        ++(*(const_iterator_generic*)this);
         return *this;
     }
-    iterator operator++(int)
+    this_t operator++(int)
     {
-        iterator it(*this);
+        this_t it(*this);
         ++*this;
         return it;
     }
 
-    iterator &operator--()
+    this_t &operator--()
     {
-        --(*(const_iterator*)this);
+        --(*(const_iterator_generic*)this);
         return *this;
     }
-    iterator operator--(int)
+    this_t operator--(int)
     {
-        iterator it(*this);
+        this_t it(*this);
         --*this;
         return it;
     }

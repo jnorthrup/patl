@@ -16,6 +16,10 @@ protected:
     typedef Algorithm algorithm;
     typedef typename algorithm::cont_type cont_type;
     typedef typename algorithm::node_type node_type;
+    typedef typename cont_type::prefix prefix;
+    typedef typename cont_type::levelorder_iterator levelorder_iterator;
+    typedef typename cont_type::preorder_iterator preorder_iterator;
+    typedef typename cont_type::postorder_iterator postorder_iterator;
 
 public:
     typedef typename algorithm::key_type key_type;
@@ -23,6 +27,16 @@ public:
 
     explicit vertex_generic(const algorithm &pal = algorithm())
         : pal_(pal)
+    {
+    }
+
+    explicit vertex_generic(const cont_type *cont)
+        : pal_(cont, (const node_type*)cont->root(), 0)
+    {
+    }
+
+    vertex_generic(const prefix &pref, word_t qid)
+        : pal_(pref.cont(), (const node_type*)pref, qid)
     {
     }
 
@@ -59,6 +73,56 @@ public:
         return pal_.compact();
     }
 
+    postorder_iterator postorder_begin() const
+    {
+        this_t vtx(*this);
+        if (compact())
+            vtx.descend(0);
+        else
+            vtx.toggle();
+        return postorder_iterator(vtx);
+    }
+
+    postorder_iterator postorder_end() const
+    {
+        this_t vtx(*this);
+        if (compact() != 1)
+            vtx.move(1);
+        return postorder_iterator(vtx);
+    }
+
+    preorder_iterator preorder_begin() const
+    {
+        const node_type *q = pal_.get_q();
+        return preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+    }
+
+    preorder_iterator preorder_end() const
+    {
+        this_t vtx(*this);
+        if (compact() != 1)
+            vtx.move(1);
+        return preorder_iterator(vtx);
+    }
+
+    levelorder_iterator levelorder_begin(word_t limit) const
+    {
+        this_t vtx(*this);
+        if (compact())
+            vtx.descend(0, limit);
+        else
+            vtx.toggle();
+        return levelorder_iterator(limit, vtx);
+    }
+
+    levelorder_iterator levelorder_end(word_t limit) const
+    {
+        this_t vtx(*this);
+        if (compact() != 1)
+            vtx.move(1, limit);
+        return levelorder_iterator(limit, vtx);
+    }
+
     bool leaf() const
     {
         return pal_.get_qtag() != 0;
@@ -88,6 +152,12 @@ public:
         return pal_.get_q()->get_skip();
     }
 
+    /// only for !leaf()
+    word_t next_skip() const
+    {
+        return pal_.get_p()->get_skip();
+    }
+
     this_t sibling() const
     {
         return this_t(pal_.sibling());
@@ -103,7 +173,7 @@ public:
     /// trie descend to the leaves limited by prefix length
     void descend(word_t side, word_t prefixLen)
     {
-        while (!get_qtag() && pal_.get_p()->get_skip() < prefixLen)
+        while (!get_qtag() && next_skip() < prefixLen)
             iterate(side);
     }
 
@@ -113,8 +183,8 @@ public:
     {
         for (;;)
         {
-            while (!get_qtag() && decis(pal_.get_p()->get_skip()))
-                iterate(decis(pal_.get_p()->get_skip(), side)
+            while (!get_qtag())
+                iterate(decis(next_skip(), side)
                     ? side
                     : word_t(1) ^ side);
             if (!pal_.get_p())
@@ -126,8 +196,8 @@ public:
             do move_generic(word_t(1) ^ side);
             while (
                 pal_.get_q()->get_parent() &&
-                //pal_.get_q()->get_skip() != ~word_t(0) &&
-                !decis(pal_.get_q()->get_skip(), get_qid()));
+                //skip() != ~word_t(0) &&
+                !decis(this->skip(), get_qid()));
             /*if (!pal_.get_q()->get_parent())
             return;*/
         }
@@ -167,8 +237,8 @@ public:
         do move_generic(side);
         while (
             pal_.get_q()->get_parent() &&
-            //pal_.get_q()->get_skip() != ~word_t(0) &&
-            !decis(pal_.get_q()->get_skip(), get_qid()));
+            //skip() != ~word_t(0) &&
+            !decis(skip(), get_qid()));
         descend_decision(word_t(1) ^ side, decis);
     }
 
@@ -206,7 +276,7 @@ public:
         pal_.ascend();
     }
 
-    const cont_type *get_cont() const
+    const cont_type *cont() const
     {
         return pal_.get_cont();
     }

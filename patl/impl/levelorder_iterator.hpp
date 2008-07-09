@@ -1,7 +1,7 @@
 #ifndef PATL_IMPL_LEVELORDER_ITERATOR_HPP
 #define PATL_IMPL_LEVELORDER_ITERATOR_HPP
 
-#include "vertex.hpp"
+#include "preorder_iterator.hpp"
 #include <iterator>
 
 namespace uxn
@@ -17,8 +17,11 @@ class levelorder_iterator_generic
         std::bidirectional_iterator_tag,
         Vertex>
 {
+    typedef levelorder_iterator_generic<Vertex> this_t;
+
 protected:
     typedef Vertex vertex;
+    typedef preorder_iterator_generic<vertex> preorder_iterator;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
 
@@ -31,11 +34,11 @@ public:
     {
     }
 
-    bool operator==(const levelorder_iterator_generic &it) const
+    bool operator==(const this_t &it) const
     {
         return vtx_ == it.vtx_;
     }
-    bool operator!=(const levelorder_iterator_generic &it) const
+    bool operator!=(const this_t &it) const
     {
         return !(*this == it);
     }
@@ -58,26 +61,26 @@ public:
         return vtx_;
     }
 
-    levelorder_iterator_generic &operator++()
+    this_t &operator++()
     {
         vtx_.move(1, limit_);
         return *this;
     }
-    levelorder_iterator_generic operator++(int)
+    this_t operator++(int)
     {
-        const_iterator it(*this);
+        this_t it(*this);
         ++*this;
         return it;
     }
 
-    levelorder_iterator_generic &operator--()
+    this_t &operator--()
     {
         vtx_.move(0, limit_);
         return *this;
     }
-    levelorder_iterator_generic operator--(int)
+    this_t operator--(int)
     {
-        const_iterator it(*this);
+        this_t it(*this);
         --*this;
         return it;
     }
