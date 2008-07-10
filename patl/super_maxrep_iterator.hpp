@@ -85,9 +85,9 @@ class super_maxrep_iterator
 
     void merge()
     {
-        std::vector<std::pair<word_t, unique_type> >::pointer
-            sfreq1 = &sfreq_.back(),
-            sfreq0 = sfreq1 - 1;
+        std::pair<word_t, unique_type>
+            *sfreq1 = &sfreq_.back(),
+            *sfreq0 = sfreq1 - 1;
         sfreq0->first += sfreq1->first;
         unique_update(sfreq0->second, sfreq1->second);
         sfreq_.pop_back();
@@ -162,7 +162,7 @@ public:
 
     super_maxrep_iterator operator++(int)
     {
-        match_iterator it(*this);
+        super_maxrep_iterator it(*this);
         ++*this;
         return it;
     }

@@ -22,6 +22,8 @@ class levelorder_iterator_generic
 protected:
     typedef Vertex vertex;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
+    typedef vertex *pointer;
+    typedef vertex &reference;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
 
@@ -63,8 +65,8 @@ public:
 
     this_t &operator++()
     {
-        vtx_.move_subtree<1>();
-        vtx_.descend<0>(limit_);
+        vtx_.template move_subtree<1>();
+        vtx_.template descend<0>(limit_);
         return *this;
     }
     this_t operator++(int)
@@ -76,8 +78,8 @@ public:
 
     this_t &operator--()
     {
-        vtx_.move_subtree<0>();
-        vtx_.descend<1>(limit_);
+        vtx_.template move_subtree<0>();
+        vtx_.template descend<1>(limit_);
         return *this;
     }
     this_t operator--(int)

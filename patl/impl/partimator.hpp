@@ -17,7 +17,11 @@ class partimator_generic
     typedef const_partimator_generic<Vertex, Decision> super;
     typedef partimator_generic<Vertex, Decision> this_t;
 
+protected:
+    typedef Vertex vertex;
+
 public:
+    typedef typename super::value_type value_type;
     typedef value_type *pointer;
     typedef value_type &reference;
 
@@ -34,7 +38,7 @@ public:
     }
     reference operator*()
     {
-        return vtx_.value();
+        return this->vtx_.value();
     }
 
     this_t &operator++()

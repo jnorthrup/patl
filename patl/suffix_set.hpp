@@ -2,6 +2,7 @@
 #define PATL_SUFFIX_SET_HPP
 
 #include "impl/suffix_set.hpp"
+#include "impl/suffix_generic.hpp"
 #include "bit_comp.hpp"
 #include "lca_oracle.hpp"
 
@@ -17,7 +18,7 @@ template <
     typename Allocator = std::allocator<Type> >
 class suffix_set
     : public impl::suffix_generic<
-    impl::suffix_set_traits<Type, Delta, BitComp, Allocator> >
+        impl::suffix_set_traits<Type, Delta, BitComp, Allocator> >
 {
     typedef suffix_set<Type, Delta, BitComp, Allocator> this_t;
     typedef impl::suffix_generic<
@@ -26,6 +27,8 @@ class suffix_set
     friend class lca_oracle<this_t>;
 
 public:
+    typedef typename super::key_type key_type;
+
     // constructor
     suffix_set(
         Type keys,
@@ -61,24 +64,26 @@ public:
 
     word_t count_reindex(const key_type from) const
     {
-        const key_type last = keys_ + size() * delta;
-        word_t i = size() - 1;
-        for (; last + trie_[i]->get_skip() / bit_size >= from; --i, last - delta);
+        const key_type last = this->keys_ + this->size() * this->delta;
+        word_t i = this->size() - 1;
+        for (
+            ; last + this->trie_[i]->get_skip() / this->bit_size >= from
+            ; --i, last - this->delta) ;
         //printf("reindex(count=%d).(size=%d).", size() - 1 - i, size());
-        return size() - 1 - i;
+        return this->size() - 1 - i;
     }
 
     void pop_reindex(word_t i)
     {
         while (i--)
-            pop_back();
+            this->pop_back();
         //printf("pop(size=%d).", size());
     }
 
     void push_reindex(word_t i)
     {
         while (i--)
-            push_back();
+            this->push_back();
         //printf("push(size=%d).done\n", size());
     }
 };

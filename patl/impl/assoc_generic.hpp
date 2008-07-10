@@ -121,35 +121,41 @@ public:
     }
 
     template <typename Decision>
-    struct const_partimator
+    class const_partimator
         : public const_partimator_generic<vertex, Decision>
     {
+        typedef const_partimator_generic<vertex, Decision> super;
+
+    public:
         explicit const_partimator(
             const Decision &decis = Decision(),
             const vertex &vtx = vertex())
-            : const_partimator_generic(decis, vtx)
+            : super(decis, vtx)
         {
         }
 
-        const_partimator(const const_partimator_generic<vertex, Decision> &obj)
-            : const_partimator_generic(obj)
+        const_partimator(const super &obj)
+            : super(obj)
         {
         }
     };
 
     template <typename Decision>
-    struct partimator
+    class partimator
         : public partimator_generic<vertex, Decision>
     {
+        typedef partimator_generic<vertex, Decision> super;
+
+    public:
         explicit partimator(
             const Decision &decis = Decision(),
             const vertex &vtx = vertex())
-            : partimator_generic(decis, vtx)
+            : super(decis, vtx)
         {
         }
 
-        partimator(const partimator_generic<vertex, Decision> &obj)
-            : partimator_generic(obj)
+        partimator(const super &obj)
+            : super(obj)
         {
         }
     };
@@ -215,7 +221,7 @@ public:
         if (root_)
         {
             vtx.mismatch(key, prefixLen);
-            vtx.descend<0>();
+            vtx.template descend<0>();
             return const_iterator(vtx);
         }
         return end();
@@ -229,7 +235,7 @@ public:
         if (root_)
         {
             vtx.mismatch(key, prefixLen);
-            vtx.descend<0>();
+            vtx.template descend<0>();
             return iterator(vtx);
         }
         return end();
@@ -243,8 +249,8 @@ public:
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
-                vtx.move<1>();
-            vtx.descend<0>();
+                vtx.template move<1>();
+            vtx.template descend<0>();
             return const_iterator(vtx);
         }
         return end();
@@ -257,8 +263,8 @@ public:
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
-                vtx.move<1>();
-            vtx.descend<0>();
+                vtx.template move<1>();
+            vtx.template descend<0>();
             return iterator(vtx);
         }
         return end();
@@ -278,13 +284,13 @@ public:
         {
             const word_t len = vtx.mismatch(key, prefixLen);
             vertex lower(vtx);
-            lower.descend<0>();
+            lower.template descend<0>();
             if (len < prefixLen)
                 return const_iter_range(
                     const_iterator(lower),
                     const_iterator(lower));
-            vtx.move<1>();
-            vtx.descend<0>();
+            vtx.template move<1>();
+            vtx.template descend<0>();
             return const_iter_range(
                 const_iterator(lower),
                 const_iterator(vtx));
@@ -300,13 +306,13 @@ public:
         {
             const word_t len = vtx.mismatch(key, prefixLen);
             vertex lower(vtx);
-            lower.descend<0>();
+            lower.template descend<0>();
             if (len < prefixLen)
                 return iter_range(
                     iterator(lower),
                     iterator(lower));
-            vtx.move<1>();
-            vtx.descend<0>();
+            vtx.template move<1>();
+            vtx.template descend<0>();
             return iter_range(
                 iterator(lower),
                 iterator(vtx));

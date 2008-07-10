@@ -86,7 +86,10 @@ public:
     postorder_iterator postorder_end() const
     {
         this_t vtx(*this);
-        vtx.move<1>();
+        if (pal_.get_q())
+            vtx.move<1>();
+        else
+            vtx.toggle();
         return postorder_iterator(vtx);
     }
 
@@ -98,9 +101,18 @@ public:
 
     preorder_iterator preorder_end() const
     {
-        preorder_iterator pit(*this);
-        pit.next_subtree();
-        return pit;
+        if (pal_.get_q())
+        {
+            preorder_iterator pit(*this);
+            pit.next_subtree();
+            return pit;
+        }
+        else
+        {
+            this_t vtx(*this);
+            vtx.toggle();
+            return preorder_iterator(vtx);
+        }
     }
 
     levelorder_iterator levelorder_begin(word_t limit) const
@@ -115,7 +127,14 @@ public:
 
     levelorder_iterator levelorder_end(word_t limit) const
     {
-        return ++levelorder_iterator(limit, *this);
+        if (pal_.get_q())
+            return ++levelorder_iterator(limit, *this);
+        else
+        {
+            this_t vtx(*this);
+            vtx.toggle();
+            return levelorder_iterator(limit, vtx);
+        }
     }
 
     bool the_end() const

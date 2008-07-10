@@ -26,6 +26,7 @@ protected:
     typedef preorder_iterator_generic<vertex> preorder_iterator;
 
 public:
+    typedef typename vertex::value_type value_type;
     typedef const value_type *pointer;
     typedef const value_type &reference;
 

@@ -21,6 +21,8 @@ class postorder_iterator_generic
 
 protected:
     typedef Vertex vertex;
+    typedef vertex *pointer;
+    typedef vertex &reference;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
 
@@ -64,7 +66,7 @@ public:
         else
         {
             vtx_.toggle();
-            vtx_.descend<0>();
+            vtx_.template descend<0>();
         }
         return *this;
     }

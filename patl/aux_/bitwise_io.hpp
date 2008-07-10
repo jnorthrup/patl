@@ -2,6 +2,8 @@
 #define PATL_AUX_BITWISE_IO_HPP
 
 #include "../config.hpp"
+#include "../impl/trivial.hpp"
+#include <string.h>
 
 namespace uxn
 {
@@ -28,7 +30,7 @@ public:
         , cur_(beg_)
         , num_(0)
     {
-        memset(beg_, 0, size * sizeof(word_t));
+        ::memset(beg_, 0, size * sizeof(word_t));
     }
 
     ~bit_output()
@@ -40,7 +42,7 @@ public:
     void put_bit(word_t bit)
     {
         *cur_ |= (bit & 1) << num_;
-        if (++num_ & impl::bits_in_word)
+        if (++num_ & bits_in_word)
         {
             num_ = 0;
             flush_full();

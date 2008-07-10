@@ -8,7 +8,7 @@
 #include "algorithm.hpp"
 #include "ring_buffer.hpp"
 #include "assoc_generic.hpp"
-#include "bit_comp.hpp"
+#include "../bit_comp.hpp"
 
 namespace uxn
 {
@@ -25,6 +25,11 @@ class algorithm_gen_suffix
     typedef algorithm_generic<T, this_t, Container> super;
 
 public:
+    typedef Container cont_type;
+    typedef typename T::node_type node_type;
+    typedef typename T::key_type key_type;
+    typedef typename T::value_type value_type;
+
     explicit algorithm_gen_suffix(const cont_type *cont = 0)
         : super(cont)
     {
@@ -42,29 +47,29 @@ public:
 
 	this_t construct(const node_type *q, word_t qid) const
 	{
-		return this_t(cont_, q, qid);
+		return this_t(this->cont_, q, qid);
 	}
 
     const value_type &get_value() const
     {
         const node_type *p = this->get_p();
-        return p->get_value(cont_->get_key(p));
+        return p->get_value(this->cont_->get_key(p));
     }
 
     value_type &get_value()
     {
         const node_type *p = this->get_p();
-        return p->get_value(cont_->get_key(p));
+        return p->get_value(this->cont_->get_key(p));
     }
 
     const key_type get_key() const
     {
-        return cont_->get_key(this->get_p());
+        return this->cont_->get_key(this->get_p());
     }
 
     const key_type get_key(const node_type *p) const
     {
-        return cont_->get_key(p);
+        return this->cont_->get_key(p);
     }
 };
 
@@ -98,7 +103,13 @@ public:
     typedef typename super::bit_compare bit_compare;
     typedef typename super::allocator_type allocator_type;
     typedef typename super::size_type size_type;
+    typedef typename super::const_iterator const_iterator;
     typedef typename super::iterator iterator;
+    typedef typename super::prefix prefix;
+    typedef typename super::vertex vertex;
+    typedef typename super::preorder_iterator preorder_iterator;
+    typedef typename super::postorder_iterator postorder_iterator;
+    typedef typename super::levelorder_iterator levelorder_iterator;
 
     static const word_t delta = T::delta;
 
@@ -161,8 +172,8 @@ public:
     void pop_front()
     {
         node_type *front = trie_.front();
-        algorithm pal(this, front, front != root_
-            ? bit_comp_.get_bit(keys_, front->get_skip())
+        algorithm pal(this, front, front != this->root_
+            ? this->bit_comp_.get_bit(keys_, front->get_skip())
             : 0);
         pal.run(keys_);
         erase_node(pal);
@@ -174,8 +185,8 @@ public:
     void pop_back()
     {
         node_type *back = trie_.back();
-        algorithm pal(this, back, back != root_
-            ? bit_comp_.get_bit(get_key(back), back->get_skip())
+        algorithm pal(this, back, back != this->root_
+            ? this->bit_comp_.get_bit(get_key(back), back->get_skip())
             : 0);
         pal.run(get_key(back));
         erase_node(pal);
@@ -185,14 +196,14 @@ public:
     void clear()
     {
         trie_.clear();
-        root_ = 0;
+        this->root_ = 0;
     }
 
     void reserve(size_type newSize)
     {
-        word_t root_pos = trie_.index_of(root_);
+        word_t root_pos = trie_.index_of(this->root_);
         trie_.reserve(newSize);
-        root_ = root_ ? trie_[root_pos] : 0;
+        this->root_ = this->root_ ? trie_[root_pos] : 0;
     }
 
     // check integrity
@@ -209,10 +220,12 @@ public:
     class match_iterator
         : public std::iterator<std::forward_iterator_tag, vertex>
     {
+    public:
         typedef const vertex *const_pointer;
         typedef const vertex &const_reference;
+        typedef vertex *pointer;
+        typedef vertex &reference;
 
-    public:
         match_iterator(this_t *cont, const key_type &begin)
             : key_(begin)
             , skip_(0)
@@ -310,15 +323,15 @@ protected:
         const key_type key = keys_ + trie_.size() * delta;
         node_type *back = trie_.back();
         word_t skip = max0(static_cast<sword_t>(back->get_skip()) - delta * bit_size);
-        algorithm pal(this, root_, 0);
+        algorithm pal(this, this->root_, 0);
         if (skip)
         {
             node_type *backP = back->get_xlink(word_t(1) ^ back->get_self_id());
             pal.init(trie_.following(backP), 0);
             pal.ascend(skip);
             node_type *pretender = pal.get_q();
-            if (pretender != root_)
-                pal.init(pretender, bit_comp_.get_bit(key, pretender->get_skip()));
+            if (pretender != this->root_)
+                pal.init(pretender, this->bit_comp_.get_bit(key, pretender->get_skip()));
         }
         //
         skip = pal.mismatch_suffix(key, skip);
@@ -326,7 +339,7 @@ protected:
         trie_.push_back(initNode);
         node_type *r = trie_.back();
         // add new node into trie
-        const word_t bit = bit_comp_.get_bit(key, skip);
+        const word_t bit = this->bit_comp_.get_bit(key, skip);
         pal.add(r, bit, skip);
         return vertex(this, r, bit);
     }
@@ -334,19 +347,19 @@ protected:
     vertex push_back_root(const node_type &initNode)
     {
         trie_.push_back(initNode);
-        root_ = trie_.back();
-        root_->init_root();
-        return vertex(this, root_, 0);
+        this->root_ = trie_.back();
+        this->root_->init_root();
+        return vertex(this, this->root_, 0);
     }
 
     void erase_node(algorithm &pal)
     {
         node_type *p = pal.erase();
         // special case: del root
-        if (p == root_)
+        if (p == this->root_)
         {
             node_type *q = pal.get_q();
-            root_ = q == p ? 0 : q;
+            this->root_ = q == p ? 0 : q;
         }
     }
 

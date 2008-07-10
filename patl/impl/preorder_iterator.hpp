@@ -21,6 +21,8 @@ class preorder_iterator_generic
 
 protected:
     typedef Vertex vertex;
+    typedef vertex *pointer;
+    typedef vertex &reference;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
 
@@ -77,7 +79,7 @@ public:
         if (vtx_.get_qid())
         {
             vtx_.toggle();
-            vtx_.descend<1>();
+            vtx_.template descend<1>();
         }
         else
             vtx_.ascend();
@@ -92,7 +94,7 @@ public:
 
     void next_subtree()
     {
-        vtx_.move_subtree<1>();
+        vtx_.template move_subtree<1>();
     }
 
 protected:
