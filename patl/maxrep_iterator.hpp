@@ -116,7 +116,7 @@ public:
 
     maxrep_iterator operator++(int)
     {
-        match_iterator it(*this);
+        maxrep_iterator it(*this);
         ++*this;
         return it;
     }

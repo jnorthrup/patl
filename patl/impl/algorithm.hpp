@@ -2,7 +2,7 @@
  | trie_map, trie_set, suffix_map, suffix_set template containers, v0.31
  | Based on PATRICIA trie
  | Key features: STL-compatible, high performance with non-scalar keys
- | Compile with: MSVC 2005, MSVC 2008, GCC 3.4.4 (?)
+ | Compile with: MSVC 2005, MSVC 2008, GCC 3.4.5
  |
  | (c) 2005, 2007..2008 by Roman S. Klyujkov, rsk_comp at mail.ru
  |
@@ -13,6 +13,7 @@
 #define PATL_IMPL_ALGORITHM_HPP
 
 #include "../config.hpp"
+#include "trivial.hpp"
 
 namespace uxn
 {
@@ -296,13 +297,13 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        const bit_compare bit_comp(bit_comp());
-        const word_t len = get_min(prefixLen, bit_comp.bit_length(key));
+        const bit_compare bcmp(bit_comp());
+        const word_t len = get_min(prefixLen, bcmp.bit_length(key));
         if (len == ~word_t(0))
             run(key);
         else
             run(key, len);
-        const word_t l = bit_comp.bit_mismatch(key, SELF->get_key());
+        const word_t l = bcmp.bit_mismatch(key, SELF->get_key());
         if (l != ~word_t(0))
             ascend(l);
         return l;
@@ -330,18 +331,18 @@ public:
     /// one run of the classical algorithm P
     void run(const key_type &key)
     {
-        const bit_compare bit_comp(bit_comp());
+        const bit_compare bcmp(bit_comp());
         while (!get_qtag())
-            iterate(bit_comp.get_bit(key, get_p()->get_skip()));
+            iterate(bcmp.get_bit(key, get_p()->get_skip()));
     }
 
     /// one run of the classical algorithm P limited by prefix length
     void run(const key_type &key, word_t prefixLen)
     {
         word_t skip;
-        const bit_compare bit_comp(bit_comp());
+        const bit_compare bcmp(bit_comp());
         while (!get_qtag() && (skip = get_p()->get_skip()) < prefixLen)
-            iterate(bit_comp.get_bit(key, skip));
+            iterate(bcmp.get_bit(key, skip));
     }
 
     /// one iteration of the classical algorithm P

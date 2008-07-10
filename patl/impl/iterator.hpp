@@ -14,20 +14,23 @@ template <typename Vertex>
 class iterator_generic
     : public const_iterator_generic<Vertex>
 {
-    typedef iterator_generic<vertex> this_t;
+    typedef const_iterator_generic<Vertex> super;
+    typedef iterator_generic<Vertex> this_t;
+    typedef Vertex vertex;
 
 public:
+    typedef typename super::value_type value_type;
     typedef value_type *pointer;
     typedef value_type &reference;
 
     explicit iterator_generic(const vertex &vtx = vertex())
-        : const_iterator_generic(vtx)
+        : super(vtx)
     {
     }
 
     operator vertex&()
     {
-        return *pit_;
+        return *this->pit_;
     }
 
     pointer operator->()
@@ -36,12 +39,12 @@ public:
     }
     reference operator*()
     {
-        return pit_->value();
+        return this->pit_->value();
     }
 
     this_t &operator++()
     {
-        ++(*(const_iterator_generic*)this);
+        ++(*(super*)this);
         return *this;
     }
     this_t operator++(int)
@@ -53,7 +56,7 @@ public:
 
     this_t &operator--()
     {
-        --(*(const_iterator_generic*)this);
+        --(*(super*)this);
         return *this;
     }
     this_t operator--(int)

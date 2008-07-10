@@ -1,8 +1,9 @@
 #ifndef PATL_AUX_FILE_UTILS_HPP
 #define PATL_AUX_FILE_UTILS_HPP
 
-#include <windows.h>
 #include "../config.hpp"
+#include <string>
+#include <windows.h>
 
 namespace uxn
 {

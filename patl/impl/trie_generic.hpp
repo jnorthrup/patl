@@ -53,6 +53,11 @@ class algorithm_gen
     typedef algorithm_generic<T, this_t, Container> super;
 
 public:
+    typedef Container cont_type;
+    typedef typename T::node_type node_type;
+    typedef typename T::key_type key_type;
+    typedef typename T::value_type value_type;
+
     explicit algorithm_gen(const cont_type *cont = 0)
         : super(cont)
     {
@@ -132,7 +137,12 @@ public:
     typedef typename super::bit_compare bit_compare;
     typedef typename super::allocator_type allocator_type;
     typedef typename super::size_type size_type;
+    typedef typename super::const_iterator const_iterator;
     typedef typename super::iterator iterator;
+    typedef typename super::vertex vertex;
+    typedef typename super::preorder_iterator preorder_iterator;
+    typedef typename super::postorder_iterator postorder_iterator;
+    typedef typename super::levelorder_iterator levelorder_iterator;
 
     trie_generic(const bit_compare &bit_comp, const allocator_type &alloc)
         : super(bit_comp)
@@ -164,15 +174,15 @@ public:
     ~trie_generic()
     {
         // recursively release the memory for all nodes in tree
-        del_tree(root_);
+        del_tree(this->root_);
     }
 
     this_t &operator=(const this_t &b)
     {
-        del_tree(root_);
-        bit_comp_ = b.bit_comp_;
+        del_tree(this->root_);
+        this->bit_comp_ = b.bit_comp_;
         alloc_ = b.alloc_;
-        root_ = 0;
+        this->root_ = 0;
         size_ = 0;
         insert(b.begin(), b.end());
         return *this;
@@ -180,16 +190,16 @@ public:
 
     void swap(this_t &b)
     {
-        std::swap(bit_comp_, b.bit_comp_);
+        std::swap(this->bit_comp_, b.bit_comp_);
         std::swap(alloc_, b.alloc_);
-        std::swap(root_, b.root_);
+        std::swap(this->root_, b.root_);
         std::swap(size_, b.size_);
     }
 
     void clear()
     {
-        del_tree(root_);
-        root_ = 0;
+        del_tree(this->root_);
+        this->root_ = 0;
     }
 
     size_type size() const
@@ -255,14 +265,12 @@ public:
     void merge(const_iterator first, const_iterator last, Handler handler)
     {
         // если дерево пусто, надо вставить один элемент
-        if (!root_ && first != last)
+        if (!this->root_ && first != last)
         {
             insert(*first);
             ++first;
         }
-        algorithm
-            palCur(this, root_, 0)/*,
-            pal((const algorithm&)((const vertex&)first))*/;
+        algorithm palCur(this, this->root_, 0);
         vertex vtx((const vertex&)first);
         const algorithm &palEnd((const algorithm&)((const vertex&)last));
         word_t skip = 0;
@@ -285,7 +293,7 @@ public:
             else
                 vtx.toggle();
             skip = ((const algorithm&)vtx).get_q()->get_skip();
-            vtx.descend<0>();
+            vtx.template descend<0>();
         }
     }
 
@@ -298,14 +306,14 @@ public:
     // erase all values with specified prefix
     size_type erase(const key_type &key, word_t prefixLen = ~word_t(0))
     {
-        if (root_)
+        if (this->root_)
         {
-            algorithm pal(this, root_, 0);
+            algorithm pal(this, this->root_, 0);
             if (pal.mismatch(key, prefixLen) >= prefixLen)
             {
                 const size_type pastSize = size();
                 // if erase entire tree
-                if (pal.get_q() == root_)
+                if (pal.get_q() == this->root_)
                 {
                     clear();
                     return pastSize;
@@ -325,7 +333,7 @@ private:
             postorder_iterator
                 pit(vertex(this, node, 0)),
                 pitEnd(vertex(this, node, 1));
-            for (pit->descend<0>(); pit != pitEnd; ++pit)
+            for (pit->template descend<0>(); pit != pitEnd; ++pit)
             {
                 if (!pit->leaf())
                     del_node(static_cast<algorithm&>(*pit).get_p());
@@ -359,8 +367,8 @@ private:
     {
         node_type *p = pal.erase();
         // special case: del root
-        if (p == root_)
-            root_ = pal.get_q() == p ? 0 : pal.get_q();
+        if (p == this->root_)
+            this->root_ = pal.get_q() == p ? 0 : pal.get_q();
         // sic transit gloria mundi
         del_node(p);
     }
@@ -369,11 +377,11 @@ protected:
     // create root in empty trie
     algorithm add_root(const value_type &val)
     {
-        root_ = alloc_.allocate(1);
-        alloc_.construct(root_, node_type(val));
-        root_->init_root();
+        this->root_ = alloc_.allocate(1);
+        alloc_.construct(this->root_, node_type(val));
+        this->root_->init_root();
         size_ = 1;
-        return algorithm(this, root_, 0);
+        return algorithm(this, this->root_, 0);
     }
 
     // add new node with unique key
@@ -383,7 +391,7 @@ protected:
         node_type *r = alloc_.allocate(1);
         alloc_.construct(r, node_type(val));
         // add new node into trie
-        const word_t b = bit_comp_.get_bit(T::ref_key(val), prefixLen);
+        const word_t b = this->bit_comp_.get_bit(T::ref_key(val), prefixLen);
         pal.add(r, b, prefixLen);
         ++size_;
         return algorithm(this, r, b);

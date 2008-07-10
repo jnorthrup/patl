@@ -1,6 +1,14 @@
 #ifndef PATL_CONFIG_HPP
 #define PATL_CONFIG_HPP
 
+#ifdef PATL_GCC
+
+#define PATL_32
+typedef unsigned int word_t;
+typedef int sword_t;
+
+#else // PATL_GCC
+
 #ifdef _WIN64
 
 #define PATL_64
@@ -21,13 +29,15 @@ typedef undefined sword_t;
 
 #endif
 
+#define PATL_INTRINSIC
+
+#endif // PATL_GCC
+
 const word_t bits_in_word = 8 * sizeof(word_t);
 
 // allow to store additional info in less significant bit in some pointers
 // used in "impl/node.hpp" and "impl/algorithm.hpp"
 #define PATL_ALIGNHACK
-
-#define PATL_INTRINSIC
 
 #ifdef _DEBUG
 
@@ -35,6 +45,6 @@ const word_t bits_in_word = 8 * sizeof(word_t);
 #undef PATL_ALIGNHACK
 #undef PATL_INTRINSIC
 
-#endif
+#endif // _DEBUG
 
 #endif

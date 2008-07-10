@@ -1,7 +1,7 @@
 #ifndef PATL_IMPL_SUFFIX_MAP_HPP
 #define PATL_IMPL_SUFFIX_MAP_HPP
 
-#include "impl/suffix_generic.hpp"
+#include "node.hpp"
 
 namespace uxn
 {
