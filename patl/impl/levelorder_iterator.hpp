@@ -63,7 +63,8 @@ public:
 
     this_t &operator++()
     {
-        vtx_.move(1, limit_);
+        vtx_.move_subtree<1>();
+        vtx_.descend<0>(limit_);
         return *this;
     }
     this_t operator++(int)
@@ -75,7 +76,8 @@ public:
 
     this_t &operator--()
     {
-        vtx_.move(0, limit_);
+        vtx_.move_subtree<0>();
+        vtx_.descend<1>(limit_);
         return *this;
     }
     this_t operator--(int)

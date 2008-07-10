@@ -48,18 +48,6 @@ public:
         ++*this;
         return it;
     }
-
-    this_t &operator--()
-    {
-        --(*(super*)this);
-        return *this;
-    }
-    this_t operator--(int)
-    {
-        this_t it(*this);
-        --*this;
-        return it;
-    }
 };
 
 } // namespace impl

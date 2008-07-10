@@ -2,8 +2,39 @@
 #include <uxn/patl/maxrep_iterator.hpp>
 #include <uxn/patl/super_maxrep_iterator.hpp>
 #include <uxn/patl/suffix_set.hpp>
+#include <uxn/patl/partial.hpp>
 
 namespace patl = uxn::patl;
+
+template <typename Iter>
+void printRegexp(word_t length, const Iter &beg, const Iter &end)
+{
+	for (Iter cur = beg; cur != end; ++cur)
+	{
+		if (beg != cur)
+			printf("|");
+		if (cur->leaf())
+			printf("%s", cur->key().substr(length).c_str());
+		else
+		{
+            const word_t
+                next_len = cur->next_skip() / 8,
+                bit_len = 8 * (next_len + 1);
+			printf("%s", cur->key().substr(length, next_len - length).c_str());
+			Iter
+                it1 = cur->levelorder_begin(bit_len),
+                it2 = cur->levelorder_end(bit_len);
+			printf("(");
+			const bool question = it1->key().size() == next_len;
+			if (question)
+				++it1;
+            printRegexp(next_len, it1, it2);
+			printf(")");
+			if (question)
+				printf("?");
+		}
+	}
+}
 
 int main()
 {
@@ -58,11 +89,31 @@ int main()
     //
     printf("\n---\n\n");
     //
+    {
+        typedef patl::partial_match<StringSet> part_match;
+        part_match pm(test1, "b?l?t");
+        typedef StringSet::const_partimator<part_match> const_part;
+        const_part
+            it = test1.begin(pm),
+            itEnd = test1.end(pm);
+        printf("*** 'b?l?t':\n");
+        for (; it != itEnd; ++it)
+            printf("%s\n", it->c_str());
+        printf("---\n");
+        pm = part_match(test1, "b?l??");
+        it = test1.begin(pm);
+        itEnd = test1.end(pm);
+        printf("*** 'b?l??\':\n");
+        for (; it != itEnd; ++it)
+            printf("%s\n", it->c_str());
+    }
+    //
+    printf("\n---\n\n");
+    //
     typedef StringSet::vertex vertex;
-    typedef StringSet::preorder_iterator preorder_iterator;
-    typedef StringSet::postorder_iterator postorder_iterator;
     const vertex vtx_root(&test1);
     {
+        typedef StringSet::postorder_iterator postorder_iterator;
         postorder_iterator
             itBeg = vtx_root.postorder_begin(),
             itEnd = vtx_root.postorder_end(),
@@ -80,6 +131,7 @@ int main()
     printf("\n---\n\n");
     //
     {
+        typedef StringSet::preorder_iterator preorder_iterator;
         preorder_iterator
             itBeg = vtx_root.preorder_begin(),
             itEnd = vtx_root.preorder_end(),
@@ -92,6 +144,30 @@ int main()
             --it;
             printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
+    }
+    //
+    printf("\n---\n\n");
+    //
+    {
+        const char *const X[] = {
+            "asm", "auto", "bool", "break", "case", "catch", "char", "class", "const", 
+            "const_cast", "continue", "default", "delete", "do", "double", 
+            "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false",
+            "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable",
+            "namespace", "new", "operator", "private", "protected", "public", 
+            "register", "reinterpret_cast", "return", "short", "signed", "sizeof",
+            "static", "static_cast", "struct", "switch", "template", "this", "throw",
+            "true", "try", "typedef", "typeid", "typename", "union", "unsigned", 
+            "using", "virtual", "void", "volatile", "wchar_t", "while"};
+
+            typedef patl::trie_set<std::string> ReservSet;
+            typedef ReservSet::vertex vertex;
+            ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
+
+            printf("*** Regexp:\n");
+            const vertex vtx(&rvset);
+            printRegexp(0, vtx.levelorder_begin(8), vtx.levelorder_end(8));
+            printf("\n");
     }
     //
     printf("\n---\n\n");

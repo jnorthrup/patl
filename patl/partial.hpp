@@ -9,29 +9,29 @@ namespace uxn
 namespace patl
 {
 
-// параметры шаблона: класс контейнера и флаг совпадения длин маски и ключа
-// (для суффикс-контейнеров имеет смысл только false)
+/// параметры шаблона: класс контейнера и флаг совпадения длин маски и ключа
+/// (для суффикс-контейнеров имеет смысл только false)
 template <typename Container, bool SameLength = false>
 class partial_match
 {
     typedef Container cont_type;
     typedef typename cont_type::key_type key_type;
     typedef typename cont_type::bit_compare bit_compare;
-    static const word_t bit_size = bit_compare::bit_size;
 
 public:
+    static const word_t bit_size = bit_compare::bit_size;
+
     partial_match(
-        const cont_type &cont,  // экземпляр контейнера
-        const key_type &mask,   // маска с джокерами '?'
-        word_t maskLen = ~word_t(0))  // длина маски в битах (для бесконечных строк)
+        const cont_type &cont,          // экземпляр контейнера
+        const key_type &mask,           // маска с джокерами '?'
+        word_t maskLen = ~word_t(0))    // длина маски в битах (для бесконечных строк)
         : bit_comp_(cont.bit_comp())
         , mask_(mask)
     {
         mask_len_ = impl::get_min(maskLen, bit_comp_.bit_length(mask_) - bit_size);
     }
 
-    // проверка на возможность присутствия бита со значением id
-    // в позиции skip
+    /// проверка на возможность присутствия бита со значением id в позиции skip
     bool operator()(word_t skip, word_t id) const
     {
         return skip < mask_len_ + (SameLength ? bit_size : 0)
@@ -39,9 +39,10 @@ public:
             : true;
     }
 
-    // здесь сравнивается маска с ключом и возвращается номер первого
-    // несовпадающего бита (~word_t(0), если ключ совпадает с маской)
-    word_t operator()(const key_type &str) const
+    /// здесь сравнивается маска с ключом
+    /// раньше выдавался номер первого несовпадающего бита, но в общем случае
+    /// это не имеет смысла, поэтому интерфейс был упрощен
+    bool operator()(const key_type &str) const
     {
         const word_t strLen = bit_comp_.bit_length(str) - bit_size;
         for (word_t i = 0;
@@ -49,9 +50,9 @@ public:
              ++i)
         {
             if (mask_[i] != '?' && mask_[i] != str[i])
-                return i * bit_size + impl::bit_mismatch_scalar(mask_[i], str[i]);
+                return false;
         }
-        return strLen < mask_len_ ? strLen : ~word_t(0);
+        return strLen >= mask_len_;
     }
 
 private:
@@ -60,10 +61,9 @@ private:
     word_t mask_len_;
 };
 
-// ровно то же, что и в предыдущем функторе, только поддерживается
-// вектор, содержащий номера несовпадающих битов ключа и маски
-// по мере движения в глубину дерева
-// Внимание! С этим функтором не могут использоваться [const_]reverse_partimator
+/// ровно то же, что и в предыдущем функторе, только поддерживается
+/// вектор, содержащий номера несовпадающих битов ключа и маски
+/// по мере движения в глубину дерева
 template <typename cont_type, bool SameLength = false>
 class hamming_distance
 {
@@ -113,7 +113,7 @@ public:
             return true;
     }
 
-    word_t operator()(const key_type &str) const
+    bool operator()(const key_type &str) const
     {
         const word_t strLen = bit_comp_.bit_length(str) - bit_size;
         for (word_t i = 0, diff = 0;
@@ -121,9 +121,9 @@ public:
              ++i)
         {
             if (mask_[i] != str[i] && ++diff > dist_)
-                return i * bit_size + impl::bit_mismatch_scalar(mask_[i], str[i]);
+                return false;
         }
-        return strLen < mask_len_ ? strLen : ~word_t(0);
+        return strLen >= mask_len_;
     }
 
 private:

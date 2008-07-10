@@ -64,7 +64,7 @@ public:
         else
         {
             vtx_.toggle();
-            vtx_.descend(0);
+            vtx_.descend<0>();
         }
         return *this;
     }
