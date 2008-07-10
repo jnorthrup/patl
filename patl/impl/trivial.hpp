@@ -2,6 +2,7 @@
 #define PATL_IMPL_TRIVIAL_HPP
 
 #include "../config.hpp"
+#include <assert.h>
 
 #ifdef PATL_INTRINSIC
 #include <intrin.h>

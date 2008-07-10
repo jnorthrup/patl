@@ -100,7 +100,7 @@ public:
         cur->set_root_a();
         if (!vtx.get_qtag())
             vtx.iterate(0);
-        for (; vtx != vtxEnd; vtx.move_generic(1))
+        for (; vtx != vtxEnd; vtx.move_subtree<1>())
         {
             // descend to the leaves
             for (; !vtx.get_qtag(); vtx.iterate(0))

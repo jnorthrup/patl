@@ -411,6 +411,12 @@ public:
 #endif
     }
 
+    bool the_end() const
+    {
+        const node_type *q = get_q();
+        return get_qid() && !(q && q->get_parent());
+    }
+
     const cont_type *get_cont() const
     {
         return cont_;

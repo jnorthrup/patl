@@ -59,11 +59,11 @@ int main(int /*argc*/,char *argv[])
 		//const PartMatch pm("боковой",3);
 		const PartMatch pm(cconc,"часовой",2);
 		//const PartMatch pm(cconc,"??ден");
-		ConcorMap::const_reverse_partimator<PartMatch> rend(cconc.rend(pm));
-		for (ConcorMap::const_reverse_partimator<PartMatch> rit=cconc.rbegin(pm)
-			;rit!=rend
-			;++rit)
-			std::cout<<"'"<<rit->first<<"' -> "<<rit->second<<std::endl;
+		ConcorMap::const_partimator<PartMatch> pend(cconc.end(pm));
+		for (ConcorMap::const_partimator<PartMatch> pit=cconc.begin(pm)
+			;pit!=pend
+			;++pit)
+			std::cout<<"'"<<pit->first<<"' -> "<<pit->second<<std::endl;
 		tim.finish();
 		std::cout<<"Timer: "<<tim.get_seconds()<<" sec."<<std::endl;
 	}

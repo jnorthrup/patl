@@ -158,17 +158,21 @@ public:
     template <typename Decision>
     const_partimator<Decision> begin(const Decision &decis) const
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
-            vtx.descend_decision(0, decis);
+            return ++const_partimator<Decision>(decis, vtx);
+        else
+            vtx.toggle();
         return const_partimator<Decision>(decis, vtx);
     }
     template <typename Decision>
     partimator<Decision> begin(const Decision &decis)
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
-            vtx.descend_decision(0, decis);
+            return ++partimator<Decision>(decis, vtx);
+        else
+            vtx.toggle();
         return partimator<Decision>(decis, vtx);
     }
 
@@ -176,128 +180,18 @@ public:
     template <typename Decision>
     const_partimator<Decision> end(const Decision &decis) const
     {
-        return const_partimator<Decision>(
-            decis,
-            vertex(CSELF, root_, 1));
+        return const_partimator<Decision>(decis, vertex(root(), 1));
     }
     template <typename Decision>
     partimator<Decision> end(const Decision &decis)
     {
-        return partimator<Decision>(
-            decis,
-            vertex(CSELF, root_, 1));
-    }
-
-    template <typename Decision>
-    class const_reverse_partimator
-        : public std::reverse_iterator<const_partimator<Decision> >
-    {
-        typedef std::reverse_iterator<const_partimator<Decision> > super;
-
-    public:
-        explicit const_reverse_partimator(
-            const const_partimator<Decision> &obj = const_partimator<Decision>())
-            : super(obj)
-        {
-        }
-
-        bool leaf() const
-        {
-            return (--super::base()).leaf();
-        }
-
-        const_reverse_iterator rbegin() const
-        {
-            return const_reverse_iterator((--super::base()).end());
-        }
-
-        const_reverse_iterator rend() const
-        {
-            return const_reverse_iterator((--super::base()).begin());
-        }
-
-        template <typename Decis2>
-        const_reverse_partimator<Decis2> rbegin(const Decis2 &decis) const
-        {
-            return const_reverse_partimator<Decis2>((--super::base()).end(decis));
-        }
-
-        template <typename Decis2>
-        const_reverse_partimator<Decis2> rend(const Decis2 &decis) const
-        {
-            return const_reverse_partimator<Decis2>((--super::base()).begin(decis));
-        }
-    };
-
-    template <typename Decision>
-    class reverse_partimator
-        : public std::reverse_iterator<partimator<Decision> >
-    {
-        typedef std::reverse_iterator<partimator<Decision> > super;
-
-    public:
-        explicit reverse_partimator(
-            const partimator<Decision> &obj = partimator<Decision>())
-            : super(obj)
-        {
-        }
-
-        bool leaf() const
-        {
-            return (--super::base()).leaf();
-        }
-
-        reverse_iterator rbegin() const
-        {
-            return reverse_iterator((--super::base()).end());
-        }
-
-        reverse_iterator rend() const
-        {
-            return reverse_iterator((--super::base()).begin());
-        }
-
-        template <typename Decis2>
-        reverse_partimator<Decis2> rbegin(const Decis2 &decis) const
-        {
-            return reverse_partimator<Decis2>((--super::base()).end(decis));
-        }
-
-        template <typename Decis2>
-        reverse_partimator<Decis2> rend(const Decis2 &decis) const
-        {
-            return reverse_partimator<Decis2>((--super::base()).begin(decis));
-        }
-    };
-
-    // rbegin() partimator declarations
-    template <typename Decision>
-    const_reverse_partimator<Decision> rbegin(const Decision &decis) const
-    {
-        return const_reverse_partimator<Decision>(end(decis));
-    }
-    template <typename Decision>
-    reverse_partimator<Decision> rbegin(const Decision &decis)
-    {
-        return reverse_partimator<Decision>(end(decis));
-    }
-
-    // rend() partimator declarations
-    template <typename Decision>
-    const_reverse_partimator<Decision> rend(const Decision &decis) const
-    {
-        return const_reverse_partimator<Decision>(begin(decis));
-    }
-    template <typename Decision>
-    reverse_partimator<Decision> rend(const Decision &decis)
-    {
-        return reverse_partimator<Decision>(begin(decis));
+        return partimator<Decision>(decis, vertex(root(), 1));
     }
 
     // find(const key_type&) declarations
     const_iterator find(const key_type &key) const
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         // if number of first mismatching bit end at infinity
         if (root_ && ~word_t(0) == vtx.mismatch(key))
             // then return iterator on finding
@@ -306,7 +200,7 @@ public:
     }
     iterator find(const key_type &key)
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_ && ~word_t(0) == vtx.mismatch(key))
             return iterator(vtx);
         return end();
@@ -316,12 +210,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         // find a nearest match
         if (root_)
         {
             vtx.mismatch(key, prefixLen);
-            vtx.descend(0);
+            vtx.descend<0>();
             return const_iterator(vtx);
         }
         return end();
@@ -330,12 +224,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         // find a nearest match
         if (root_)
         {
             vtx.mismatch(key, prefixLen);
-            vtx.descend(0);
+            vtx.descend<0>();
             return iterator(vtx);
         }
         return end();
@@ -345,12 +239,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
-                vtx.move(1);
-            vtx.descend(0);
+                vtx.move<1>();
+            vtx.descend<0>();
             return const_iterator(vtx);
         }
         return end();
@@ -359,12 +253,12 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
-                vtx.move(1);
-            vtx.descend(0);
+                vtx.move<1>();
+            vtx.descend<0>();
             return iterator(vtx);
         }
         return end();
@@ -379,18 +273,18 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
         {
             const word_t len = vtx.mismatch(key, prefixLen);
             vertex lower(vtx);
-            lower.descend(0);
+            lower.descend<0>();
             if (len < prefixLen)
                 return const_iter_range(
                     const_iterator(lower),
                     const_iterator(lower));
-            vtx.move(1);
-            vtx.descend(0);
+            vtx.move<1>();
+            vtx.descend<0>();
             return const_iter_range(
                 const_iterator(lower),
                 const_iterator(vtx));
@@ -401,18 +295,18 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF, root_, 0);
+        vertex vtx(CSELF);
         if (root_)
         {
             const word_t len = vtx.mismatch(key, prefixLen);
             vertex lower(vtx);
-            lower.descend(0);
+            lower.descend<0>();
             if (len < prefixLen)
                 return iter_range(
                     iterator(lower),
                     iterator(lower));
-            vtx.move(1);
-            vtx.descend(0);
+            vtx.move<1>();
+            vtx.descend<0>();
             return iter_range(
                 iterator(lower),
                 iterator(vtx));

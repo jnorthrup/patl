@@ -77,7 +77,7 @@ public:
         if (vtx_.get_qid())
         {
             vtx_.toggle();
-            vtx_.descend(1);
+            vtx_.descend<1>();
         }
         else
             vtx_.ascend();
@@ -90,14 +90,12 @@ public:
         return it;
     }
 
-protected:
     void next_subtree()
     {
-        while (vtx_.get_qid())
-            vtx_.ascend();
-        vtx_.toggle();
+        vtx_.move_subtree<1>();
     }
 
+protected:
     vertex vtx_;
 };
 

@@ -77,7 +77,7 @@ public:
     {
         this_t vtx(*this);
         if (compact())
-            vtx.descend(0);
+            vtx.descend<0>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -86,8 +86,7 @@ public:
     postorder_iterator postorder_end() const
     {
         this_t vtx(*this);
-        if (compact() != 1)
-            vtx.move(1);
+        vtx.move<1>();
         return postorder_iterator(vtx);
     }
 
@@ -99,17 +98,16 @@ public:
 
     preorder_iterator preorder_end() const
     {
-        this_t vtx(*this);
-        if (compact() != 1)
-            vtx.move(1);
-        return preorder_iterator(vtx);
+        preorder_iterator pit(*this);
+        pit.next_subtree();
+        return pit;
     }
 
     levelorder_iterator levelorder_begin(word_t limit) const
     {
         this_t vtx(*this);
         if (compact())
-            vtx.descend(0, limit);
+            vtx.descend<0>(limit);
         else
             vtx.toggle();
         return levelorder_iterator(limit, vtx);
@@ -117,10 +115,12 @@ public:
 
     levelorder_iterator levelorder_end(word_t limit) const
     {
-        this_t vtx(*this);
-        if (compact() != 1)
-            vtx.move(1, limit);
-        return levelorder_iterator(limit, vtx);
+        return ++levelorder_iterator(limit, *this);
+    }
+
+    bool the_end() const
+    {
+        return pal_.the_end();
     }
 
     bool leaf() const
@@ -164,82 +164,36 @@ public:
     }
 
     /// trie descend to the leaves
-    void descend(word_t side)
+    template <word_t Side>
+    void descend()
     {
         while (!get_qtag())
-            iterate(side);
+            iterate(Side);
     }
 
-    /// trie descend to the leaves limited by prefix length
-    void descend(word_t side, word_t prefixLen)
+    /// trie descend to the leaves limited by
+    template <word_t Side>
+    void descend(word_t limit)
     {
-        while (!get_qtag() && next_skip() < prefixLen)
-            iterate(side);
-    }
-
-    /// trie descend to the leaves driven by decision functor
-    template <typename Decision>
-    void descend_decision(word_t side, Decision &decis)
-    {
-        for (;;)
-        {
-            while (!get_qtag())
-                iterate(decis(next_skip(), side)
-                    ? side
-                    : word_t(1) ^ side);
-            if (!pal_.get_p())
-                return;
-            const word_t skip = decis(key());
-            if (skip == ~word_t(0))
-                return;
-            pal_.ascend(skip);
-            do move_generic(word_t(1) ^ side);
-            while (
-                pal_.get_q()->get_parent() &&
-                //skip() != ~word_t(0) &&
-                !decis(this->skip(), get_qid()));
-            /*if (!pal_.get_q()->get_parent())
-            return;*/
-        }
+        while (!get_qtag() && next_skip() < limit)
+            iterate(Side);
     }
 
     /// generic part of all move functions
-    void move_generic(word_t side)
+    template <word_t Side>
+    void move_subtree()
     {
-        if (get_qid() == side)
-        {
-            node_type *cur = pal_.get_q();
-            for (; cur->get_parent_id() == side; cur = cur->get_parent()) ;
-            pal_.init(cur->get_parent(), side);
-        }
-        else
-            toggle();
+        while (get_qid() == Side)
+            ascend();
+        toggle();
     }
 
     /// move to the next leaf
-    void move(word_t side)
+    template <word_t Side>
+    void move()
     {
-        move_generic(side);
-        descend(word_t(1) ^ side);
-    }
-
-    /// move to the next leaf limited by prefix length
-    void move(word_t side, word_t prefixLen)
-    {
-        move_generic(side);
-        descend(word_t(1) ^ side, prefixLen);
-    }
-
-    /// move to the next node driven by decision functor
-    template <typename Decision>
-    void move_decision(word_t side, Decision &decis)
-    {
-        do move_generic(side);
-        while (
-            pal_.get_q()->get_parent() &&
-            //skip() != ~word_t(0) &&
-            !decis(skip(), get_qid()));
-        descend_decision(word_t(1) ^ side, decis);
+        move_subtree<Side>();
+        descend<word_t(1) ^ Side>();
     }
 
     // low-level functions
@@ -274,6 +228,16 @@ public:
     void ascend()
     {
         pal_.ascend();
+    }
+
+    void ascend(sword_t prefixLen)
+    {
+        pal_.ascend(prefixLen);
+    }
+
+    void ascend_less(sword_t prefixLen)
+    {
+        pal_.ascend_less(prefixLen);
     }
 
     const cont_type *cont() const

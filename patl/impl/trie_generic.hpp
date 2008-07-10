@@ -285,7 +285,7 @@ public:
             else
                 vtx.toggle();
             skip = ((const algorithm&)vtx).get_q()->get_skip();
-            vtx.descend(0);
+            vtx.descend<0>();
         }
     }
 
@@ -325,7 +325,7 @@ private:
             postorder_iterator
                 pit(vertex(this, node, 0)),
                 pitEnd(vertex(this, node, 1));
-            for (pit->descend(0); pit != pitEnd; ++pit)
+            for (pit->descend<0>(); pit != pitEnd; ++pit)
             {
                 if (!pit->leaf())
                     del_node(static_cast<algorithm&>(*pit).get_p());
