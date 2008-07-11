@@ -30,16 +30,6 @@ public:
     {
     }
 
-    explicit vertex_generic(const cont_type *cont)
-        : pal_(cont, (const node_type*)cont->root(), 0)
-    {
-    }
-
-    vertex_generic(const prefix &pref, word_t qid)
-        : pal_(pref.cont(), (const node_type*)pref, qid)
-    {
-    }
-
     vertex_generic(const cont_type *cont, const node_type *q, word_t qid)
         : pal_(cont, q, qid)
     {
@@ -66,6 +56,11 @@ public:
     operator algorithm&()
     {
         return pal_;
+    }
+
+    operator prefix() const
+    {
+        return prefix(cont(), pal_.get_q());
     }
 
     word_t compact() const

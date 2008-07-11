@@ -111,7 +111,7 @@ int main()
     printf("\n---\n\n");
     //
     typedef StringSet::vertex vertex;
-    const vertex vtx_root(&test1);
+    const vertex vtx_root = test1.root();
     {
         typedef StringSet::postorder_iterator postorder_iterator;
         postorder_iterator
@@ -165,7 +165,7 @@ int main()
             ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
 
             printf("*** Regexp:\n");
-            const vertex vtx(&rvset);
+            const vertex vtx = rvset.root();
             printRegexp(0, vtx.levelorder_begin(8), vtx.levelorder_end(8));
             printf("\n");
     }
@@ -231,7 +231,10 @@ int main()
                     count = skip / delta + 1;
                 if (count > 1)
                 {
-                    printf("begin: %u, length: %u, count: %u\n", sibl.key() - suf.keys(), delta, count);
+                    printf("begin: %u, length: %u, count: %u\n",
+                        sibl.key() - suf.keys(),
+                        delta,
+                        count);
                     repend = sibl.key() + delta * count + 1;
                 }
             }

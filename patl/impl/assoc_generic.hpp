@@ -63,21 +63,21 @@ public:
     // begin() declarations
     const_iterator begin() const
     {
-        return const_iterator(*vertex(CSELF).postorder_begin());
+        return const_iterator(*root().postorder_begin());
     }
     iterator begin()
     {
-        return iterator(*vertex(CSELF).postorder_begin());
+        return iterator(*root().postorder_begin());
     }
 
     // end() declarations
     const_iterator end() const
     {
-        return const_iterator(*vertex(CSELF).postorder_end());
+        return const_iterator(*root().postorder_end());
     }
     iterator end()
     {
-        return iterator(*vertex(CSELF).postorder_end());
+        return iterator(*root().postorder_end());
     }
 
     class const_reverse_iterator
@@ -164,7 +164,7 @@ public:
     template <typename Decision>
     const_partimator<Decision> begin(const Decision &decis) const
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
             return ++const_partimator<Decision>(decis, vtx);
         else
@@ -174,7 +174,7 @@ public:
     template <typename Decision>
     partimator<Decision> begin(const Decision &decis)
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
             return ++partimator<Decision>(decis, vtx);
         else
@@ -186,18 +186,22 @@ public:
     template <typename Decision>
     const_partimator<Decision> end(const Decision &decis) const
     {
-        return const_partimator<Decision>(decis, vertex(root(), 1));
+        vertex vtx(root());
+        vtx.toggle();
+        return const_partimator<Decision>(decis, vtx);
     }
     template <typename Decision>
     partimator<Decision> end(const Decision &decis)
     {
-        return partimator<Decision>(decis, vertex(root(), 1));
+        vertex vtx(root());
+        vtx.toggle();
+        return partimator<Decision>(decis, vtx);
     }
 
     // find(const key_type&) declarations
     const_iterator find(const key_type &key) const
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         // if number of first mismatching bit end at infinity
         if (root_ && ~word_t(0) == vtx.mismatch(key))
             // then return iterator on finding
@@ -206,7 +210,7 @@ public:
     }
     iterator find(const key_type &key)
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_ && ~word_t(0) == vtx.mismatch(key))
             return iterator(vtx);
         return end();
@@ -216,7 +220,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         // find a nearest match
         if (root_)
         {
@@ -230,7 +234,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         // find a nearest match
         if (root_)
         {
@@ -245,7 +249,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
@@ -259,7 +263,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
         {
             if (vtx.mismatch(key, prefixLen) >= prefixLen)
@@ -279,7 +283,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0)) const
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
         {
             const word_t len = vtx.mismatch(key, prefixLen);
@@ -301,7 +305,7 @@ public:
         const key_type &key,
         word_t prefixLen = ~word_t(0))
     {
-        vertex vtx(CSELF);
+        vertex vtx(root());
         if (root_)
         {
             const word_t len = vtx.mismatch(key, prefixLen);
@@ -342,9 +346,9 @@ public:
         return !root_;
     }
 
-    prefix root() const
+    vertex root() const
     {
-        return prefix(CSELF, root_);
+        return vertex(CSELF, root_, 0);
     }
 
     // bit_comp() declaration (like key_comp() in standard assoc containers)
