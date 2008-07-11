@@ -331,18 +331,15 @@ public:
     /// one run of the classical algorithm P
     void run(const key_type &key)
     {
-        const bit_compare bcmp(bit_comp());
         while (!get_qtag())
-            iterate(bcmp.get_bit(key, get_p()->get_skip()));
+            iterate_by_key(key);
     }
 
     /// one run of the classical algorithm P limited by prefix length
     void run(const key_type &key, word_t prefixLen)
     {
-        word_t skip;
-        const bit_compare bcmp(bit_comp());
-        while (!get_qtag() && (skip = get_p()->get_skip()) < prefixLen)
-            iterate(bcmp.get_bit(key, skip));
+        while (!get_qtag() && get_p()->get_skip() < prefixLen)
+            iterate_by_key(key);
     }
 
     /// one iteration of the classical algorithm P

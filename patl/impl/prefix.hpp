@@ -14,11 +14,10 @@ class prefix_generic
     typedef prefix_generic<Container, Node> this_t;
     typedef Node node_type;
     typedef typename Container::key_type key_type;
-
-    static const word_t bit_size = Container::bit_compare::bit_size;
+    typedef typename Container::bit_compare bit_compare;
 
 public:
-    explicit prefix_generic(const Container *cont, const node_type *q)
+    prefix_generic(const Container *cont, const node_type *q)
         : cont_(cont)
         , q_(q)
     {
@@ -55,7 +54,7 @@ public:
 
     word_t length() const
     {
-        return skip() / bit_size;
+        return skip() / bit_compare::bit_size;
     }
 
     key_type key() const
@@ -79,11 +78,12 @@ public:
         postorder_descend(cb);
         while (
             q_->get_parent() &&
-            (q_->get_skip() / bit_size == q_->get_parent()->get_skip() / bit_size ||
+            (q_->get_skip() / bit_compare::bit_size ==
+            q_->get_parent()->get_skip() / bit_compare::bit_size ||
             cb.cond()))
                 postorder_ascend(cb);
-        if (q_->get_skip() / bit_size == 0)
-            q_ = cont_->root().q_;
+        if (q_->get_skip() / bit_compare::bit_size == 0)
+            *this = cont_->root();
     }
 
     template <typename Callback>
@@ -92,10 +92,11 @@ public:
         do postorder_ascend(cb);
         while (
             q_->get_parent() &&
-            (q_->get_skip() / bit_size == q_->get_parent()->get_skip() / bit_size ||
+            (q_->get_skip() / bit_compare::bit_size ==
+            q_->get_parent()->get_skip() / bit_compare::bit_size ||
             cb.cond()));
-        if (q_->get_skip() / bit_size == 0)
-            q_ = cont_->root().q_;
+        if (q_->get_skip() / bit_compare::bit_size == 0)
+            *this = cont_->root();
     }
 
 private:
