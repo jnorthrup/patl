@@ -86,7 +86,7 @@ public:
         mask_len_ = impl::get_min(maskLen, bit_comp_.bit_length(mask_) - bit_size);
     }
 
-    bool operator()(word_t skip, word_t id) const
+    bool operator()(word_t skip, word_t id)
     {
         while (!diff_.empty() && skip <= diff_.back())
         {
@@ -113,7 +113,7 @@ public:
             return true;
     }
 
-    bool operator()(const key_type &str) const
+    bool operator()(const key_type &str)
     {
         const word_t strLen = bit_comp_.bit_length(str) - bit_size;
         for (word_t i = 0, diff = 0;
@@ -131,8 +131,8 @@ private:
     key_type mask_;
     word_t dist_;
     word_t mask_len_;
-    mutable std::vector<word_t> diff_;
-    mutable word_t diff_elem_;
+    std::vector<word_t> diff_;
+    word_t diff_elem_;
 };
 
 } // namespace patl

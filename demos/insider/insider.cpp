@@ -87,13 +87,30 @@ int main()
             printf("\t%s\n", cit->c_str());
     }
     //
-    printf("\n---\n\n");
+    printf("\n--- iterator\n\n");
+    //
+    {
+        typedef StringSet::const_iterator const_iter;
+        const_iter
+            itBeg = test1.begin(),
+            itEnd = test1.end(),
+            it = itBeg;
+        for (; it != itEnd; ++it)
+            printf("%s\n", it->c_str());
+        printf("---\n");
+        while (it != itBeg)
+        {
+            --it;
+            printf("%s\n", it->c_str());
+        }
+    }
+    //
+    printf("\n--- partial_match\n\n");
     //
     {
         typedef patl::partial_match<StringSet> part_match;
         part_match pm(test1, "b?l?t");
-        typedef StringSet::const_partimator<part_match> const_part;
-        const_part
+        StringSet::const_partimator<part_match>
             it = test1.begin(pm),
             itEnd = test1.end(pm);
         printf("*** 'b?l?t':\n");
@@ -108,7 +125,20 @@ int main()
             printf("%s\n", it->c_str());
     }
     //
-    printf("\n---\n\n");
+    printf("\n--- hamming_distance\n\n");
+    //
+    {
+        typedef patl::hamming_distance<StringSet> hamm_dist;
+        hamm_dist hd(test1, "balda", 2);
+        StringSet::const_partimator<hamm_dist>
+            it = test1.begin(hd),
+            itEnd = test1.end(hd);
+        printf("*** 'balda', dist == 2:\n");
+        for (; it != itEnd; ++it)
+            printf("%s\n", it->c_str());
+    }
+    //
+    printf("\n--- postorder_iterator\n\n");
     //
     typedef StringSet::vertex vertex;
     const vertex vtx_root = test1.root();
@@ -128,7 +158,7 @@ int main()
         }
     }
     //
-    printf("\n---\n\n");
+    printf("\n--- preorder_iterator\n\n");
     //
     {
         typedef StringSet::preorder_iterator preorder_iterator;
@@ -146,7 +176,7 @@ int main()
         }
     }
     //
-    printf("\n---\n\n");
+    printf("\n--- levelorder_iterator\n\n");
     //
     {
         const char *const X[] = {
@@ -170,52 +200,45 @@ int main()
             printf("\n");
     }
     //
-    printf("\n---\n\n");
+    printf("\n--- [super_]maxrep_iterator\n\n");
     //
     {
-        typedef StringSet::const_iterator const_iter;
-        const_iter
-            itBeg = test1.begin(),
-            itEnd = test1.end(),
-            it = itBeg;
-        for (; it != itEnd; ++it)
-            printf("%s\n", it->c_str());
-        printf("---\n");
-        while (it != itBeg)
-        {
-            --it;
-            printf("%s\n", it->c_str());
-        }
-    }
-    //
-    {
-        printf("---\n");
         typedef patl::suffix_set<char*> SuffixSet;
         char str[] =
             //"abrakadabraa";
             "xabcyiiizabcqabcyr";
             //"cxxaxxaxxb";
             //"How many wood would a woodchuck chuck.";
-        //"xgtcacaytgtgacz";
+            //"xgtcacaytgtgacz";
+        printf("*** string: '%s':\n", str);
         SuffixSet suffix(str);
         for (unsigned i = 0; i != sizeof(str) - 1; ++i)
             suffix.push_back();
+        for (uxn::patl::maxrep_iterator<SuffixSet> mrit(&suffix)
+            ; !mrit->is_root()
+            ; ++mrit)
+            printf("'%s' x %d\n",
+            std::string(mrit->key(), mrit->length()).c_str(),
+            mrit.freq());
+        printf("---\n");
         for (uxn::patl::super_maxrep_iterator<SuffixSet> mrit(&suffix)
             ; !mrit->is_root()
             ; ++mrit)
-            printf("\"%s\" x %d\n",
+            printf("'%s' x %d\n",
             std::string(mrit->key(), mrit->length()).c_str(),
             mrit.freq());
     }
     //
+    printf("\n--- search tandem repeats in O(n)\n\n");
+    //
     {
-        printf("---\n");
-        typedef int typ;
-        //typedef char typ;
+        //typedef int typ;
+        typedef char typ;
         typedef patl::suffix_set<const typ*> suffix_t;
-        typ arr[] = {10, 5, 6, 7, 5, 6, 7, 89, 64};
-        //typ arr[] = "qweabrabrabraad";
+        //typ arr[] = {10, 5, 6, 7, 5, 6, 7, 89, 64};
+        typ arr[] = "qweabrabrabraad";
         //typ arr[] = "qweabrabrrrrd";
+        printf("*** string: '%s':\n", arr);
         suffix_t suf(arr, sizeof(arr) / sizeof(arr[0]));
         const typ *repend = arr;
         do
