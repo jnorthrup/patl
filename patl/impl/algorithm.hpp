@@ -1,8 +1,8 @@
 /*-
- | trie_map, trie_set, suffix_map, suffix_set template containers, v0.31
+ | trie_map, trie_set, suffix_map, suffix_set template containers, v0.x
  | Based on PATRICIA trie
  | Key features: STL-compatible, high performance with non-scalar keys
- | Compile with: MSVC 2005, MSVC 2008, GCC 3.4.5
+ | Compile with: MSVC 2003/2005/2008, G++ 3.x
  |
  | (c) 2005, 2007..2008 by Roman S. Klyujkov, rsk_comp at mail.ru
  |
