@@ -143,6 +143,11 @@ inline word_t unsigned_cast(Source val)
         ~word_t(0) >> (sizeof(word_t) - sizeof(Source)) * 8;
 }
 
+inline word_t unsigned_cast(word_t val)
+{
+    return val;
+}
+
 template <typename T>
 inline word_t bit_mismatch_scalar(T a, T b)
 {

@@ -7,6 +7,16 @@
 #include <uxn/patl/super_maxrep_iterator.hpp>
 #include <uxn/patl/suffix_set.hpp>
 
+template <typename T>
+struct ptr_less
+    : public std::less<T>
+{
+    bool operator()(const T *a, const T *b) const
+    {
+        return std::less<T>()(*a, *b);
+    }
+};
+
 namespace patl = uxn::patl;
 
 typedef std::string WordType;
@@ -14,12 +24,14 @@ typedef std::vector<WordType> Words;
 typedef patl::trie_set<WordType*, patl::ptr_bit_comparator<WordType> > WordSet;
 typedef std::vector<WordType*> Text;
 typedef patl::suffix_set<WordType**> SuffixType;
+typedef std::set<WordType*, ptr_less<WordType> > WordStdSet;
 
 static Words words;
 static WordSet
     noiseWordset,
     wordset;
 static Text text;
+static WordStdSet wordStdSet;
 
 /*static buffered_output log1("log1.txt");
 static buffered_output log2("log2.txt");*/
@@ -109,6 +121,7 @@ inline void insertIt(const WordType &word_t)
         words.pop_back();
         return;
     }
+    wordStdSet.insert(&words[i]);
     std::pair<WordSet::iterator, bool> itIns = wordset.insert(&words[i]);
     if (!itIns.second)
         words.pop_back();
@@ -159,7 +172,10 @@ int main(int argc, char *argv[])
     parse(inp, insertIt);
     insertIt("***EOF***");
     //
-    printf("Words count: %d\n", words.size());
+    printf("Words count: %d (trie: %d, std: %d)\n",
+        words.size(),
+        wordset.size(),
+        wordStdSet.size());
     printf("Words in text: %d\n", text.size());
     //
     SuffixType suffix(&text[0], text.size());

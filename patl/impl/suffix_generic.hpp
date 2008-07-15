@@ -90,7 +90,7 @@ class suffix_generic
         suffix_generic_traits<T, algorithm_gen_suffix, suffix_generic<T> > >
 {
     typedef suffix_generic<T> this_t;
-    typedef suffix_generic_traits<T, algorithm_gen_suffix, this_t > traits;
+    typedef suffix_generic_traits<T, algorithm_gen_suffix, this_t> traits;
     typedef assoc_generic<this_t, traits> super;
 
 protected:
@@ -162,13 +162,13 @@ public:
         return prefix(this, trie_[id]);
     }
 
-    // возвращает true, если контейнер пуст либо полностью заполнен
+    /// return true if suffix_cont is empty OR full
     bool endpoint() const
     {
         return trie_.endpoint();
     }
 
-    // удаляем наиболее ранний суффикс
+    /// erase front suffix
     void pop_front()
     {
         node_type *front = trie_.front();
@@ -181,7 +181,7 @@ public:
         keys_ += delta;
     }
 
-    // удаляем последний добавленный суффикс
+    /// erase back suffix
     void pop_back()
     {
         node_type *back = trie_.back();
@@ -204,17 +204,6 @@ public:
         word_t root_pos = trie_.index_of(this->root_);
         trie_.reserve(newSize);
         this->root_ = this->root_ ? trie_[root_pos] : 0;
-    }
-
-    // check integrity
-    word_t integrity()
-    {
-        for (word_t i = 0; i != trie_.size(); ++i)
-        {
-            if (!trie_[i]->integrity())
-                return i;
-        }
-        return ~word_t(0);
     }
 
     class match_iterator

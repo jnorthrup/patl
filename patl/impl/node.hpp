@@ -11,20 +11,20 @@ namespace patl
 namespace impl
 {
 
-/// Базовый класс узлов PATRICIA trie
+/// Base class of PATRICIA node
 template <typename Node>
 class node_generic
 {
     typedef Node node_type;
 
 public:
-    // get
+    /// get id of self-pointer (if any exist)
     word_t get_self_id() const
     {
         return get_xlink(1) == this ? 1 : 0;
     }
 
-    // return ptr to parent
+    /// return parent node
     const node_type *get_parent() const
     {
 #ifdef PATL_ALIGNHACK
@@ -42,7 +42,7 @@ public:
 #endif
     }
 
-    // return node left|right id
+    /// return node id relate to parent
     word_t get_parent_id() const
     {
 #ifdef PATL_ALIGNHACK
@@ -52,7 +52,7 @@ public:
 #endif
     }
 
-    // return ptr to node son by id
+    /// return child node by id
     const node_type *get_xlink(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -70,7 +70,7 @@ public:
 #endif
     }
 
-    // return tag of node son by id
+    /// return tag of child node by id
     word_t get_xtag(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -80,13 +80,13 @@ public:
 #endif
     }
 
-    // return a number of mismatching bit
+    /// return the number of distinction bit
     word_t get_skip() const
     {
         return skip_;
     }
 
-    // set
+    /// set parent info
     void set_parentid(node_type *parent, word_t id)
     {
 #ifdef PATL_ALIGNHACK
@@ -98,6 +98,7 @@ public:
 #endif
     }
 
+    /// set child info by id
     void set_xlinktag(word_t id, const node_type *link, word_t tag)
     {
 #ifdef PATL_ALIGNHACK
@@ -109,12 +110,13 @@ public:
 #endif
     }
 
+    /// set the number of distinction bit
     void set_skip(word_t skip)
     {
         skip_ = skip;
     }
 
-    // root special initialization
+    /// root special initialization
     void init_root()
     {
         set_parentid(0, 0);
@@ -126,6 +128,7 @@ public:
         set_xlinktag(1, 0, 1);
     }
 
+    /// for debug only
     bool integrity() const
     {
         const word_t
@@ -142,6 +145,7 @@ public:
             tag0 && tag1;
     }
 
+    /// for debug only
     const char *visualize(const node_type *id0) const
     {
         static char buf[256];
@@ -157,28 +161,29 @@ public:
         return buf;
     }
 
-    void make_root(node_type *oldRoot)
+    /// change the root
+    void make_root(node_type *old_root)
     {
-        std::swap(skip_, oldRoot->skip_);
+        std::swap(skip_, old_root->skip_);
 #ifdef PATL_ALIGNHACK
-        std::swap(parentid_, oldRoot->parentid_);
-        std::swap(linktag_[0], oldRoot->linktag_[0]);
-        std::swap(linktag_[1], oldRoot->linktag_[1]);
+        std::swap(parentid_, old_root->parentid_);
+        std::swap(linktag_[0], old_root->linktag_[0]);
+        std::swap(linktag_[1], old_root->linktag_[1]);
 #else
-        std::swap(parent_, oldRoot->parent_);
-        std::swap(link_[0], oldRoot->link_[0]);
-        std::swap(link_[1], oldRoot->link_[1]);
-        std::swap(tagsid_, oldRoot->tagsid_);
+        std::swap(parent_, old_root->parent_);
+        std::swap(link_[0], old_root->link_[0]);
+        std::swap(link_[1], old_root->link_[1]);
+        std::swap(tagsid_, old_root->tagsid_);
 #endif
-        oldRoot->get_parent()->set_xlinktag(oldRoot->get_parent_id(), oldRoot, 0);
-        if (!oldRoot->get_xtag(0))
-            oldRoot->get_xlink(0)->set_parentid(oldRoot, 0);
-        if (!oldRoot->get_xtag(1))
-            oldRoot->get_xlink(1)->set_parentid(oldRoot, 1);
+        old_root->get_parent()->set_xlinktag(old_root->get_parent_id(), old_root, 0);
+        if (!old_root->get_xtag(0))
+            old_root->get_xlink(0)->set_parentid(old_root, 0);
+        if (!old_root->get_xtag(1))
+            old_root->get_xlink(1)->set_parentid(old_root, 1);
         get_xlink(0)->set_parentid(reinterpret_cast<node_type*>(this), 0);
     }
 
-    // copy data members from right except value_
+    /// copy data members from right except value_
     void set_all_but_value(const node_type *right)
     {
         skip_ = right->skip_;
@@ -208,15 +213,18 @@ public:
     }
 
 private:
+    /// the number of distinction bit
     word_t skip_;
 #ifdef PATL_ALIGNHACK
+    /// compact representation of parent node with parent-id
     word_t parentid_;
+    /// compact representation of child nodes with their tags
     word_t linktag_[2];
 #else
     node_type
-        *parent_,
-        *link_[2];
-    word_t tagsid_;
+        *parent_, /// parent node
+        *link_[2]; /// child nodes
+    word_t tagsid_; /// parent-id with child tags
 #endif
 };
 
