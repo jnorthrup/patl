@@ -11,8 +11,9 @@ namespace patl
 namespace impl
 {
 
-/// раньше этот класс был bidirectional, но обратный проход с пропусками
-/// слишком сложен и не имеет практического смысла, потому был удален
+/// Partial match iterator class
+/// NOTE раньше этот класс был bidirectional, но обратный проход с пропусками
+/// NOTE слишком сложен и не имеет практического смысла, потому был удален
 template <typename Vertex, typename Decision>
 class const_partimator_generic
     : public std::iterator<
@@ -65,19 +66,19 @@ public:
     {
         for (;;)
         {
-            // следующий узел в прямом порядке
+            // next node in preorder depth-first
             ++pit_;
             for (;;)
             {
-                // дошли до листа
+                // reach the leaf
                 while (pit_->leaf())
                 {
-                    // перебрали все вершины или нашли лист с правильным ключем
+                    // reach the end or find the leaf with appropriate key
                     if (pit_->the_end() || decis_(pit_->key()))
                         return *this;
                     pit_.next_subtree();
                 }
-                // если такого бита в образце нет - пропускаем целое поддерево
+                // if current bit is illegal in pattern - skip whole subtree
                 if (!decis_(pit_->skip(), pit_->get_qid()))
                     pit_.next_subtree();
                 else

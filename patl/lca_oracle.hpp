@@ -63,8 +63,6 @@ public:
         lca_map_ = unsigned_alloc_.allocate(lca_size_ + 1);
         // numerate, set I- & L-nodes
         word_t num = 0;
-        /*algorithm pal(cont_, cont_->root_, 0);
-        const algorithm palEnd(cont_, cont_->root_, 1);*/
         vertex vtx(cont_, cont_->root_, 0);
         const vertex vtxEnd(cont_, cont_->root_, 1);
         while (vtx != vtxEnd)
@@ -85,7 +83,6 @@ public:
                     get_by((const algorithm&)vtx)->setup_i(this);
                 }
                 //
-                //pal.init(((const algorithm&)vtx).get_q()->get_parent(), 0);
                 vtx = vertex(cont_, ((const algorithm&)vtx).get_q()->get_parent(), 0);
                 get_by((const algorithm&)vtx)->setup_i(this);
             }
@@ -94,7 +91,6 @@ public:
         // num - last numerator
         lca_root_h_ = impl::get_highest_bit_id(num);
         // set A bits
-        //pal.init(cont_->root_, 0);
         vtx = vertex(cont_, cont_->root_, 0);
         lca_type *cur = get_by((const algorithm&)vtx);
         cur->set_root_a();

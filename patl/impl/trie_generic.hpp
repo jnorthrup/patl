@@ -17,7 +17,7 @@ template <typename T>
 class node_gen
     : public node_generic<node_gen<T> >
 {
-    // to avoid warning C4512
+    /// to avoid warning C4512
     node_gen &operator=(const node_gen&);
 
 public:
@@ -26,7 +26,7 @@ public:
     {
     }
 
-    // return stored value in node
+    /// return value stored in node
     typename T::value_type &get_value()
     {
         return value_;
@@ -78,7 +78,7 @@ public:
 		return algorithm_gen(0, q, qid);
 	}
 
-    // return value stored in algorithm
+    /// return value stored in algorithm
     value_type &get_value()
     {
         return this->get_p()->get_value();
@@ -173,7 +173,6 @@ public:
 
     ~trie_generic()
     {
-        // recursively release the memory for all nodes in tree
         del_tree(this->root_);
     }
 
@@ -239,13 +238,13 @@ public:
         return iter_bool_pair(iterator(vertex(add_root(val))), true);
     }
 
-    // just for backward compatibility with std assoc containers
+    /// just for backward compatibility with std assoc containers
     iterator insert(iterator, const value_type &val)
     {
         return insert(val).first;
     }
 
-    // template of insert range
+    /// template of insert range
     template <typename Iter>
     void insert(Iter first, Iter last)
     {
@@ -260,11 +259,11 @@ public:
         }
     };
 
-    // merge two identical tries (instances of bit_compare must be equal)
+    /// merge two identical tries (instances of bit_compare must be equal)
     template <typename Handler>
     void merge(const_iterator first, const_iterator last, Handler handler)
     {
-        // если дерево пусто, надо вставить один элемент
+        // if trie is empty it is necessary to insert first element
         if (!this->root_ && first != last)
         {
             insert(*first);
@@ -279,7 +278,7 @@ public:
             palCur.ascend_less(skip);
             const word_t l = palCur.mismatch(vtx.key());
             if (~word_t(0) == l)
-                // такой ключ уже есть, по идее нужно применить функтор
+                // identical keys found - handler must be applied
                 handler(iterator(vertex(palCur)), const_iterator(vtx));
             else
                 add(vtx.value(), palCur, l);
@@ -287,7 +286,7 @@ public:
             if (vtx.get_qid())
             {
                 const node_type *cur = ((const algorithm&)vtx).get_q();
-                for (; cur->get_parent_id(); cur = cur->get_parent());
+                for (; cur->get_parent_id(); cur = cur->get_parent()) ;
                 vtx = vertex(this, cur->get_parent(), 1);
             }
             else
@@ -303,7 +302,7 @@ public:
         erase_node(static_cast<algorithm&>(static_cast<vertex&>(delIt)));
     }
 
-    // erase all values with specified prefix
+    /// erase all values with specified prefix
     size_type erase(const key_type &key, word_t prefixLen = ~word_t(0))
     {
         if (this->root_)
@@ -355,7 +354,7 @@ private:
         {
             // deallocate subtree
             del_tree(pal.get_p());
-            // we must find the node with key whose prefix
+            // need to find the node with key whose prefix
             // we erase among nodes from pal.get_q() up to root_
             pal.get_q()->set_xlinktag(pal.get_qid(),
                 pal.get_subtree_node(), 1);
@@ -374,7 +373,7 @@ private:
     }
 
 protected:
-    // create root in empty trie
+    /// create root in empty trie
     algorithm add_root(const value_type &val)
     {
         this->root_ = alloc_.allocate(1);
@@ -384,7 +383,7 @@ protected:
         return algorithm(this, this->root_, 0);
     }
 
-    // add new node with unique key
+    /// add new node with unique key
     algorithm add(const value_type &val, algorithm &pal, word_t prefixLen)
     {
         // brave new node
