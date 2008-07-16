@@ -86,7 +86,7 @@ class maxrep_iterator
 
 public:
     maxrep_iterator(const Container *cont)
-        : pref_(cont->root())
+        : pref_(cont->root_prefix())
         , sfreq_(1, 1)
     {
         func_.init(this);

@@ -415,7 +415,7 @@ public:
         return get_qid() && !(q && q->get_parent());
     }
 
-    const cont_type *get_cont() const
+    const cont_type *cont() const
     {
         return cont_;
     }

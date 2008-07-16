@@ -83,7 +83,7 @@ public:
             cb.cond()))
                 postorder_ascend(cb);
         if (q_->get_skip() / bit_compare::bit_size == 0)
-            *this = cont_->root();
+            *this = cont_->root_prefix();
     }
 
     template <typename Callback>
@@ -96,7 +96,7 @@ public:
             q_->get_parent()->get_skip() / bit_compare::bit_size ||
             cb.cond()));
         if (q_->get_skip() / bit_compare::bit_size == 0)
-            *this = cont_->root();
+            *this = cont_->root_prefix();
     }
 
 private:

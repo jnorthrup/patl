@@ -351,6 +351,11 @@ public:
         return vertex(CSELF, root_, 0);
     }
 
+    prefix root_prefix() const
+    {
+        return prefix(CSELF, root_);
+    }
+
     // bit_comp() declaration (like key_comp() in standard assoc containers)
     bit_compare bit_comp() const
     {
