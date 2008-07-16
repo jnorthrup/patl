@@ -154,12 +154,22 @@ public:
 
     word_t index_of(const vertex &vtx) const
     {
-        return trie_.index_of(static_cast<algorithm>(vtx).get_p());
+        return trie_.index_of(static_cast<const algorithm&>(vtx).get_p());
+    }
+
+    word_t index_of(const prefix &pref) const
+    {
+        return trie_.index_of(static_cast<const node_type*>(pref));
     }
 
     prefix prefix_by(word_t id) const
     {
         return prefix(this, trie_[id]);
+    }
+
+    vertex vertex_by(word_t id, word_t qid) const
+    {
+        return vertex(this, trie_[id], qid);
     }
 
     /// return true if suffix_cont is empty OR full

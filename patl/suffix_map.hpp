@@ -25,8 +25,6 @@ class suffix_map
     typedef impl::suffix_generic<
         impl::suffix_map_traits<Type, Datum, Delta, BitComp, Allocator> > super;
 
-    friend class lca_oracle<this_t>;
-
 public:
     // constructor
     suffix_map(

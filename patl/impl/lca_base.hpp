@@ -14,7 +14,6 @@ template <typename Oracle>
 class lca_base
 {
     typedef lca_base<Oracle> this_t;
-    typedef typename Oracle::algorithm algorithm;
 
 public:
     word_t number() const
@@ -75,11 +74,11 @@ public:
 
     void setup_i(Oracle *oracl)
     {
-        algorithm pal = oracl->new_algo(this);
-        pal.iterate(0);
+        vertex vtx(oracl->new_algo(this));
+        vtx.iterate(0);
         this_t
-            *ltI = oracl->get_by(pal)->get_i(),
-            *rtI = (oracl->get_by(pal) + 1)->get_i();
+            *ltI = oracl->get_by(vtx)->get_i(),
+            *rtI = (oracl->get_by(vtx) + 1)->get_i();
         const word_t
             idH = height(),
             ltH = ltI->height(),
@@ -105,9 +104,9 @@ public:
 
     void setup_a(const Oracle *oracl)
     {
-        algorithm pal = oracl->new_algo(this);
-        pal.ascend();
-        a_ = oracl->get_by(pal)->a_ |
+        vertex vtx(oracl->new_algo(this));
+        vtx.ascend();
+        a_ = oracl->get_by(vtx)->a_ |
             (word_t(1) << get_i()->height());
     }
 

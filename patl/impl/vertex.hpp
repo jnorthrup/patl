@@ -58,9 +58,9 @@ public:
         return pal_;
     }
 
-    operator prefix() const
+    prefix get_prefix() const
     {
-        return prefix(cont(), pal_.get_q());
+        return prefix(pal_.cont(), pal_.get_q());
     }
 
     word_t compact() const
@@ -229,6 +229,11 @@ public:
         return pal_.get_qtag();
     }
 
+    word_t get_parent_id() const
+    {
+        return pal_.get_q()->get_parent_id();
+    }
+
     void toggle()
     {
         pal_.toggle();
@@ -256,7 +261,7 @@ public:
 
     const cont_type *cont() const
     {
-        return pal_.get_cont();
+        return pal_.cont();
     }
 
 protected:

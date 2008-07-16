@@ -50,7 +50,7 @@ class super_maxrep_iterator
 
     void unique_update(unique_type &us, const prefix &pref)
     {
-        if (pref == pref.cont()->root())
+        if (pref.is_root())
             us.clear();
         else if (pref.leaf(0))
         {
@@ -131,7 +131,7 @@ class super_maxrep_iterator
 
 public:
     super_maxrep_iterator(const Container *cont)
-        : pref_(cont->root())
+        : pref_(cont->root_prefix())
     {
         push_new_pair();
         func_.init(this);

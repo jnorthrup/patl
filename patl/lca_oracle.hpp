@@ -13,32 +13,31 @@ class lca_oracle
 {
     typedef SuffixCont suffix_cont;
     typedef typename suffix_cont::allocator_type allocator_type;
-    typedef typename suffix_cont::algorithm algorithm;
     typedef typename suffix_cont::vertex vertex;
+    typedef typename suffix_cont::prefix prefix;
     typedef impl::lca_base<lca_oracle<suffix_cont> > lca_type;
 
-    friend class impl::lca_base<lca_oracle<suffix_cont> >;
-
-    const lca_type *get_by(const algorithm &pal) const
+public:
+    /// utility func
+    const lca_type *get_by(const vertex &vtx) const
     {
-        return lca_ + (cont_->trie_.index_of(pal.get_q()) * 2 | pal.get_qid());
+        return lca_ + (cont_->index_of(vtx.get_prefix()) * 2 | vtx.get_qid());
     }
 
-    lca_type *get_by(const algorithm &pal)
+    /// utility func
+    lca_type *get_by(const vertex &vtx)
     {
-        return lca_ + (cont_->trie_.index_of(pal.get_q()) * 2 | pal.get_qid());
+        return lca_ + (cont_->index_of(vtx.get_prefix()) * 2 | vtx.get_qid());
     }
 
-    algorithm new_algo(const lca_type *cur) const
+    /// utility func
+    vertex new_algo(const lca_type *cur) const
     {
         const word_t id = cur - lca_;
-        return algorithm(
-            cont_,
-            cont_->trie_[id / 2],
-            id & word_t(1));
+        return cont_->vertex_by(id / 2, id & word_t(1));
     }
 
-public:
+    /// ctor
     lca_oracle(const suffix_cont &cont)
         : cont_(&cont)
         , lca_alloc_(allocator_type())
@@ -56,43 +55,43 @@ public:
             lca_ = 0;
             unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
         }
-        if (!cont_->root_)
+        if (cont_->size() == 0)
             return;
         lca_ = lca_alloc_.allocate(lca_size_ = 2 * cont_->size());
         memset(lca_, 0, lca_size_ * sizeof(lca_type));
         lca_map_ = unsigned_alloc_.allocate(lca_size_ + 1);
         // numerate, set I- & L-nodes
         word_t num = 0;
-        vertex vtx(cont_, cont_->root_, 0);
-        const vertex vtxEnd(cont_, cont_->root_, 1);
+        vertex vtx(cont_->root());
+        const vertex vtxEnd(vtx.sibling());
         while (vtx != vtxEnd)
         {
             // descend to the leaves
             for (; !vtx.get_qtag(); vtx.iterate(0))
-                get_by((const algorithm&)vtx)->numerate(++num);
+                get_by(vtx)->numerate(++num);
             //
-            lca_type *cur = get_by((const algorithm&)vtx);
+            lca_type *cur = get_by(vtx);
             cur->numerate(++num);
             cur->set_inode();
             // move to the next
             if (vtx.get_qid())
             {
-                while (((const algorithm&)vtx).get_q()->get_parent_id())
+                while (vtx.get_parent_id())
                 {
                     vtx.ascend();
-                    get_by((const algorithm&)vtx)->setup_i(this);
+                    get_by(vtx)->setup_i(this);
                 }
                 //
-                vtx = vertex(cont_, ((const algorithm&)vtx).get_q()->get_parent(), 0);
-                get_by((const algorithm&)vtx)->setup_i(this);
+                vtx.ascend();
+                get_by(vtx)->setup_i(this);
             }
             vtx.toggle();
         }
         // num - last numerator
         lca_root_h_ = impl::get_highest_bit_id(num);
         // set A bits
-        vtx = vertex(cont_, cont_->root_, 0);
-        lca_type *cur = get_by((const algorithm&)vtx);
+        vtx = cont_->root();
+        lca_type *cur = get_by(vtx);
         cur->set_root_a();
         if (!vtx.get_qtag())
             vtx.iterate(0);
@@ -100,22 +99,22 @@ public:
         {
             // descend to the leaves
             for (; !vtx.get_qtag(); vtx.iterate(0))
-                get_by((const algorithm&)vtx)->setup_a(this);
+                get_by(vtx)->setup_a(this);
             //
-            get_by((const algorithm&)vtx)->setup_a(this);
+            get_by(vtx)->setup_a(this);
         }
         // generate map: number -> index
         for (word_t i = 0; i != lca_size_; ++i)
             lca_map_[lca_[i].number()] = i;
     }
 
+    /// return LCA(vx, vy)
     vertex operator()(vertex vx, vertex vy) const
     {
-        const algorithm x(static_cast<algorithm>(vx)), y(static_cast<algorithm>(vy));
         const lca_type
-            *xPrime = get_by(x),
+            *xPrime = get_by(vx),
             *xI = xPrime->get_i(),
-            *yPrime = get_by(y),
+            *yPrime = get_by(vy),
             *yI = yPrime->get_i();
         const word_t
             b = impl::get_binary_lca(lca_root_h_, xI->number(), yI->number()),
@@ -124,7 +123,7 @@ public:
             yA = yPrime->get_a(),
             j = impl::get_lowest_bit_id((xA & yA) >> i << i);
         //
-        algorithm
+        vertex
             xCap = new_algo(xPrime),
             yCap = new_algo(yPrime);
         if (impl::get_lowest_bit_id(xA) < j)
@@ -149,8 +148,7 @@ public:
             yCap = new_algo(wLI);
             yCap.ascend();
         }
-        return vertex(
-            get_by(xCap)->number() < get_by(yCap)->number() ? xCap : yCap);
+        return get_by(xCap)->number() < get_by(yCap)->number() ? xCap : yCap;
     }
 
 private:
