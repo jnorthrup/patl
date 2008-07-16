@@ -14,6 +14,7 @@ template <typename Oracle>
 class lca_base
 {
     typedef lca_base<Oracle> this_t;
+    typedef typename Oracle::vertex vertex;
 
 public:
     word_t number() const
