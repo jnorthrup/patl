@@ -13,11 +13,12 @@ class lca_oracle
 {
     typedef SuffixCont suffix_cont;
     typedef typename suffix_cont::allocator_type allocator_type;
-    typedef typename suffix_cont::vertex vertex;
-    typedef typename suffix_cont::prefix prefix;
     typedef impl::lca_base<lca_oracle<suffix_cont> > lca_type;
 
 public:
+    typedef typename suffix_cont::vertex vertex;
+    typedef typename suffix_cont::prefix prefix;
+
     /// utility func
     const lca_type *get_by(const vertex &vtx) const
     {
