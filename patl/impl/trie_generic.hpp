@@ -269,29 +269,29 @@ public:
             insert(*first);
             ++first;
         }
-        algorithm palCur(this, this->root_, 0);
-        vertex vtx((const vertex&)first);
-        const algorithm &palEnd((const algorithm&)((const vertex&)last));
+        algorithm pal_cur(this, this->root_, 0);
+        vertex vtx(first);
+        const algorithm &pal_end(static_cast<const vertex&>(last));
         word_t skip = 0;
-        while ((const algorithm&)vtx != palEnd)
+        while (static_cast<const algorithm&>(vtx) != pal_end)
         {
-            palCur.ascend_less(skip);
-            const word_t l = palCur.mismatch(vtx.key());
+            pal_cur.ascend_less(skip);
+            const word_t l = pal_cur.mismatch(vtx.key());
             if (~word_t(0) == l)
                 // identical keys found - handler must be applied
-                handler(iterator(vertex(palCur)), const_iterator(vtx));
+                handler(iterator(vertex(pal_cur)), const_iterator(vtx));
             else
-                add(vtx.value(), palCur, l);
+                add(vtx.value(), pal_cur, l);
             // move to the next
             if (vtx.get_qid())
             {
-                const node_type *cur = ((const algorithm&)vtx).get_q();
+                const node_type *cur = static_cast<const algorithm&>(vtx).get_q();
                 for (; cur->get_parent_id(); cur = cur->get_parent()) ;
                 vtx = vertex(this, cur->get_parent(), 1);
             }
             else
                 vtx.toggle();
-            skip = ((const algorithm&)vtx).get_q()->get_skip();
+            skip = static_cast<const algorithm&>(vtx).get_q()->get_skip();
             vtx.template descend<0>();
         }
     }
@@ -299,7 +299,7 @@ public:
     void erase(iterator delIt)
     {
         // retrieve algorithm structure from iterator
-        erase_node(static_cast<algorithm&>(static_cast<vertex&>(delIt)));
+        erase_node(static_cast<vertex&>(delIt));
     }
 
     /// erase all values with specified prefix
@@ -329,10 +329,10 @@ private:
     {
         if (node)
         {
-            postorder_iterator
-                pit(vertex(this, node, 0)),
-                pitEnd(vertex(this, node, 1));
-            for (pit->template descend<0>(); pit != pitEnd; ++pit)
+            const vertex &vtx = this->root();
+            for (postorder_iterator pit = vtx.postorder_begin()
+                ; pit != vtx.postorder_end()
+                ; ++pit)
             {
                 if (!pit->leaf())
                     del_node(static_cast<algorithm&>(*pit).get_p());

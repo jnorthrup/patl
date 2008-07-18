@@ -38,7 +38,7 @@ public:
         for (const_iterator cit = cont_->begin()
             ; cit != cont_->end()
             ; ++cit)
-            leaf_map_[cont_->index_of((const vertex&)cit)] = ((const vertex&)cit).compact();
+            leaf_map_[cont_->index_of(cit)] = static_cast<const vertex&>(cit).compact();
     }
 
     vertex operator()(key_type suf) const
