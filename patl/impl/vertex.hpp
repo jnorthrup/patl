@@ -49,6 +49,11 @@ public:
         return !(*this == r);
     }
 
+    bool operator<(const this_t &r) const
+    {
+        return compact() < r.compact();
+    }
+
     operator const algorithm&() const
     {
         return pal_;
