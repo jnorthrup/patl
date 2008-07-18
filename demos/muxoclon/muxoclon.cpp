@@ -1,3 +1,21 @@
+/**
+ * fly-to-elephant transform program
+ * http://community.livejournal.com/coding4fun_ru/1510.html
+ * examples:
+ *   hit ace (length 4)
+ *   pig sty (6)
+ *   four five (7)
+ *   play game (8)
+ *   green grass (5)
+ *   wheat bread (7)
+ *   order chaos (12)
+ *   sixth hubby (10)
+ *   speedy comedy (19)
+ *   chasing robbers (20)
+ *   griming goblets (23)
+ *   effaces cabaret (50)
+ */
+
 #include <fstream>
 #include <vector>
 #include <set>
@@ -15,11 +33,18 @@ typedef std::map<unsigned, trie_string> map_sized_string;
 typedef trie_string::vertex vertex;
 typedef std::vector<vertex> vector_vertex;
 
-bool search_work(const trie_string &dict,
-                          const vertex &src_vtx,
-                          const vertex &dst_vtx,
-                          vector_vertex &chain)
+bool search_work(
+    const trie_string &dict,
+    const vertex &src_vtx,
+    const vertex &dst_vtx,
+    vector_vertex &chain)
 {
+    if (src_vtx == dst_vtx)
+    {
+        chain.push_back(src_vtx);
+        chain.push_back(dst_vtx);
+        return true;
+    }
     typedef std::map<vertex, vertex> map_vertex;
     typedef std::vector<map_vertex> vector_wave;
     typedef patl::hamming_distance<trie_string, true> hamm_dist;
@@ -60,13 +85,15 @@ bool search_work(const trie_string &dict,
                         {
                             front_wave.pop_back();
                             vertex cur = seed;
-                            for (vector_wave::const_reverse_iterator rit = front_wave.rbegin()
+                            // G++ not allowed to use const_reverse_iterator
+                            // error: no match for 'operator!='
+                            for (vector_wave::reverse_iterator rit = front_wave.rbegin()
                                 ; rit != front_wave.rend()
                                 ; cur = rit++->find(cur)->second)
                                 chain.push_back(cur);
                             std::reverse(chain.begin(), chain.end());
                             cur = vtx;
-                            for (vector_wave::const_reverse_iterator rit = back_wave.rbegin()
+                            for (vector_wave::reverse_iterator rit = back_wave.rbegin()
                                 ; rit != back_wave.rend()
                                 ; cur = rit++->find(cur)->second)
                                 chain.push_back(cur);
@@ -105,14 +132,14 @@ bool search_work(const trie_string &dict,
                         if (match != antipode.end())
                         {
                             vertex cur = vtx;
-                            for (vector_wave::const_reverse_iterator rit = front_wave.rbegin()
+                            for (vector_wave::reverse_iterator rit = front_wave.rbegin()
                                 ; rit != front_wave.rend()
                                 ; cur = rit++->find(cur)->second)
                                 chain.push_back(cur);
                             std::reverse(chain.begin(), chain.end());
                             back_wave.pop_back();
                             cur = seed;
-                            for (vector_wave::const_reverse_iterator rit = back_wave.rbegin()
+                            for (vector_wave::reverse_iterator rit = back_wave.rbegin()
                                 ; rit != back_wave.rend()
                                 ; cur = rit++->find(cur)->second)
                                 chain.push_back(cur);
