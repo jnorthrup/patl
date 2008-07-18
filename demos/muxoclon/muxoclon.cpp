@@ -48,7 +48,7 @@ bool search_work(
     typedef std::map<vertex, vertex> map_vertex;
     typedef std::vector<map_vertex> vector_wave;
     typedef patl::hamming_distance<trie_string, true> hamm_dist;
-    const vertex dict_end = static_cast<const vertex&>(dict.end());
+    const vertex dict_end = dict.end();
     vector_wave front_wave, back_wave;
     front_wave.push_back(map_vertex());
     front_wave.back().insert(std::make_pair(src_vtx, dict_end));
@@ -70,14 +70,14 @@ bool search_work(
                 ; it != current.end()
                 ; ++it)
             {
-                const vertex &seed = static_cast<const vertex&>(it->first);
+                const vertex &seed = it->first;
                 hamm_dist hd(dict, seed.key(), 1);
                 trie_string::const_partimator<hamm_dist>
                     pmi = dict.begin(hd),
                     pmi_end = dict.end(hd);
                 for (; pmi != pmi_end; ++pmi)
                 {
-                    const vertex &vtx = static_cast<const vertex&>(pmi);
+                    const vertex &vtx = pmi;
                     if (front_used.find(vtx) == front_used.end())
                     {
                         const map_vertex::const_iterator match = antipode.find(vtx);
@@ -118,14 +118,14 @@ bool search_work(
                 ; it != current.end()
                 ; ++it)
             {
-                const vertex &seed = static_cast<const vertex&>(it->first);
+                const vertex &seed = it->first;
                 hamm_dist hd(dict, seed.key(), 1);
                 trie_string::const_partimator<hamm_dist>
                     pmi = dict.begin(hd),
                     pmi_end = dict.end(hd);
                 for (; pmi != pmi_end; ++pmi)
                 {
-                    const vertex &vtx = static_cast<const vertex&>(pmi);
+                    const vertex &vtx = pmi;
                     if (back_used.find(vtx) == back_used.end())
                     {
                         const map_vertex::const_iterator match = antipode.find(vtx);
