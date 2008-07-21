@@ -111,10 +111,10 @@ void parse(patl::aux::buffered_input &inp, T insertIt)
         insertIt(curword);
 }
 
-inline void insertIt(const WordType &word_t)
+inline void insertIt(const WordType &word)
 {
     unsigned i = words.size();
-    words.push_back(word_t);
+    words.push_back(word);
     WordSet::const_iterator cit = noiseWordset.find(&words[i]);
     if (cit != noiseWordset.end())
     {
@@ -127,18 +127,18 @@ inline void insertIt(const WordType &word_t)
         words.pop_back();
     /*else
     {
-        log2.write_string(word_t.c_str());
+        log2.write_string(word.c_str());
         log2.write_byte('\n');
     }*/
     text.push_back(*itIns.first);
-    /*log1.write_string(word_t.c_str());
+    /*log1.write_string(word.c_str());
     log1.write_byte(' ');*/
 }
 
-inline void insertItNoise(const WordType &word_t)
+inline void insertItNoise(const WordType &word)
 {
     unsigned i = words.size();
-    words.push_back(word_t);
+    words.push_back(word);
     std::pair<WordSet::iterator, bool> itIns = noiseWordset.insert(&words[i]);
     if (!itIns.second)
         words.pop_back();
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
     //
     /*printf("Checking integrity... ");
     const unsigned failedId = suffix.integrity();
-    if (failedId == ~word_t(0))
+    if (failedId == ~word(0))
     printf("successfully!\n");
     else
     {
