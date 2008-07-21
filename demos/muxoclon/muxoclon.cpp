@@ -42,7 +42,6 @@ bool search_work(
     if (src_vtx == dst_vtx)
     {
         chain.push_back(src_vtx);
-        chain.push_back(dst_vtx);
         return true;
     }
     typedef std::map<vertex, vertex> map_vertex;
