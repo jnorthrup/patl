@@ -15,6 +15,7 @@ class prefix_generic
     typedef Node node_type;
     typedef typename Container::key_type key_type;
     typedef typename Container::bit_compare bit_compare;
+    typedef typename Container::vertex vertex;
 
 public:
     prefix_generic(const Container *cont, const node_type *q)
@@ -35,6 +36,11 @@ public:
     operator const node_type*() const
     {
         return q_;
+    }
+
+    vertex get_vertex() const
+    {
+        return vertex(cont_, q_->get_parent(), q_->get_parent_id());
     }
 
     const Container *cont() const

@@ -20,6 +20,10 @@ protected:
     typedef typename cont_type::levelorder_iterator levelorder_iterator;
     typedef typename cont_type::preorder_iterator preorder_iterator;
     typedef typename cont_type::postorder_iterator postorder_iterator;
+    typedef typename cont_type::const_iterator const_iterator;
+    typedef typename cont_type::iterator iterator;
+    typedef typename cont_type::const_reverse_iterator const_reverse_iterator;
+    typedef typename cont_type::reverse_iterator reverse_iterator;
 
 public:
     typedef typename algorithm::key_type key_type;
@@ -71,6 +75,42 @@ public:
     word_t compact() const
     {
         return pal_.compact();
+    }
+
+    const_iterator begin() const
+    {
+        return const_iterator(*postorder_begin());
+    }
+    iterator begin()
+    {
+        return iterator(*postorder_begin());
+    }
+
+    const_iterator end() const
+    {
+        return const_iterator(*postorder_end());
+    }
+    iterator end()
+    {
+        return iterator(*postorder_end());
+    }
+
+    const_reverse_iterator rbegin() const
+    {
+        return const_reverse_iterator(end());
+    }
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(end());
+    }
+
+    const_reverse_iterator rend() const
+    {
+        return const_reverse_iterator(begin());
+    }
+    reverse_iterator rend()
+    {
+        return reverse_iterator(begin());
     }
 
     postorder_iterator postorder_begin() const

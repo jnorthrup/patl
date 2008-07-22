@@ -217,16 +217,34 @@ int main()
         for (uxn::patl::maxrep_iterator<SuffixSet> mrit(&suffix)
             ; !mrit->is_root()
             ; ++mrit)
-            printf("'%s' x %d\n",
-            std::string(mrit->key(), mrit->length()).c_str(),
-            mrit.freq());
+        {
+            printf("'%s' x %d:",
+                std::string(mrit->key(), mrit->length()).c_str(),
+                mrit.freq());
+            const SuffixSet::vertex vtx = mrit->get_vertex();
+            for (SuffixSet::const_iterator it = vtx.begin()
+                ; it != vtx.end()
+                ; ++it)
+                printf(" at %u", suffix.index_of(
+                    static_cast<const SuffixSet::vertex&>(it)));
+            printf("\n");
+        }
         printf("---\n");
         for (uxn::patl::super_maxrep_iterator<SuffixSet> mrit(&suffix)
             ; !mrit->is_root()
             ; ++mrit)
-            printf("'%s' x %d\n",
-            std::string(mrit->key(), mrit->length()).c_str(),
-            mrit.freq());
+        {
+            printf("'%s' x %d:",
+                std::string(mrit->key(), mrit->length()).c_str(),
+                mrit.freq());
+            const SuffixSet::vertex vtx = mrit->get_vertex();
+            for (SuffixSet::const_iterator it = vtx.begin()
+                ; it != vtx.end()
+                ; ++it)
+                printf(" at %u", suffix.index_of(
+                    static_cast<const SuffixSet::vertex&>(it)));
+            printf("\n");
+        }
     }
     //
     printf("\n--- search tandem repeats in O(n)\n\n");
