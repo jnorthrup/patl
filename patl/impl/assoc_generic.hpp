@@ -63,21 +63,21 @@ public:
     // begin() declarations
     const_iterator begin() const
     {
-        return const_iterator(*root().postorder_begin());
+        return root().begin();
     }
     iterator begin()
     {
-        return iterator(*root().postorder_begin());
+        return root().begin();
     }
 
     // end() declarations
     const_iterator end() const
     {
-        return const_iterator(*root().postorder_end());
+        return root().end();
     }
     iterator end()
     {
-        return iterator(*root().postorder_end());
+        return root().end();
     }
 
     class const_reverse_iterator
@@ -103,21 +103,21 @@ public:
     // rbegin() declarations
     const_reverse_iterator rbegin() const
     {
-        return const_reverse_iterator(end());
+        return root().rbegin();
     }
     reverse_iterator rbegin()
     {
-        return reverse_iterator(end());
+        return root().rbegin();
     }
 
     // rend() declarations
     const_reverse_iterator rend() const
     {
-        return const_reverse_iterator(begin());
+        return root().rend();
     }
     reverse_iterator rend()
     {
-        return reverse_iterator(begin());
+        return root().rend();
     }
 
     template <typename Decision>
