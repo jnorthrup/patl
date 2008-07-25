@@ -1,5 +1,5 @@
 @echo off
 rem cls
-del muxoclon_gcc.exe
-g++ -Wextra -O3 -I../../.. -DPATL_GCC ./muxoclon.cpp -o muxoclon_gcc.exe
-strip muxoclon_gcc.exe
+del ..\..\release\muxoclon_gcc.exe
+g++ -Wextra -O3 -I../../.. -DPATL_GCC ./muxoclon.cpp -o ..\..\release\muxoclon_gcc.exe
+strip ..\..\release\muxoclon_gcc.exe

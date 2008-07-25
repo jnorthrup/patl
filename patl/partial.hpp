@@ -17,16 +17,19 @@ class partial_match
     typedef Container cont_type;
     typedef typename cont_type::key_type key_type;
     typedef typename cont_type::bit_compare bit_compare;
+    typedef typename bit_compare::scalar_t scalar_t;
 
 public:
     static const word_t bit_size = bit_compare::bit_size;
 
     partial_match(
         const cont_type &cont,          // экземпляр контейнера
-        const key_type &mask,           // маска с джокерами '?'
+        const key_type &mask,           // маска с джокерами типа '?'
+        const scalar_t &joker = '?',    // символ джокера
         word_t maskLen = ~word_t(0))    // длина маски в битах (для бесконечных строк)
         : bit_comp_(cont.bit_comp())
         , mask_(mask)
+        , joker_(joker)
     {
         mask_len_ = impl::get_min(maskLen, bit_comp_.bit_length(mask_) - bit_size);
     }
@@ -35,7 +38,7 @@ public:
     bool operator()(word_t skip, word_t id) const
     {
         return skip < mask_len_ + (SameLength ? bit_size : 0)
-            ? mask_[skip / bit_size] == '?' || bit_comp_.get_bit(mask_, skip) == id
+            ? mask_[skip / bit_size] == joker_ || bit_comp_.get_bit(mask_, skip) == id
             : true;
     }
 
@@ -45,11 +48,11 @@ public:
     bool operator()(const key_type &str) const
     {
         const word_t strLen = bit_comp_.bit_length(str) - bit_size;
-        for (word_t i = 0;
-             i != std::min(mask_len_, strLen) / bit_size + (SameLength ? 1 : 0);
-             ++i)
+        for (word_t i = 0
+            ; i != std::min(mask_len_, strLen) / bit_size + (SameLength ? 1 : 0)
+            ; ++i)
         {
-            if (mask_[i] != '?' && mask_[i] != str[i])
+            if (mask_[i] != joker_ && mask_[i] != str[i])
                 return false;
         }
         return strLen >= mask_len_;
@@ -58,6 +61,7 @@ public:
 private:
     bit_compare bit_comp_;
     key_type mask_;
+    scalar_t joker_;
     word_t mask_len_;
 };
 
@@ -95,30 +99,26 @@ public:
             if (prevByte != (diff_.empty() ? ~word_t(0) : diff_.back() / bit_size))
                 --diff_elem_;
         }
-        if (skip < mask_len_ + (SameLength ? bit_size : 0))
+        if (skip < mask_len_ + (SameLength ? bit_size : 0) &&
+            bit_comp_.get_bit(mask_, skip) != id)
         {
-            if (bit_comp_.get_bit(mask_, skip) == id)
-                return true;
-            else
-            {
-                const word_t prevByte =
-                    diff_.empty() ? ~word_t(0) : diff_.back() / bit_size;
-                diff_.push_back(skip);
-                if (prevByte != skip / bit_size)
-                    ++diff_elem_;
-                return diff_elem_ <= dist_;
-            }
+            const word_t prevByte =
+                diff_.empty() ? ~word_t(0) : diff_.back() / bit_size;
+            diff_.push_back(skip);
+            if (prevByte != skip / bit_size)
+                ++diff_elem_;
+            return diff_elem_ <= dist_;
         }
         else
             return true;
     }
 
-    bool operator()(const key_type &str)
+    bool operator()(const key_type &str) const
     {
         const word_t strLen = bit_comp_.bit_length(str) - bit_size;
-        for (word_t i = 0, diff = 0;
-             i != impl::get_min(mask_len_, strLen) / bit_size + (SameLength ? 1 : 0);
-             ++i)
+        for (word_t i = 0, diff = 0
+            ; i != impl::get_min(mask_len_, strLen) / bit_size + (SameLength ? 1 : 0)
+            ; ++i)
         {
             if (mask_[i] != str[i] && ++diff > dist_)
                 return false;
