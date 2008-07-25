@@ -15,6 +15,9 @@ class bit_comparator
 {
 public:
     // optional; used in non-scalar bit_comparator's
+    //typedef undefined scalar_t;
+
+    // optional; used in non-scalar bit_comparator's
     // NOTE must be power of 2 for proper work of mismatch_suffix
     //static const word_t bit_size;
 
@@ -46,6 +49,8 @@ class bit_comparator<T*>
     typedef bit_comparator<T> super;
 
 public:
+    typedef T scalar_t;
+
     static const word_t bit_size = 8 * sizeof(T);
 
     word_t bit_length(const T*) const
@@ -78,6 +83,8 @@ class bit_comparator<T**>
     typedef bit_comparator<word_t> super;
 
 public:
+    typedef T *scalar_t;
+
     static const word_t bit_size = 8 * sizeof(word_t);
 
     word_t bit_length(T* const *) const
@@ -117,6 +124,8 @@ class bit_comparator<std::basic_string<T> >
     typedef std::basic_string<T> value_type;
 
 public:
+    typedef T scalar_t;
+
     static const word_t bit_size = 8 * sizeof(T);
 
     word_t bit_length(const value_type &s) const
