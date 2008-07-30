@@ -1,6 +1,8 @@
 @echo off
 cd insider
 call gcc.bat
+cd ..\levenshtein
+call gcc.bat
 cd ..\lz77
 call gcc.bat
 cd ..\maxpals

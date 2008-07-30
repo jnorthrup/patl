@@ -14,6 +14,8 @@ namespace impl
 /// Partial match iterator class
 /// NOTE раньше этот класс был bidirectional, но обратный проход с пропусками
 /// NOTE слишком сложен и не имеет практического смысла, потому был удален
+/// NOTE ранее decision-functor был бит-ориентированным, сейчас он
+/// NOTE символ-ориентирован, так же как и partimator engine
 template <typename Vertex, typename Decision>
 class const_partimator_generic
     : public std::iterator<
@@ -24,7 +26,10 @@ class const_partimator_generic
 
 protected:
     typedef Vertex vertex;
+    typedef typename vertex::cont_type cont_type;
+    typedef typename cont_type::bit_compare bit_compare;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
+    typedef typename vertex::key_type key_type;
 
 public:
     typedef typename vertex::value_type value_type;
@@ -37,6 +42,9 @@ public:
         : decis_(decis)
         , pit_(vtx)
     {
+        decis_.init();
+        if (!pit_->the_end())
+            prove_branch(false);
     }
 
     operator const vertex&() const
@@ -66,22 +74,15 @@ public:
     {
         for (;;)
         {
-            // next node in preorder depth-first
-            ++pit_;
+            ++pit_; // next node in preorder depth-first
             for (;;)
             {
-                // reach the leaf
-                while (pit_->leaf())
+                while (pit_->leaf()) // reach the leaf
                 {
-                    // reach the end or find the leaf with appropriate key
-                    if (pit_->the_end() || decis_(pit_->key()))
+                    if (pit_->the_end() || prove_branch(true))
                         return *this;
-                    pit_.next_subtree();
                 }
-                // if current bit is illegal in pattern - skip whole subtree
-                if (!decis_(pit_->skip(), pit_->get_qid()))
-                    pit_.next_subtree();
-                else
+                if (prove_branch(false))
                     break;
             }
         }
@@ -95,6 +96,26 @@ public:
 
 private:
     Decision decis_;
+
+    bool prove_branch(bool leaf)
+    {
+        const key_type &key = pit_->key();
+        word_t i =
+            impl::max0(static_cast<sword_t>(pit_->skip())) /
+            bit_compare::bit_size;
+        const word_t limit =
+            (leaf ? pit_->bit_comp().bit_length(key) : pit_->next_skip()) /
+            bit_compare::bit_size;
+        for (; i != limit; ++i)
+        {
+            if (!decis_(i, key[i]))
+            {
+                pit_.next_subtree();
+                break;
+            }
+        }
+        return i == limit;
+    }
 
 protected:
     preorder_iterator pit_;

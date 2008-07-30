@@ -15,7 +15,7 @@ class bit_comparator
 {
 public:
     // optional; used in non-scalar bit_comparator's
-    //typedef undefined scalar_t;
+    //typedef undefined char_type;
 
     // optional; used in non-scalar bit_comparator's
     // NOTE must be power of 2 for proper work of mismatch_suffix
@@ -49,7 +49,7 @@ class bit_comparator<T*>
     typedef bit_comparator<T> super;
 
 public:
-    typedef T scalar_t;
+    typedef T char_type;
 
     static const word_t bit_size = 8 * sizeof(T);
 
@@ -67,11 +67,12 @@ public:
     {
         if (a == b)
             return ~word_t(0);
-        word_t
-            i = 0,
-            m;
-        for (; (m = super::bit_mismatch(a[i], b[i])) == ~word_t(0); ++i) ;
-        return i * bit_size + m;
+        for (word_t i = 0; ; ++i)
+        {
+            const word_t m = super::bit_mismatch(a[i], b[i]);
+            if (m != ~word_t(0))
+                return i * bit_size + m;
+        }
     }
 };
 
@@ -83,7 +84,7 @@ class bit_comparator<T**>
     typedef bit_comparator<word_t> super;
 
 public:
-    typedef T *scalar_t;
+    typedef T *char_type;
 
     static const word_t bit_size = 8 * sizeof(word_t);
 
@@ -95,23 +96,23 @@ public:
     word_t get_bit(T * const *s, word_t id) const
     {
         return super::get_bit(
-            impl::unsigned_cast(s[id / bit_size]),
+            reinterpret_cast<const word_t*>(s)[id / bit_size],
             id % bit_size);
     }
 
-    word_t bit_mismatch(T * const *a, T * const *b) const
+    word_t bit_mismatch(T * const *ap, T * const *bp) const
     {
+        const word_t
+            *a = reinterpret_cast<const word_t*>(ap),
+            *b = reinterpret_cast<const word_t*>(bp);
         if (a == b)
             return ~word_t(0);
-        word_t
-            i = 0,
-            m;
-        for (
-            ; (m = super::bit_mismatch(
-                impl::unsigned_cast(a[i]),
-                impl::unsigned_cast(b[i]))) == ~word_t(0)
-            ; ++i) ;
-        return i * bit_size + m;
+        for (word_t i = 0; ; ++i)
+        {
+            const word_t m = super::bit_mismatch(a[i], b[i]);
+            if (m != ~word_t(0))
+                return i * bit_size + m;
+        }
     }
 };
 
@@ -124,7 +125,7 @@ class bit_comparator<std::basic_string<T> >
     typedef std::basic_string<T> value_type;
 
 public:
-    typedef T scalar_t;
+    typedef T char_type;
 
     static const word_t bit_size = 8 * sizeof(T);
 
@@ -135,8 +136,7 @@ public:
 
     word_t get_bit(const value_type &s, word_t id) const
     {
-        const word_t i = id / bit_size;
-        return i == s.length() ? 0 : super::get_bit(s[i], id % bit_size);
+        return super::get_bit(s[id / bit_size], id % bit_size);
     }
 
     word_t bit_mismatch(const value_type &a, const value_type &b) const
@@ -151,17 +151,17 @@ public:
 private:
     word_t mismatch_intern(const value_type &a, const value_type &b) const
     {
-        typename value_type::const_iterator
-            ita = a.begin(),
-            itb = b.begin();
-        word_t m = 0xBADC0DE; // to avoid warning C4701
-        for (
-            ; ita != a.end() && (m = super::bit_mismatch(*ita, *itb)) == ~word_t(0)
-            ; ++ita, ++itb) ;
-        const word_t len = std::distance(a.begin(), ita) * bit_size;
-        return ita == a.end()
-            ? (itb == b.end() ? ~word_t(0) : len + super::bit_mismatch(T(), *itb))
-            : len + m;
+        word_t
+            i = 0,
+            limit = a.length();
+        for (; i != limit; ++i)
+        {
+            const word_t m = super::bit_mismatch(a[i], b[i]);
+            if (m != ~word_t(0))
+                return i * bit_size + m;
+        }
+        const word_t m = super::bit_mismatch(a[i], b[i]);
+        return m != ~word_t(0) ? i * bit_size + m : m;
     }
 };
 
