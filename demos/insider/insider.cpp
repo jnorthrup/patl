@@ -108,7 +108,7 @@ int main()
     printf("\n--- partial_match\n\n");
     //
     {
-        typedef patl::partial_match<StringSet> part_match;
+        typedef patl::partial_match<StringSet, true> part_match;
         part_match pm(test1, "b?l?t");
         StringSet::const_partimator<part_match>
             it = test1.begin(pm),
@@ -128,12 +128,25 @@ int main()
     printf("\n--- hamming_distance\n\n");
     //
     {
-        typedef patl::hamming_distance<StringSet> hamm_dist;
-        hamm_dist hd(test1, "balda", 2);
+        typedef patl::hamming_distance<StringSet, false> hamm_dist;
+        hamm_dist hd(test1, 1, "bulk");
         StringSet::const_partimator<hamm_dist>
             it = test1.begin(hd),
             itEnd = test1.end(hd);
-        printf("*** 'balda', dist == 2:\n");
+        printf("*** 'bulk', dist == 1:\n");
+        for (; it != itEnd; ++it)
+            printf("%s\n", it->c_str());
+    }
+    //
+    printf("\n--- levenshtein_distance\n\n");
+    //
+    {
+        typedef patl::levenshtein_distance<StringSet, false> leven_dist;
+        leven_dist ld(test1, 1, "balt");
+        StringSet::const_partimator<leven_dist>
+            it = test1.begin(ld),
+            itEnd = test1.end(ld);
+        printf("*** 'balt', dist == 1:\n");
         for (; it != itEnd; ++it)
             printf("%s\n", it->c_str());
     }

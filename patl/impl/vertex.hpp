@@ -14,8 +14,13 @@ class vertex_generic
 protected:
     typedef vertex_generic<Algorithm> this_t;
     typedef Algorithm algorithm;
+
+public:
     typedef typename algorithm::cont_type cont_type;
+
+protected:
     typedef typename algorithm::node_type node_type;
+    typedef typename cont_type::bit_compare bit_compare;
     typedef typename cont_type::prefix prefix;
     typedef typename cont_type::levelorder_iterator levelorder_iterator;
     typedef typename cont_type::preorder_iterator preorder_iterator;
@@ -307,6 +312,11 @@ public:
     const cont_type *cont() const
     {
         return pal_.cont();
+    }
+
+    bit_compare bit_comp() const
+    {
+        return pal_.bit_comp();
     }
 
 protected:

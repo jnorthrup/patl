@@ -165,21 +165,23 @@ public:
     const_partimator<Decision> begin(const Decision &decis) const
     {
         vertex vtx(root());
-        if (root_)
-            return ++const_partimator<Decision>(decis, vtx);
-        else
+        if (!root_)
             vtx.toggle();
-        return const_partimator<Decision>(decis, vtx);
+        const_partimator<Decision> pmi(decis, vtx);
+        if (!static_cast<const vertex&>(pmi).the_end())
+            return ++pmi;
+        return pmi;
     }
     template <typename Decision>
     partimator<Decision> begin(const Decision &decis)
     {
         vertex vtx(root());
-        if (root_)
-            return ++partimator<Decision>(decis, vtx);
-        else
+        if (!root_)
             vtx.toggle();
-        return partimator<Decision>(decis, vtx);
+        partimator<Decision> pmi(decis, vtx);
+        if (!static_cast<const vertex&>(pmi).the_end())
+            return ++pmi;
+        return pmi;
     }
 
     // end() partimator declarations

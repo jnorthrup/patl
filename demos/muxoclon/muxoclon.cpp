@@ -16,15 +16,15 @@
  *   effaces cabaret (50)
  */
 
+// C4503: decorated name length exceeded, name was truncated
+#pragma warning(disable : 4503)
+
 #include <fstream>
 #include <vector>
 #include <set>
 #include <map>
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/partial.hpp>
-
-// C4503: decorated name length exceeded, name was truncated
-#pragma warning(disable : 4503)
 
 namespace patl = uxn::patl;
 
@@ -70,7 +70,7 @@ bool search_work(
                 ; ++it)
             {
                 const vertex &seed = it->first;
-                hamm_dist hd(dict, seed.key(), 1);
+                hamm_dist hd(dict, 1, seed.key());
                 trie_string::const_partimator<hamm_dist>
                     pmi = dict.begin(hd),
                     pmi_end = dict.end(hd);
@@ -118,7 +118,7 @@ bool search_work(
                 ; ++it)
             {
                 const vertex &seed = it->first;
-                hamm_dist hd(dict, seed.key(), 1);
+                hamm_dist hd(dict, 1, seed.key());
                 trie_string::const_partimator<hamm_dist>
                     pmi = dict.begin(hd),
                     pmi_end = dict.end(hd);

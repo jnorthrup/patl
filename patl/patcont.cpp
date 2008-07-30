@@ -57,7 +57,7 @@ int main(int /*argc*/,char *argv[])
 		typedef patl::hamming_distance<ConcorMap,true> PartMatch;
 		//const PartMatch pm("???ь");
 		//const PartMatch pm("боковой",3);
-		const PartMatch pm(cconc,"часовой",2);
+		const PartMatch pm(cconc,2,"часовой");
 		//const PartMatch pm(cconc,"??ден");
 		ConcorMap::const_partimator<PartMatch> pend(cconc.end(pm));
 		for (ConcorMap::const_partimator<PartMatch> pit=cconc.begin(pm)

@@ -61,6 +61,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "muxoclon", "demos\muxoclon\
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "levenshtein", "demos\levenshtein\levenshtein.vcproj", "{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -102,6 +108,10 @@ Global
 		{3A68EBA1-44F0-4AB0-AD17-4D8E75761315}.Debug|Win32.Build.0 = Debug|Win32
 		{3A68EBA1-44F0-4AB0-AD17-4D8E75761315}.Release|Win32.ActiveCfg = Release|Win32
 		{3A68EBA1-44F0-4AB0-AD17-4D8E75761315}.Release|Win32.Build.0 = Release|Win32
+		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Debug|Win32.Build.0 = Debug|Win32
+		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Release|Win32.ActiveCfg = Release|Win32
+		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +125,7 @@ Global
 		{C0BB99CC-4103-495B-9A30-CBDE311EB844} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{7F0FF6B7-EFB0-48A4-9C90-3F4A13A3B445} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{3A68EBA1-44F0-4AB0-AD17-4D8E75761315} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
+		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = 
