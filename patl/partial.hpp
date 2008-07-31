@@ -35,7 +35,7 @@ public:
     {
     }
 
-    void init()
+    void init() const
     {
     }
 
@@ -109,6 +109,8 @@ private:
 };
 
 /// Levenshtein distance decision functor
+/// based on Levenshtein Automata algorithm
+/// see Schulz, Mihov, `Fast String Correction with Levenshtein-Automata'
 template <typename Container, bool SameLength = false>
 class levenshtein_distance
 {
@@ -135,6 +137,7 @@ public:
             mask_len,
             cont.bit_comp().bit_length(mask) / bit_compare::bit_size - 1))
         , terminator_(terminator)
+        , zero_bits_(mask_len_) // all false init
         , states_seq_(1, states_vector(1, std::make_pair(0, 0)))
     {
         for (word_t i = 0; i != mask_len_; ++i)
@@ -149,8 +152,6 @@ public:
                     hi.push_back(ch == mask_[i]);
             }
         }
-        for (word_t i = 0; i != mask_len_; ++i)
-            zero_bits_.push_back(false);
     }
 
     void init()
@@ -255,7 +256,6 @@ public:
             return false;
         }
         return true;
-        //return !next.empty();
     }
 
 private:

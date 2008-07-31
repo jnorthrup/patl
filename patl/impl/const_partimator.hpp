@@ -101,7 +101,7 @@ private:
     {
         const key_type &key = pit_->key();
         word_t i =
-            impl::max0(static_cast<sword_t>(pit_->skip())) /
+            max0(static_cast<sword_t>(pit_->skip())) /
             bit_compare::bit_size;
         const word_t limit =
             (leaf ? pit_->bit_comp().bit_length(key) : pit_->next_skip()) /
@@ -111,10 +111,10 @@ private:
             if (!decis_(i, key[i]))
             {
                 pit_.next_subtree();
-                break;
+                return false;
             }
         }
-        return i == limit;
+        return true;
     }
 
 protected:

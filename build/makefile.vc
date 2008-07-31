@@ -1,6 +1,6 @@
 FLAGS = /O2 /Ox /GL /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_CRT_SECURE_NO_WARNINGS" /D "_SCL_SECURE_NO_WARNINGS" /EHsc /MD /W4 /I../.. /Foobj/ /Fe../Release/ /nologo
 
-all: make_dirs patcont build_re insider lz77 maxpals multi_search usort3 word_suffix
+all: make_dirs patcont insider levenshtein lz77 maxpals multi_search usort3 word_suffix
 
 make_dirs:
 	if not exist obj md obj
@@ -9,10 +9,10 @@ make_dirs:
 patcont: ../patl/patcont.cpp
 	cl  $(FLAGS) $**
 
-build_re: ../demos/build_re/build_re.cpp
+insider: ../demos/insider/insider.cpp
 	cl $(FLAGS) $**
 
-insider: ../demos/insider/insider.cpp
+levenshtein: ../demos/levenshtein/levenshtein.cpp
 	cl $(FLAGS) $**
 
 lz77: ../demos/lz77/lz77.cpp
