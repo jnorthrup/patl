@@ -108,6 +108,17 @@ private:
             bit_compare::bit_size;
         for (; i != limit; ++i)
         {
+            if (!decis_(i))
+            {
+// C4127: conditional expression is constant
+#pragma warning(push)
+#pragma warning(disable : 4127)
+                if (Decision::accept_subtree)
+                    return true;
+#pragma warning(pop)
+                pit_.next_subtree();
+                return false;
+            }
             if (!decis_(i, key[i]))
             {
                 pit_.next_subtree();

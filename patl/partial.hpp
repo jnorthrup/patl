@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include "impl/partial_base.hpp"
 
 namespace uxn
 {
@@ -13,25 +14,22 @@ namespace patl
 /// (для суффикс-контейнеров имеет смысл только false)
 template <typename Container, bool SameLength = false>
 class partial_match
+    : public impl::partial_base<Container, SameLength>
 {
-    typedef Container cont_type;
-    typedef typename cont_type::key_type key_type;
-    typedef typename cont_type::bit_compare bit_compare;
+    typedef impl::partial_base<Container, SameLength> super;
+    typedef typename Container::key_type key_type;
+    typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
 public:
     partial_match(
-        const cont_type &cont,              // экземпляр контейнера
+        const Container &cont,              // экземпляр контейнера
         const key_type &mask,               // маска с джокерами типа '?'
         word_t mask_len = ~word_t(0),       // длина маски в символах (для бесконечных строк)
         const char_type &joker = '?',       // символ джокера
         const char_type &terminator = '\0') // символ окончания строки
-        : mask_(mask)
-        , mask_len_(impl::get_min(
-            mask_len,
-            cont.bit_comp().bit_length(mask) / bit_compare::bit_size - 1))
+        : super(cont, mask, mask_len, terminator)
         , joker_(joker)
-        , terminator_(terminator)
     {
     }
 
@@ -39,42 +37,42 @@ public:
     {
     }
 
+    bool operator()(word_t i) const
+    {
+        return i <= super::mask_len_;
+    }
+
     // проверка на возможность присутствия символа ch в позиции i образца
     bool operator()(word_t i, const char_type &ch) const
     {
-        return i < mask_len_
-            ? ch != terminator_ && (mask_[i] == joker_ || mask_[i] == ch)
-            : !SameLength || i == mask_len_ && ch == terminator_;
+        return i < super::mask_len_
+            ? ch != super::terminator_ && (super::mask_[i] == joker_ || super::mask_[i] == ch)
+            : !SameLength || i == super::mask_len_ && ch == super::terminator_;
     }
 
 private:
-    key_type mask_;
-    word_t mask_len_;
-    char_type joker_, terminator_;
+    char_type joker_;
 };
 
 /// Hamming distance decision functor
 template <typename Container, bool SameLength = false>
 class hamming_distance
+    : public impl::partial_base<Container, SameLength>
 {
-    typedef Container cont_type;
-    typedef typename cont_type::key_type key_type;
-    typedef typename cont_type::bit_compare bit_compare;
+    typedef impl::partial_base<Container, SameLength> super;
+    typedef typename Container::key_type key_type;
+    typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
 public:
     hamming_distance(
-        const cont_type &cont,
+        const Container &cont,
         word_t dist,
         const key_type &mask,
         word_t mask_len = ~word_t(0),
         const char_type &terminator = '\0') // символ окончания строки
-        : mask_(mask)
+        : super(cont, mask, mask_len, terminator)
         , dist_(dist)
-        , mask_len_(impl::get_min(
-            mask_len,
-            cont.bit_comp().bit_length(mask) / bit_compare::bit_size - 1))
-        , terminator_(terminator)
     {
     }
 
@@ -83,28 +81,32 @@ public:
         diff_.clear();
     }
 
+    bool operator()(word_t i) const
+    {
+        return i <= super::mask_len_;
+    }
+
     // проверка на возможность присутствия символа ch в позиции i образца
     bool operator()(word_t i, const char_type &ch)
     {
         while (!diff_.empty() && i <= diff_.back())
             diff_.pop_back();
-        if (i < mask_len_ && ch != terminator_)
+        if (i < super::mask_len_ && ch != super::terminator_)
         {
-            if (mask_[i] == ch)
+            if (super::mask_[i] == ch)
                 return true;
             if (diff_.size() == dist_)
                 return false;
             diff_.push_back(i);
             return true;
         }
-        return (!SameLength && i >= mask_len_) || (i == mask_len_ && ch == terminator_);
+        return
+            !SameLength && i >= super::mask_len_ ||
+            i == super::mask_len_ && ch == super::terminator_;
     }
 
 private:
     word_t dist_;
-    key_type mask_;
-    word_t mask_len_;
-    char_type terminator_;
     std::vector<word_t> diff_;
 };
 
@@ -113,10 +115,11 @@ private:
 /// see Schulz, Mihov, `Fast String Correction with Levenshtein-Automata'
 template <typename Container, bool SameLength = false>
 class levenshtein_distance
+    : public impl::partial_base<Container, SameLength>
 {
-    typedef Container cont_type;
-    typedef typename cont_type::key_type key_type;
-    typedef typename cont_type::bit_compare bit_compare;
+    typedef impl::partial_base<Container, SameLength> super;
+    typedef typename Container::key_type key_type;
+    typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
     typedef std::vector<bool> bit_vector;
@@ -126,30 +129,26 @@ class levenshtein_distance
 
 public:
     levenshtein_distance(
-        const cont_type &cont,
+        const Container &cont,
         word_t dist,
         const key_type &mask,
         word_t mask_len = ~word_t(0),
         const char_type &terminator = '\0') // символ окончания строки
-        : mask_(mask)
+        : super(cont, mask, mask_len, terminator)
         , dist_(dist)
-        , mask_len_(impl::get_min(
-            mask_len,
-            cont.bit_comp().bit_length(mask) / bit_compare::bit_size - 1))
-        , terminator_(terminator)
-        , zero_bits_(mask_len_) // all false init
+        , zero_bits_(super::mask_len_) // all false init
         , states_seq_(1, states_vector(1, std::make_pair(0, 0)))
     {
-        for (word_t i = 0; i != mask_len_; ++i)
+        for (word_t i = 0; i != super::mask_len_; ++i)
         {
-            const char_type ch = mask_[i];
+            const char_type ch = super::mask_[i];
             if (char_map_.find(ch) == char_map_.end())
             {
                 const std::pair<typename char_bits_map::iterator, bool> ins_pair =
                     char_map_.insert(std::make_pair(ch, bit_vector()));
                 bit_vector &hi = ins_pair.first->second;
-                for (word_t i = 0; i != mask_len_; ++i)
-                    hi.push_back(ch == mask_[i]);
+                for (word_t i = 0; i != super::mask_len_; ++i)
+                    hi.push_back(ch == super::mask_[i]);
             }
         }
     }
@@ -160,21 +159,24 @@ public:
         states_seq_.push_back(states_vector(1, std::make_pair(0, 0)));
     }
 
-    bool operator()(word_t i, const char_type &ch)
+    bool operator()(word_t i)
     {
         while (states_seq_.size() > i + 1)
             states_seq_.pop_back();
-        if (states_seq_.back().empty()) // && !SameLength
-            return true;
+        return !states_seq_.back().empty();
+    }
+
+    bool operator()(word_t, const char_type &ch)
+    {
         states_seq_.push_back(states_vector());
         const states_vector &current = states_seq_[states_seq_.size() - 2];
-        if (ch == terminator_)
+        if (ch == super::terminator_)
         {
             for (states_vector::const_iterator it = current.begin()
                 ; it != current.end()
                 ; ++it)
             {
-                if (it->first == mask_len_)
+                if (it->first == super::mask_len_)
                     return true;
             }
             return false;
@@ -192,10 +194,10 @@ public:
                 i = it->first,
                 e = it->second,
                 b0 = i,
-                b1 = impl::get_min(mask_len_, b0 + (dist_ + 1 - e));
+                b1 = impl::get_min(super::mask_len_, b0 + (dist_ + 1 - e));
             if (e < dist_)
             {
-                if (i < mask_len_ - 1)
+                if (i < super::mask_len_ - 1)
                 {
                     if (hi[b0])
                         next.push_back(std::make_pair(i + 1, e));
@@ -221,7 +223,7 @@ public:
                         }
                     }
                 }
-                else if (i == mask_len_ - 1)
+                else if (i == super::mask_len_ - 1)
                 {
                     if (hi[b0])
                         next.push_back(std::make_pair(i + 1, e));
@@ -232,9 +234,9 @@ public:
                     }
                 }
                 else
-                    next.push_back(std::make_pair(mask_len_, e + 1));
+                    next.push_back(std::make_pair(super::mask_len_, e + 1));
             }
-            else if (i < mask_len_ && hi[b0])
+            else if (i < super::mask_len_ && hi[b0])
                 next.push_back(std::make_pair(i + 1, dist_));
         }
         if (next.empty())
@@ -249,10 +251,9 @@ public:
                 ; it != current.end()
                 ; ++it)
             {
-                if (it->first == mask_len_)
+                if (it->first == super::mask_len_)
                     return true;
             }
-            states_seq_.pop_back();
             return false;
         }
         return true;
@@ -260,9 +261,6 @@ public:
 
 private:
     word_t dist_;
-    key_type mask_;
-    word_t mask_len_;
-    char_type terminator_;
     char_bits_map char_map_;
     bit_vector zero_bits_;
     states_sequence states_seq_;
