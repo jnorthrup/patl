@@ -298,6 +298,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\partial_base.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\partimator.hpp"
 					>
 				</File>
