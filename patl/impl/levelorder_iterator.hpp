@@ -21,7 +21,6 @@ class levelorder_iterator_generic
 
 protected:
     typedef Vertex vertex;
-    typedef preorder_iterator_generic<vertex> preorder_iterator;
     typedef vertex *pointer;
     typedef vertex &reference;
     typedef const vertex *const_pointer;
