@@ -44,7 +44,7 @@ public:
     {
         decis_.init();
         if (!pit_->the_end())
-            prove_branch(false);
+            next_fit();
     }
 
     operator const vertex&() const
@@ -72,20 +72,9 @@ public:
 
     this_t &operator++()
     {
-        for (;;)
-        {
-            ++pit_; // next node in preorder depth-first
-            for (;;)
-            {
-                while (pit_->leaf()) // reach the leaf
-                {
-                    if (pit_->the_end() || prove_branch(true))
-                        return *this;
-                }
-                if (prove_branch(false))
-                    break;
-            }
-        }
+        ++pit_;
+        next_fit();
+        return *this;
     }
     this_t operator++(int)
     {
@@ -95,7 +84,20 @@ public:
     }
 
 private:
-    Decision decis_;
+    void next_fit()
+    {
+        for (; ; ++pit_)
+            for (;;)
+            {
+                while (pit_->leaf()) // reach the leaf
+                {
+                    if (pit_->the_end() || prove_branch(true))
+                        return;
+                }
+                if (prove_branch(false))
+                    break;
+            }
+    }
 
     bool prove_branch(bool leaf)
     {
@@ -127,6 +129,8 @@ private:
         }
         return true;
     }
+
+    Decision decis_;
 
 protected:
     preorder_iterator pit_;

@@ -167,10 +167,7 @@ public:
         vertex vtx(root());
         if (!root_)
             vtx.toggle();
-        const_partimator<Decision> pmi(decis, vtx);
-        if (!static_cast<const vertex&>(pmi).the_end())
-            return ++pmi;
-        return pmi;
+        return const_partimator<Decision>(decis, vtx);
     }
     template <typename Decision>
     partimator<Decision> begin(const Decision &decis)
@@ -178,10 +175,7 @@ public:
         vertex vtx(root());
         if (!root_)
             vtx.toggle();
-        partimator<Decision> pmi(decis, vtx);
-        if (!static_cast<const vertex&>(pmi).the_end())
-            return ++pmi;
-        return pmi;
+        return partimator<Decision>(decis, vtx);
     }
 
     // end() partimator declarations
