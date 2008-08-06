@@ -44,7 +44,7 @@ inline word_t get_lce(
     word_t pi
     const typename Suffix::algorithm &j)
 {
-    return patl::impl::get_min(
+    return impl::get_min(
         mi,
         suffix.get_lca(pi, j)->getPrefixLen / Suffix::bit_size);
 }

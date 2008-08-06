@@ -52,6 +52,11 @@ public:
         return *pit_;
     }
 
+    const Decision &decis() const
+    {
+        return decis_;
+    }
+
     bool operator==(const this_t &pt) const
     {
         return pit_ == pt.pit_;
