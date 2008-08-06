@@ -160,17 +160,7 @@ public:
 
     word_t distance() const
     {
-        const states_vector &current =
-            states_seq_.back().empty() ? states_seq_[states_seq_.size() - 2] : states_seq_.back();
-        word_t min_dist = ~word_t(0);
-        for (states_vector::const_iterator it = current.begin()
-            ; it != current.end()
-            ; ++it)
-        {
-            if (it->first == super::mask_len_ && it->second < min_dist)
-                min_dist = it->second;
-        }
-        return min_dist;
+        return cur_dist_;
     }
 
     void init()
@@ -192,14 +182,15 @@ public:
         const states_vector &current = states_seq_[states_seq_.size() - 2];
         if (ch == super::terminator_)
         {
+            cur_dist_ = ~word_t(0);
             for (states_vector::const_iterator it = current.begin()
                 ; it != current.end()
                 ; ++it)
             {
-                if (it->first == super::mask_len_)
-                    return true;
+                if (it->first == super::mask_len_ && it->second < cur_dist_)
+                    cur_dist_ = it->second;
             }
-            return false;
+            return cur_dist_ != ~word_t(0);
         }
         states_vector &next = states_seq_.back();
         const typename char_bits_map::const_iterator hi_it = char_map_.find(ch);
@@ -215,6 +206,23 @@ public:
                 e = it->second,
                 b0 = i,
                 b1 = impl::get_min(super::mask_len_, b0 + (dist_ + 1 - e));
+// C4127: conditional expression is constant
+#pragma warning(push)
+#pragma warning(disable : 4127)
+            if (i == super::mask_len_ && !SameLength)
+#pragma warning(pop)
+            {
+                next.clear();
+                cur_dist_ = e;
+                for (
+                    ; it != current.end()
+                    ; ++it)
+                {
+                    if (it->first == super::mask_len_ && it->second < cur_dist_)
+                        cur_dist_ = it->second;
+                }
+                return cur_dist_ != ~word_t(0);
+            }
             if (e < dist_)
             {
                 if (i < super::mask_len_ - 1)
@@ -259,24 +267,7 @@ public:
             else if (i < super::mask_len_ && hi[b0])
                 next.push_back(std::make_pair(i + 1, dist_));
         }
-        if (next.empty())
-        {
-// C4127: conditional expression is constant
-#pragma warning(push)
-#pragma warning(disable : 4127)
-            if (SameLength)
-                return false;
-#pragma warning(pop)
-            for (states_vector::const_iterator it = current.begin()
-                ; it != current.end()
-                ; ++it)
-            {
-                if (it->first == super::mask_len_)
-                    return true;
-            }
-            return false;
-        }
-        return true;
+        return !next.empty();
     }
 
 private:
@@ -284,6 +275,7 @@ private:
     char_bits_map char_map_;
     bit_vector zero_bits_;
     states_sequence states_seq_;
+    word_t cur_dist_;
 };
 
 } // namespace patl
