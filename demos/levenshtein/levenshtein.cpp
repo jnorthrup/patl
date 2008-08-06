@@ -7,7 +7,7 @@ namespace patl = uxn::patl;
 int main(int argc, char *argv[])
 {
     typedef patl::trie_set<std::string> string_set;
-    typedef patl::levenshtein_distance<string_set, false> leven_dist;
+    typedef patl::levenshtein_distance<string_set, true> leven_dist;
     //
     std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
     if (!fin.is_open())

@@ -221,7 +221,7 @@ public:
                     if (it->first == super::mask_len_ && it->second < cur_dist_)
                         cur_dist_ = it->second;
                 }
-                return cur_dist_ != ~word_t(0);
+                return true;
             }
             if (e < dist_)
             {
