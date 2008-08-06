@@ -135,7 +135,7 @@ int main()
             itEnd = test1.end(hd);
         printf("*** 'bulk', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s\n", it->c_str());
+            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- levenshtein_distance\n\n");
@@ -148,7 +148,7 @@ int main()
             itEnd = test1.end(ld);
         printf("*** 'balt', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s\n", it->c_str());
+            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- postorder_iterator\n\n");

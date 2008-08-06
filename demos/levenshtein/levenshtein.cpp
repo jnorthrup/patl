@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
             it = dict.begin(ld),
             end = dict.end(ld);
         for (; it != end; ++it)
-            printf("%s ", it->c_str());
+            printf("%s:%u ", it->c_str(), it.decis().distance());
         printf("\n");
     }
 }

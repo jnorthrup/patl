@@ -76,6 +76,11 @@ public:
     {
     }
 
+    word_t distance() const
+    {
+        return diff_.size();
+    }
+
     void init()
     {
         diff_.clear();
@@ -145,12 +150,27 @@ public:
             if (char_map_.find(ch) == char_map_.end())
             {
                 const std::pair<typename char_bits_map::iterator, bool> ins_pair =
-                    char_map_.insert(std::make_pair(ch, bit_vector()));
+                    char_map_.insert(std::make_pair(ch, bit_vector(super::mask_len_)));
                 bit_vector &hi = ins_pair.first->second;
                 for (word_t i = 0; i != super::mask_len_; ++i)
-                    hi.push_back(ch == super::mask_[i]);
+                    hi[i] =  ch == super::mask_[i];
             }
         }
+    }
+
+    word_t distance() const
+    {
+        const states_vector &current =
+            states_seq_.back().empty() ? states_seq_[states_seq_.size() - 2] : states_seq_.back();
+        word_t min_dist = ~word_t(0);
+        for (states_vector::const_iterator it = current.begin()
+            ; it != current.end()
+            ; ++it)
+        {
+            if (it->first == super::mask_len_ && it->second < min_dist)
+                min_dist = it->second;
+        }
+        return min_dist;
     }
 
     void init()
