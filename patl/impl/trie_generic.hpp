@@ -73,10 +73,10 @@ public:
     {
     }
 
-	algorithm_gen construct(const node_type *q, word_t qid) const
-	{
-		return algorithm_gen(0, q, qid);
-	}
+    algorithm_gen construct(const node_type *q, word_t qid) const
+    {
+        return algorithm_gen(0, q, qid);
+    }
 
     /// return value stored in algorithm
     value_type &get_value()

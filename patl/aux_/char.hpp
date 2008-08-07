@@ -23,6 +23,11 @@ inline bool is_cyrillic_letter(unsigned char c)
     return 0xC0 <= c || c == 0xA8 || c == 0xB8;
 }
 
+inline bool is_proper_char(unsigned char c)
+{
+    return 0x21 <= c && c <= 0x7E || is_cyrillic_letter(c);
+}
+
 inline bool is_letter(unsigned char c)
 {
     return is_cyrillic_letter(c) || is_latin_letter(c);

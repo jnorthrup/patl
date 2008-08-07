@@ -35,7 +35,7 @@ class maxrep_iterator
     void bit31_update()
     {
         if (!impl::highest_bit(sfreq_.back()) && left_diff())
-            sfreq_.back() |= word_t(1) << (bits_in_word - 1);
+            sfreq_.back() |= highest_bit;
     }
 
     void merge()
@@ -43,7 +43,7 @@ class maxrep_iterator
         const word_t sfreq1 = sfreq_.back();
         sfreq_.pop_back();
         sfreq_.back() =
-            (sfreq_.back() | sfreq1) & (word_t(1) << (bits_in_word - 1)) |
+            (sfreq_.back() | sfreq1) & highest_bit |
             (impl::bits_but_highest(sfreq_.back()) + impl::bits_but_highest(sfreq1));
     }
 

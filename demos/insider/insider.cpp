@@ -3,37 +3,38 @@
 #include <uxn/patl/super_maxrep_iterator.hpp>
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/partial.hpp>
+#include <uxn/patl/levenshtein.hpp>
 
 namespace patl = uxn::patl;
 
 template <typename Iter>
 void printRegexp(word_t length, const Iter &beg, const Iter &end)
 {
-	for (Iter cur = beg; cur != end; ++cur)
-	{
-		if (beg != cur)
-			printf("|");
-		if (cur->leaf())
-			printf("%s", cur->key().substr(length).c_str());
-		else
-		{
+    for (Iter cur = beg; cur != end; ++cur)
+    {
+        if (beg != cur)
+            printf("|");
+        if (cur->leaf())
+            printf("%s", cur->key().substr(length).c_str());
+        else
+        {
             const word_t
                 next_len = cur->next_skip() / 8,
                 bit_len = 8 * (next_len + 1);
-			printf("%s", cur->key().substr(length, next_len - length).c_str());
-			Iter
+            printf("%s", cur->key().substr(length, next_len - length).c_str());
+            Iter
                 it1 = cur->levelorder_begin(bit_len),
                 it2 = cur->levelorder_end(bit_len);
-			printf("(");
-			const bool question = it1->key().size() == next_len;
-			if (question)
-				++it1;
+            printf("(");
+            const bool question = it1->key().size() == next_len;
+            if (question)
+                ++it1;
             printRegexp(next_len, it1, it2);
-			printf(")");
-			if (question)
-				printf("?");
-		}
-	}
+            printf(")");
+            if (question)
+                printf("?");
+        }
+    }
 }
 
 int main()

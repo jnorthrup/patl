@@ -1,20 +1,20 @@
 /**
- * fly-to-elephant transform program
- * http://community.livejournal.com/coding4fun_ru/1510.html
- * examples:
- *   hit ace (length 4)
- *   pig sty (6)
- *   four five (7)
- *   play game (8)
- *   green grass (5)
- *   wheat bread (7)
- *   order chaos (12)
- *   sixth hubby (10)
- *   speedy comedy (19)
- *   chasing robbers (20)
- *   griming goblets (23)
- *   effaces cabaret (50)
- */
+* fly-to-elephant transform program
+* http://community.livejournal.com/coding4fun_ru/1510.html
+* examples:
+*   hit ace (length 4)
+*   pig sty (6)
+*   four five (7)
+*   play game (8)
+*   green grass (5)
+*   wheat bread (7)
+*   order chaos (12)
+*   sixth hubby (10)
+*   speedy comedy (19)
+*   chasing robbers (20)
+*   griming goblets (23)
+*   effaces cabaret (50)
+*/
 
 // C4503: decorated name length exceeded, name was truncated
 #pragma warning(disable : 4503)
@@ -34,10 +34,10 @@ typedef trie_string::vertex vertex;
 typedef std::vector<vertex> vector_vertex;
 
 bool search_work(
-    const trie_string &dict,
-    const vertex &src_vtx,
-    const vertex &dst_vtx,
-    vector_vertex &chain)
+                 const trie_string &dict,
+                 const vertex &src_vtx,
+                 const vertex &dst_vtx,
+                 vector_vertex &chain)
 {
     if (src_vtx == dst_vtx)
     {
@@ -159,12 +159,12 @@ int main(int argc, char *argv[])
 {
     std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
     if (!fin.is_open())
-	{
-		printf("Unable to open input file!\n");
-		return 0;
-	}
+    {
+        printf("Unable to open input file!\n");
+        return 0;
+    }
     map_sized_string sdict;
-	std::string str;
+    std::string str;
     while (fin >> str)
         sdict[str.length()].insert(str);
     for (;;)

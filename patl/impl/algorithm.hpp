@@ -114,10 +114,10 @@ public:
     }
 
     /// return sibling of algorithm
-	this_t sibling() const
-	{
-		return CSELF->construct(get_q(), word_t(1) ^ get_qid());
-	}
+    this_t sibling() const
+    {
+        return CSELF->construct(get_q(), word_t(1) ^ get_qid());
+    }
 
     /// toggle index i.e. convert algorithm to its sibling
     void toggle()

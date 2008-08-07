@@ -37,7 +37,37 @@ static WordStdSet wordStdSet;
 static buffered_output log2("log2.txt");*/
 
 template <typename T>
-void parse(patl::aux::buffered_input &inp, T insertIt)
+void parse_text(patl::aux::buffered_input &inp, T insertIt)
+{
+    bool intoken = false;
+    WordType token;
+    while (inp.is_data())
+    {
+        const unsigned char c = inp.read_byte();
+        if (patl::aux::is_proper_char(c))
+        {
+            if (!intoken)
+            {
+                if (text.size() >= (16 << 20))
+                    return;
+                token.clear();
+                intoken = true;
+            }
+            token.push_back(c);
+        }
+        // space between tokens
+        else if (intoken)
+        {
+            insertIt(token);
+            intoken = false;
+        }
+    }
+    if (intoken)
+        insertIt(token);
+}
+
+template <typename T>
+void parse_fiction(patl::aux::buffered_input &inp, T insertIt)
 {
     bool
         inword = false,
@@ -121,7 +151,7 @@ inline void insertIt(const WordType &word)
         words.pop_back();
         return;
     }
-    wordStdSet.insert(&words[i]);
+    //wordStdSet.insert(&words[i]); // для проверки правильности
     std::pair<WordSet::iterator, bool> itIns = wordset.insert(&words[i]);
     if (!itIns.second)
         words.pop_back();
@@ -147,7 +177,7 @@ inline void insertItNoise(const WordType &word)
 void loadNoiseWords(const char *fname)
 {
     patl::aux::buffered_input bufIn(fname);
-    parse(bufIn, insertItNoise);
+    parse_text(bufIn, insertItNoise);
 }
 
 template <typename T>
@@ -169,7 +199,7 @@ int main(int argc, char *argv[])
     words.reserve(1 << 20);
     //loadNoiseWords("noiseRUS.txt");
     patl::aux::buffered_input inp(argv[1]);
-    parse(inp, insertIt);
+    parse_text(inp, insertIt);
     insertIt("***EOF***");
     //
     printf("Words count: %d (trie: %d, std: %d)\n",
