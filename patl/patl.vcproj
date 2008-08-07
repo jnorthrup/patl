@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\levenshtein.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\maxrep_iterator.hpp"
 				>
 			</File>

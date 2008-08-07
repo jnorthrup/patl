@@ -45,10 +45,10 @@ public:
     {
     }
 
-	this_t construct(const node_type *q, word_t qid) const
-	{
-		return this_t(this->cont_, q, qid);
-	}
+    this_t construct(const node_type *q, word_t qid) const
+    {
+        return this_t(this->cont_, q, qid);
+    }
 
     const value_type &get_value() const
     {

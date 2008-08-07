@@ -33,7 +33,9 @@ typedef undefined sword_t;
 
 #endif // PATL_GCC
 
-const word_t bits_in_word = 8 * sizeof(word_t);
+const word_t
+    bits_in_word = 8 * sizeof(word_t),
+    highest_bit = word_t(1) << (bits_in_word - 1);
 
 // allow to store additional info in less significant bit in some pointers
 // used in "impl/node.hpp" and "impl/algorithm.hpp"

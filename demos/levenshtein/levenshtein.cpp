@@ -1,6 +1,6 @@
 #include <fstream>
 #include <uxn/patl/trie_set.hpp>
-#include <uxn/patl/partial.hpp>
+#include <uxn/patl/levenshtein.hpp>
 
 namespace patl = uxn::patl;
 
@@ -11,12 +11,12 @@ int main(int argc, char *argv[])
     //
     std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
     if (!fin.is_open())
-	{
-		printf("Unable to open input file!\n");
-		return 0;
-	}
+    {
+        printf("Unable to open input file!\n");
+        return 0;
+    }
     string_set dict;
-	std::string str;
+    std::string str;
     while (fin >> str)
         dict.insert(str);
     printf("dict size: %u\n", dict.size());
