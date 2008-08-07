@@ -34,7 +34,7 @@ class maxrep_iterator
 
     void bit31_update()
     {
-        if (!impl::highest_bit(sfreq_.back()) && left_diff())
+        if (!impl::get_highest_bit(sfreq_.back()) && left_diff())
             sfreq_.back() |= highest_bit;
     }
 
@@ -77,7 +77,7 @@ class maxrep_iterator
 
         bool cond() const
         {
-            return !impl::highest_bit(mrit_->sfreq_.back());
+            return !impl::get_highest_bit(mrit_->sfreq_.back());
         }
 
     private:

@@ -15,14 +15,14 @@ namespace patl
 namespace impl
 {
 
-inline word_t highest_bit(word_t x)
+inline word_t get_highest_bit(word_t x)
 {
     return x >> (bits_in_word - 1);
 }
 
 inline word_t bits_but_highest(word_t x)
 {
-    return x & ~(word_t(1) << (bits_in_word - 1));
+    return x & ~highest_bit;
 }
 
 inline word_t get_lowest_bit_id(word_t x)
