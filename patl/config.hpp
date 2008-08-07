@@ -1,7 +1,7 @@
 #ifndef PATL_CONFIG_HPP
 #define PATL_CONFIG_HPP
 
-#ifdef PATL_GCC
+#ifdef __GNUG__
 
 #define PATL_32
 typedef unsigned int word_t;
