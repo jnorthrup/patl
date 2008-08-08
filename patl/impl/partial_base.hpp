@@ -130,6 +130,7 @@ public:
         const bit_vector &hi = hi_it != char_map_.end()
             ? hi_it->second
             : zero_bits_;
+        std::back_insert_iterator<states_vector> next_ins(next);
         for (states_vector::const_iterator it = current.begin()
             ; it != current.end()
             ; ++it)
@@ -140,7 +141,7 @@ public:
 // C4127: conditional expression is constant
 #pragma warning(push)
 #pragma warning(disable : 4127)
-            if (impl::bits_but_highest(i) == super::mask_len_ && !SameLength)
+            if (!SameLength && impl::bits_but_highest(i) == super::mask_len_)
 #pragma warning(pop)
             {
                 next.clear();
@@ -153,7 +154,7 @@ public:
                 }
                 return true;
             }
-            static_cast<this_t*>(this)->transitions(i, e, hi, next);
+            static_cast<this_t*>(this)->transitions(i, e, hi, next_ins);
         }
         return !next.empty();
     }

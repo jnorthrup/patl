@@ -40,7 +40,7 @@ public:
 
     void transitions(
         word_t i, word_t e, const bit_vector &hi,
-        states_vector &next)
+        std::back_insert_iterator<states_vector> next)
     {
         const word_t
             b0 = i,
@@ -50,7 +50,7 @@ public:
             if (i < super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
                     word_t j = b0 + 1;
@@ -58,32 +58,32 @@ public:
                     {
                         if (hi[j])
                         {
-                            next.push_back(std::make_pair(i, e + 1));
-                            next.push_back(std::make_pair(i + 1, e + 1));
-                            next.push_back(std::make_pair(
+                            next = std::make_pair(i, e + 1);
+                            next = std::make_pair(i + 1, e + 1);
+                            next = std::make_pair(
                                 i + (j - b0 + 1),
-                                e + (j - b0)));
+                                e + (j - b0));
                             break;
                         } }
                     if (j == b1)
                     {
-                        next.push_back(std::make_pair(i, e + 1));
-                        next.push_back(std::make_pair(i + 1, e + 1));
+                        next = std::make_pair(i, e + 1);
+                        next = std::make_pair(i + 1, e + 1);
                     } } }
             else if (i == super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
-                    next.push_back(std::make_pair(i, e + 1));
-                    next.push_back(std::make_pair(i + 1, e + 1));
+                    next = std::make_pair(i, e + 1);
+                    next = std::make_pair(i + 1, e + 1);
                 } }
-            else // i == super::max_len_
-                next.push_back(std::make_pair(super::mask_len_, e + 1));
+            else // i == super::mask_len_
+                next = std::make_pair(super::mask_len_, e + 1);
         }
         else if (i < super::mask_len_ && hi[b0])
-            next.push_back(std::make_pair(i + 1, super::dist_));
+            next = std::make_pair(i + 1, super::dist_);
     }
 };
 
@@ -117,7 +117,7 @@ public:
 
     void transitions(
         word_t i, word_t e, const bit_vector &hi,
-        states_vector &next)
+        std::back_insert_iterator<states_vector> next)
     {
         const bool transp_state = (i & highest_bit) != 0;
         i = impl::bits_but_highest(i);
@@ -129,25 +129,25 @@ public:
             if (transp_state)
             {
                 if (i < super::mask_len_ - 1 && hi[b0])
-                    next.push_back(std::make_pair(i + 2, super::dist_));
+                    next = std::make_pair(i + 2, super::dist_);
             }
             else
             {
                 if (i < super::mask_len_ && hi[b0])
-                    next.push_back(std::make_pair(i + 1, super::dist_));
+                    next = std::make_pair(i + 1, super::dist_);
             } }
         else if (e == 0) // && e < super::dist_
         {
             if (i < super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, 0));
+                    next = std::make_pair(i + 1, 0);
                 else if (hi[b0 + 1])
                 {
-                    next.push_back(std::make_pair(i, 1));
-                    next.push_back(std::make_pair(i | highest_bit, 1));
-                    next.push_back(std::make_pair(i + 1, 1));
-                    next.push_back(std::make_pair(i + 2, 1));
+                    next = std::make_pair(i, 1);
+                    next = std::make_pair(i | highest_bit, 1);
+                    next = std::make_pair(i + 1, 1);
+                    next = std::make_pair(i + 2, 1);
                 }
                 else
                 {
@@ -156,29 +156,27 @@ public:
                     {
                         if (hi[j])
                         {
-                            next.push_back(std::make_pair(i, 1));
-                            next.push_back(std::make_pair(i + 1, 1));
-                            next.push_back(std::make_pair(
-                                i + (j - b0 + 1),
-                                j - b0));
+                            next = std::make_pair(i, 1);
+                            next = std::make_pair(i + 1, 1);
+                            next = std::make_pair(i + (j - b0 + 1), j - b0);
                             break;
                         } }
                     if (j == b1)
                     {
-                        next.push_back(std::make_pair(i, 1));
-                        next.push_back(std::make_pair(i + 1, 1));
+                        next = std::make_pair(i, 1);
+                        next = std::make_pair(i + 1, 1);
                     } } }
             else if (i == super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, 0));
+                    next = std::make_pair(i + 1, 0);
                 else
                 {
-                    next.push_back(std::make_pair(i, 1));
-                    next.push_back(std::make_pair(i + 1, 1));
+                    next = std::make_pair(i, 1);
+                    next = std::make_pair(i + 1, 1);
                 } }
             else // i == super::mask_len_
-                next.push_back(std::make_pair(i, 1));
+                next = std::make_pair(i, 1);
         }
         else // 0 < e && e < super::dist_
         {
@@ -187,18 +185,18 @@ public:
                 if (transp_state)
                 {
                     if (hi[b0])
-                        next.push_back(std::make_pair(i + 2, e));
+                        next = std::make_pair(i + 2, e);
                 }
                 else
                 {
                     if (hi[b0])
-                        next.push_back(std::make_pair(i + 1, e));
+                        next = std::make_pair(i + 1, e);
                     else if (hi[b0 + 1])
                     {
-                        next.push_back(std::make_pair(i, e + 1));
-                        next.push_back(std::make_pair(i | highest_bit, e + 1));
-                        next.push_back(std::make_pair(i + 1, e + 1));
-                        next.push_back(std::make_pair(i + 2, e + 1));
+                        next = std::make_pair(i, e + 1);
+                        next = std::make_pair(i | highest_bit, e + 1);
+                        next = std::make_pair(i + 1, e + 1);
+                        next = std::make_pair(i + 2, e + 1);
                     }
                     else
                     {
@@ -207,29 +205,29 @@ public:
                         {
                             if (hi[j])
                             {
-                                next.push_back(std::make_pair(i, e + 1));
-                                next.push_back(std::make_pair(i + 1, e + 1));
-                                next.push_back(std::make_pair(
+                                next = std::make_pair(i, e + 1);
+                                next = std::make_pair(i + 1, e + 1);
+                                next = std::make_pair(
                                     i + (j - b0 + 1),
-                                    e + (j - b0)));
+                                    e + (j - b0));
                                 break;
                             } }
                         if (j == b1)
                         {
-                            next.push_back(std::make_pair(i, e + 1));
-                            next.push_back(std::make_pair(i + 1, e + 1));
+                            next = std::make_pair(i, e + 1);
+                            next = std::make_pair(i + 1, e + 1);
                         } } } }
             else if (i == super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
-                    next.push_back(std::make_pair(i, e + 1));
-                    next.push_back(std::make_pair(i + 1, e + 1));
+                    next = std::make_pair(i, e + 1);
+                    next = std::make_pair(i + 1, e + 1);
                 } }
             else // i == super::mask_len_
-                next.push_back(std::make_pair(i, e + 1));
+                next = std::make_pair(i, e + 1);
         }
     }
 };
@@ -264,21 +262,19 @@ public:
 
     void transitions(
         word_t i, word_t e, const bit_vector &hi,
-        states_vector &next)
+        std::back_insert_iterator<states_vector> next)
     {
         const bool split_state = (i & highest_bit) != 0;
         i = impl::bits_but_highest(i);
-        const word_t
-            b0 = i,
-            b1 = impl::get_min(super::mask_len_, b0 + (super::dist_ + 1 - e));
+        const word_t b0 = i;
         if (e == super::dist_)
         {
             if (i < super::mask_len_)
             {
                 if (split_state)
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, super::dist_));
+                    next = std::make_pair(i + 1, super::dist_);
             }
         }
         else if (e == 0) // && e < super::dist_
@@ -286,66 +282,66 @@ public:
             if (i < super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
-                    next.push_back(std::make_pair(i, e + 1));
-                    next.push_back(std::make_pair(i | highest_bit, e + 1));
-                    next.push_back(std::make_pair(i + 1, e + 1));
-                    next.push_back(std::make_pair(i + 2, e + 1));
+                    next = std::make_pair(i, e + 1);
+                    next = std::make_pair(i | highest_bit, e + 1);
+                    next = std::make_pair(i + 1, e + 1);
+                    next = std::make_pair(i + 2, e + 1);
                 }
             }
             else if (i == super::mask_len_ - 1)
             {
                 if (hi[b0])
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
-                    next.push_back(std::make_pair(i, e + 1));
-                    next.push_back(std::make_pair(i | highest_bit, e + 1));
-                    next.push_back(std::make_pair(i + 1, e + 1));
+                    next = std::make_pair(i, e + 1);
+                    next = std::make_pair(i | highest_bit, e + 1);
+                    next = std::make_pair(i + 1, e + 1);
                 }
             }
             else // i == super::mask_len_
-                next.push_back(std::make_pair(i, e + 1));
+                next = std::make_pair(i, e + 1);
         }
         else // 0 < e && e < super::dist_
         {
             if (i < super::mask_len_ - 1)
             {
                 if (split_state)
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
                     if (hi[b0])
-                        next.push_back(std::make_pair(i + 1, e));
+                        next = std::make_pair(i + 1, e);
                     else
                     {
-                        next.push_back(std::make_pair(i, e + 1));
-                        next.push_back(std::make_pair(i | highest_bit, e + 1));
-                        next.push_back(std::make_pair(i + 1, e + 1));
-                        next.push_back(std::make_pair(i + 2, e + 1));
+                        next = std::make_pair(i, e + 1);
+                        next = std::make_pair(i | highest_bit, e + 1);
+                        next = std::make_pair(i + 1, e + 1);
+                        next = std::make_pair(i + 2, e + 1);
                     }
                 }
             }
             else if (i == super::mask_len_ - 1)
             {
                 if (split_state)
-                    next.push_back(std::make_pair(i + 1, e));
+                    next = std::make_pair(i + 1, e);
                 else
                 {
                     if (hi[b0])
-                        next.push_back(std::make_pair(i + 1, e));
+                        next = std::make_pair(i + 1, e);
                     else
                     {
-                        next.push_back(std::make_pair(i, e + 1));
-                        next.push_back(std::make_pair(i | highest_bit, e + 1));
-                        next.push_back(std::make_pair(i + 1, e + 1));
+                        next = std::make_pair(i, e + 1);
+                        next = std::make_pair(i | highest_bit, e + 1);
+                        next = std::make_pair(i + 1, e + 1);
                     }
                 }
             }
             else // i == super::mask_len_
-                next.push_back(std::make_pair(i, e + 1));
+                next = std::make_pair(i, e + 1);
         }
     }
 };
