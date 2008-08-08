@@ -2,6 +2,7 @@
 #define PATL_BIT_COMP_HPP
 
 #include <string>
+#include <vector>
 #include "impl/trivial.hpp"
 
 namespace uxn
@@ -17,9 +18,8 @@ public:
     // optional; used in non-scalar bit_comparator's
     //typedef undefined char_type;
 
-    // optional; used in non-scalar bit_comparator's
-    // NOTE must be power of 2 for proper work of mismatch_suffix
-    //static const word_t bit_size;
+    /// NOTE must be power of 2 for proper work of mismatch_suffix
+    static const word_t bit_size = 8 * sizeof(T);
 
     /// return key length in bits, ~word_t(0) if infinite
     word_t bit_length(T) const
@@ -38,6 +38,28 @@ public:
     word_t bit_mismatch(T a, T b) const
     {
         return a == b ? ~word_t(0) : impl::bit_mismatch_scalar(a, b);
+    }
+};
+
+template <>
+class bit_comparator<bool>
+{
+public:
+    static const word_t bit_size = 1;
+
+    word_t bit_length(bool) const
+    {
+        return 1;
+    }
+
+    word_t get_bit(bool val, word_t) const
+    {
+        return val ? 1 : 0;
+    }
+
+    word_t bit_mismatch(bool a, bool b) const
+    {
+        return a == b ? ~word_t(0) : 0;
     }
 };
 
@@ -151,17 +173,60 @@ public:
 private:
     word_t mismatch_intern(const value_type &a, const value_type &b) const
     {
-        word_t
-            i = 0,
-            limit = a.length();
-        for (; i != limit; ++i)
+        word_t i = 0;
+        for (; i <= a.length(); ++i)
         {
             const word_t m = super::bit_mismatch(a[i], b[i]);
             if (m != ~word_t(0))
                 return i * bit_size + m;
         }
-        const word_t m = super::bit_mismatch(a[i], b[i]);
-        return m != ~word_t(0) ? i * bit_size + m : m;
+        return ~word_t(0);
+    }
+};
+
+/// standard finite std::vector
+template <typename T>
+class bit_comparator<std::vector<T> >
+    : public bit_comparator<T>
+{
+    typedef bit_comparator<T> super;
+    typedef std::vector<T> value_type;
+
+public:
+    typedef T char_type;
+
+    static const word_t bit_size = super::bit_size;
+
+    word_t bit_length(const value_type &v) const
+    {
+        return bit_size * v.size();
+    }
+
+    word_t get_bit(const value_type &v, word_t id) const
+    {
+        return super::get_bit(v[id / bit_size], id % bit_size);
+    }
+
+    word_t bit_mismatch(const value_type &a, const value_type &b) const
+    {
+        if (&a == &b)
+            return ~word_t(0);
+        return b.size() < a.size()
+            ? mismatch_intern(b, a)
+            : mismatch_intern(a, b);
+    }
+
+private:
+    word_t mismatch_intern(const value_type &a, const value_type &b) const
+    {
+        word_t i = 0;
+        for (; i != a.size(); ++i)
+        {
+            const word_t m = super::bit_mismatch(a[i], b[i]);
+            if (m != ~word_t(0))
+                return i * bit_size + m;
+        }
+        return ~word_t(0);
     }
 };
 
