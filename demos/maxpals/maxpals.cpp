@@ -11,7 +11,7 @@ typedef SuffixSet::vertex vertex;
 int main()
 {
     char pals[1024] =
-        "mississippiarozaupalanalapuazoraaaaasobakabosavjfhdsfsdlfhbvhamanaplanacanalpanamajfgjbf4603974fg4u";
+        "mississippiarozaupalanalapuazoraaaaasobakabosavjfhdlomosmokinggnikomsomolsfsdlfhbvhamanaplanacanalpanamajfgjbf4603974fg4u";
     const unsigned n = strlen(pals);
     strcpy(pals + n + 1, pals);
     _strrev(pals + n + 1);

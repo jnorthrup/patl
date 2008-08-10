@@ -268,17 +268,16 @@ int main()
         typedef char typ;
         typedef patl::suffix_set<const typ*> suffix_t;
         //typ arr[] = {10, 5, 6, 7, 5, 6, 7, 89, 64};
-        typ arr[] = "qweabrabrabraad";
+        typ arr[] = "qabrabrabrweabrabraaaad";
         //typ arr[] = "qweabrabrrrrd";
         printf("*** string: '%s':\n", arr);
-        suffix_t suf(arr, sizeof(arr) / sizeof(arr[0]));
-        const typ *repend = arr;
+        suffix_t suf(arr, 16 /* maximal length of tandem repeat + 1 */);
         do
         {
             const suffix_t::vertex
                 vtx = suf.push_back(),
                 sibl = vtx.sibling();
-            if (suf.size() > 1 && suf.keys() + suf.size() > repend)
+            if (suf.size() > 1)
             {
                 const int skip = vtx.skip() / 8 / sizeof(typ);
                 const unsigned
@@ -287,12 +286,15 @@ int main()
                 if (count > 1)
                 {
                     printf("begin: %u, length: %u, count: %u\n",
-                        sibl.key() - suf.keys(),
+                        sibl.key() - arr,
                         delta,
                         count);
-                    repend = sibl.key() + delta * count + 1;
+                    suf.rebind(sibl.key() + delta * count);
+                    suf.clear();
                 }
+                if (!suf.empty() && suf.endpoint())
+                    suf.pop_front();
             }
-        } while (!suf.endpoint());
+        } while (suf.keys() + suf.size() != arr + sizeof(arr) / sizeof(arr[0]));
     }
 }
