@@ -25,6 +25,7 @@
 #include <map>
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/partial.hpp>
+#include <uxn/patl/aux_/perf_timer.hpp>
 
 namespace patl = uxn::patl;
 
@@ -34,10 +35,10 @@ typedef trie_string::vertex vertex;
 typedef std::vector<vertex> vector_vertex;
 
 bool search_work(
-                 const trie_string &dict,
-                 const vertex &src_vtx,
-                 const vertex &dst_vtx,
-                 vector_vertex &chain)
+    const trie_string &dict,
+    const vertex &src_vtx,
+    const vertex &dst_vtx,
+    vector_vertex &chain)
 {
     if (src_vtx == dst_vtx)
     {
@@ -193,6 +194,7 @@ int main(int argc, char *argv[])
         }
         printf("Transform: '%s' ==> '%s'\n", word0, word1);
         vector_vertex chain;
+        patl::aux::performance_timer tim;
         if (search_work(dict, src_it, dst_it, chain))
         {
             for (vector_vertex::const_iterator it = chain.begin()
@@ -203,5 +205,7 @@ int main(int argc, char *argv[])
         }
         else
             printf("Chain not found!\n");
+        tim.finish();
+        printf("time: %.2f sec.\n", tim.get_seconds());
     }
 }
