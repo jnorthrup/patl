@@ -74,21 +74,8 @@ public:
         const char_type &terminator = '\0') // символ окончания строки
         : super(cont, mask, mask_len, terminator)
         , dist_(dist)
-        , zero_bits_(super::mask_len_) // all false init
         , states_seq_(1, states_vector(1, std::make_pair(0, 0)))
     {
-        for (word_t i = 0; i != super::mask_len_; ++i)
-        {
-            const char_type ch = super::mask_[i];
-            if (char_map_.find(ch) == char_map_.end())
-            {
-                const std::pair<typename char_bits_map::iterator, bool> ins_pair =
-                    char_map_.insert(std::make_pair(ch, bit_vector(super::mask_len_)));
-                bit_vector &hi = ins_pair.first->second;
-                for (word_t i = 0; i != super::mask_len_; ++i)
-                    hi[i] =  ch == super::mask_[i];
-            }
-        }
     }
 
     word_t distance() const
@@ -126,10 +113,6 @@ public:
             return cur_dist_ != ~word_t(0);
         }
         states_vector &next = states_seq_.back();
-        const typename char_bits_map::const_iterator hi_it = char_map_.find(ch);
-        const bit_vector &hi = hi_it != char_map_.end()
-            ? hi_it->second
-            : zero_bits_;
         std::back_insert_iterator<states_vector> next_ins(next);
         for (states_vector::const_iterator it = current.begin()
             ; it != current.end()
@@ -154,7 +137,7 @@ public:
                 }
                 return true;
             }
-            static_cast<this_t*>(this)->transitions(i, e, hi, next_ins);
+            static_cast<this_t*>(this)->transitions(i, e, ch, next_ins);
         }
         return !next.empty();
     }
@@ -163,8 +146,6 @@ protected:
     word_t dist_;
 
 private:
-    char_bits_map char_map_;
-    bit_vector zero_bits_;
     states_sequence states_seq_;
     word_t cur_dist_;
 };

@@ -39,7 +39,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const bit_vector &hi,
+        word_t i, word_t e, const char_type ch,
         std::back_insert_iterator<states_vector> next)
     {
         const word_t
@@ -49,14 +49,14 @@ public:
         {
             if (i < super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, e);
                 else
                 {
                     word_t j = b0 + 1;
                     for (; j != b1; ++j)
                     {
-                        if (hi[j])
+                        if (ch == super::mask_[j])
                         {
                             next = std::make_pair(i, e + 1);
                             next = std::make_pair(i + 1, e + 1);
@@ -72,7 +72,7 @@ public:
                     } } }
             else if (i == super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, e);
                 else
                 {
@@ -82,7 +82,7 @@ public:
             else // i == super::mask_len_
                 next = std::make_pair(super::mask_len_, e + 1);
         }
-        else if (i < super::mask_len_ && hi[b0])
+        else if (i < super::mask_len_ && ch == super::mask_[b0])
             next = std::make_pair(i + 1, super::dist_);
     }
 };
@@ -116,7 +116,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const bit_vector &hi,
+        word_t i, word_t e, const char_type ch,
         std::back_insert_iterator<states_vector> next)
     {
         const bool transp_state = (i & highest_bit) != 0;
@@ -128,21 +128,21 @@ public:
         {
             if (transp_state)
             {
-                if (i < super::mask_len_ - 1 && hi[b0])
+                if (i < super::mask_len_ - 1 && ch == super::mask_[b0])
                     next = std::make_pair(i + 2, super::dist_);
             }
             else
             {
-                if (i < super::mask_len_ && hi[b0])
+                if (i < super::mask_len_ && ch == super::mask_[b0])
                     next = std::make_pair(i + 1, super::dist_);
             } }
         else if (e == 0) // && e < super::dist_
         {
             if (i < super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, 0);
-                else if (hi[b0 + 1])
+                else if (ch == super::mask_[b0 + 1])
                 {
                     next = std::make_pair(i, 1);
                     next = std::make_pair(i | highest_bit, 1);
@@ -154,7 +154,7 @@ public:
                     word_t j = b0 + 2;
                     for (; j != b1; ++j)
                     {
-                        if (hi[j])
+                        if (ch == super::mask_[j])
                         {
                             next = std::make_pair(i, 1);
                             next = std::make_pair(i + 1, 1);
@@ -168,7 +168,7 @@ public:
                     } } }
             else if (i == super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, 0);
                 else
                 {
@@ -184,14 +184,14 @@ public:
             {
                 if (transp_state)
                 {
-                    if (hi[b0])
+                    if (ch == super::mask_[b0])
                         next = std::make_pair(i + 2, e);
                 }
                 else
                 {
-                    if (hi[b0])
+                    if (ch == super::mask_[b0])
                         next = std::make_pair(i + 1, e);
-                    else if (hi[b0 + 1])
+                    else if (ch == super::mask_[b0 + 1])
                     {
                         next = std::make_pair(i, e + 1);
                         next = std::make_pair(i | highest_bit, e + 1);
@@ -203,7 +203,7 @@ public:
                         word_t j = b0 + 2;
                         for (; j != b1; ++j)
                         {
-                            if (hi[j])
+                            if (ch == super::mask_[j])
                             {
                                 next = std::make_pair(i, e + 1);
                                 next = std::make_pair(i + 1, e + 1);
@@ -219,7 +219,7 @@ public:
                         } } } }
             else if (i == super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, e);
                 else
                 {
@@ -261,7 +261,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const bit_vector &hi,
+        word_t i, word_t e, const char_type ch,
         std::back_insert_iterator<states_vector> next)
     {
         const bool split_state = (i & highest_bit) != 0;
@@ -273,7 +273,7 @@ public:
             {
                 if (split_state)
                     next = std::make_pair(i + 1, e);
-                else if (hi[b0])
+                else if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, super::dist_);
             }
         }
@@ -281,7 +281,7 @@ public:
         {
             if (i < super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, e);
                 else
                 {
@@ -293,7 +293,7 @@ public:
             }
             else if (i == super::mask_len_ - 1)
             {
-                if (hi[b0])
+                if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, e);
                 else
                 {
@@ -313,7 +313,7 @@ public:
                     next = std::make_pair(i + 1, e);
                 else
                 {
-                    if (hi[b0])
+                    if (ch == super::mask_[b0])
                         next = std::make_pair(i + 1, e);
                     else
                     {
@@ -330,7 +330,7 @@ public:
                     next = std::make_pair(i + 1, e);
                 else
                 {
-                    if (hi[b0])
+                    if (ch == super::mask_[b0])
                         next = std::make_pair(i + 1, e);
                     else
                     {
