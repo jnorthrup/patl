@@ -15,8 +15,15 @@ class node_gen_suffix
     : public node_generic<node_gen_suffix<T> >
 {
 public:
-    explicit node_gen_suffix(const typename T::mapped_type &datum)
+    explicit node_gen_suffix(const typename T::mapped_type &datum
+#ifdef PATL_DEBUG
+        , word_t id
+#endif
+        )
         : datum_(datum)
+#ifdef PATL_DEBUG
+        , id_(id)
+#endif
     {
     }
 
@@ -31,6 +38,9 @@ public:
 
 private:
     typename T::mapped_type datum_;
+#ifdef PATL_DEBUG
+    word_t id_;
+#endif
 };
 
 template <

@@ -60,8 +60,6 @@ class levenshtein_generic
     typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
-    typedef std::vector<bool> bit_vector;
-    typedef std::map<char_type, bit_vector> char_bits_map;
     typedef std::vector<std::pair<word_t, word_t> > states_vector;
     typedef std::vector<states_vector> states_sequence;
 

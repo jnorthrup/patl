@@ -39,16 +39,26 @@ public:
     // вставляем очередной суффикс
     // возвращает длину совпавшего префикса в битах
     // вставляем очередной суффикс
-    const typename super::node_type *push_back(const Datum &datum)
+    const typename super::vertex *push_back(const Datum &datum)
     {
         if (this->endpoint()) // проверка на краевые точки
         {
             if (this->empty()) // если дерево пусто (нет корня)
-                return this->push_back_root(typename super::node_type(datum));
+                return this->push_back_root(typename super::node_type(
+                    datum,
+#ifdef PATL_DEBUG
+                    this->size()
+#endif
+                    ));
             else // иначе - полностью заполнено
                 this->reserve(2 * this->capacity());
         }
-        return this->push_back_generic(typename super::node_type(datum));
+        return this->push_back_generic(typename super::node_type(
+            datum,
+#ifdef PATL_DEBUG
+            this->size()
+#endif
+            ));
     }
 };
 

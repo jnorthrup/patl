@@ -24,7 +24,6 @@ class levenshtein_distance
     typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
-    typedef std::vector<bool> bit_vector;
     typedef std::vector<std::pair<word_t, word_t> > states_vector;
 
 public:
@@ -101,7 +100,6 @@ class levenshtein_tp_distance
     typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
-    typedef std::vector<bool> bit_vector;
     typedef std::vector<std::pair<word_t, word_t> > states_vector;
 
 public:
@@ -246,7 +244,6 @@ class levenshtein_ms_distance
     typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
-    typedef std::vector<bool> bit_vector;
     typedef std::vector<std::pair<word_t, word_t> > states_vector;
 
 public:
@@ -275,8 +272,7 @@ public:
                     next = std::make_pair(i + 1, e);
                 else if (ch == super::mask_[b0])
                     next = std::make_pair(i + 1, super::dist_);
-            }
-        }
+            } }
         else if (e == 0) // && e < super::dist_
         {
             if (i < super::mask_len_ - 1)
@@ -289,8 +285,7 @@ public:
                     next = std::make_pair(i | highest_bit, e + 1);
                     next = std::make_pair(i + 1, e + 1);
                     next = std::make_pair(i + 2, e + 1);
-                }
-            }
+                } }
             else if (i == super::mask_len_ - 1)
             {
                 if (ch == super::mask_[b0])
@@ -300,8 +295,7 @@ public:
                     next = std::make_pair(i, e + 1);
                     next = std::make_pair(i | highest_bit, e + 1);
                     next = std::make_pair(i + 1, e + 1);
-                }
-            }
+                } }
             else // i == super::mask_len_
                 next = std::make_pair(i, e + 1);
         }
@@ -321,9 +315,7 @@ public:
                         next = std::make_pair(i | highest_bit, e + 1);
                         next = std::make_pair(i + 1, e + 1);
                         next = std::make_pair(i + 2, e + 1);
-                    }
-                }
-            }
+                    } } }
             else if (i == super::mask_len_ - 1)
             {
                 if (split_state)
@@ -337,9 +329,7 @@ public:
                         next = std::make_pair(i, e + 1);
                         next = std::make_pair(i | highest_bit, e + 1);
                         next = std::make_pair(i + 1, e + 1);
-                    }
-                }
-            }
+                    } } }
             else // i == super::mask_len_
                 next = std::make_pair(i, e + 1);
         }
