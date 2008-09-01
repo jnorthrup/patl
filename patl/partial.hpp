@@ -40,12 +40,21 @@ public:
         return i <= super::mask_len_;
     }
 
-    // проверка на возможность присутствия символа ch в позиции i образца
+    /// проверка на возможность присутствия символа ch в позиции i образца
     bool operator()(word_t i, const char_type &ch) const
     {
         return i < super::mask_len_
             ? ch != super::terminator_ && (super::mask_[i] == joker_ || super::mask_[i] == ch)
             : !SameLength || i == super::mask_len_ && ch == super::terminator_;
+    }
+
+    /// проверка на возможность присутствия бита со значением id в позиции skip
+    bool bit_level(word_t skip, word_t id) const
+    {
+        return skip < super::mask_bit_len_
+            ? super::mask_[skip / super::bit_compare::bit_size] == joker_ ||
+              super::bit_comp_.get_bit(super::mask_, skip) == id
+            : true;
     }
 
 private:
@@ -89,11 +98,10 @@ public:
         return i <= super::mask_len_;
     }
 
-    // проверка на возможность присутствия символа ch в позиции i образца
+    /// проверка на возможность присутствия символа ch в позиции i образца
     bool operator()(word_t i, const char_type &ch)
     {
-        while (!diff_.empty() && i <= diff_.back())
-            diff_.pop_back();
+        // pop_back-while removed to determ(...)
         if (i < super::mask_len_ && ch != super::terminator_)
         {
             if (super::mask_[i] == ch)
@@ -103,9 +111,19 @@ public:
             diff_.push_back(i);
             return true;
         }
-        return
-            !SameLength && i >= super::mask_len_ ||
-            i == super::mask_len_ && ch == super::terminator_;
+        return !SameLength && i >= super::mask_len_ ||
+               i == super::mask_len_ && ch == super::terminator_;
+    }
+
+    /// проверка на возможность присутствия бита со значением id в позиции skip
+    bool bit_level(word_t skip, word_t id)
+    {
+        while (!diff_.empty() &&
+               skip / super::bit_compare::bit_size <= diff_.back())
+            diff_.pop_back();
+        return diff_.size() == dist_ && skip < super::mask_bit_len_
+            ? super::bit_comp_.get_bit(super::mask_, skip) == id
+            : true;
     }
 
 private:

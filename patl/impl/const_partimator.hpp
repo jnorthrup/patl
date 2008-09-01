@@ -106,10 +106,15 @@ private:
 
     bool prove_branch(bool leaf)
     {
+        const word_t skip0 = max0(static_cast<sword_t>(pit_->skip()));
+        // if current bit is illegal in pattern - skip whole subtree
+        if (!decis_.bit_level(skip0, pit_->get_qid()))
+        {
+            pit_.next_subtree();
+            return false;
+        }
+        word_t i = skip0 / bit_compare::bit_size;
         const key_type &key = pit_->key();
-        word_t i =
-            max0(static_cast<sword_t>(pit_->skip())) /
-            bit_compare::bit_size;
         const word_t limit =
             (leaf ? pit_->bit_comp().bit_length(key) : pit_->next_skip()) /
             bit_compare::bit_size;

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <algorithm>
 
 namespace uxn
 {
@@ -29,7 +30,9 @@ public:
         , mask_len_(get_min(
             mask_len,
             cont.bit_comp().bit_length(mask) / bit_compare::bit_size - 1))
+        , mask_bit_len_(mask_len_ * bit_compare::bit_size)
         , terminator_(terminator)
+        , bit_comp_(cont.bit_comp())
     {
     }
 
@@ -44,10 +47,19 @@ public:
 
     //bool operator()(word_t i, const char_type &ch);
 
+    /// bit-level optimization; implementation by default
+    bool bit_level(word_t, word_t) const
+    {
+        return true;
+    }
+
 protected:
     key_type mask_;
-    word_t mask_len_;
+    word_t
+        mask_len_,
+        mask_bit_len_;
     char_type terminator_;
+    bit_compare bit_comp_;
 };
 
 template <typename This, typename Container, bool SameLength>
@@ -136,6 +148,11 @@ public:
                 return true;
             }
             static_cast<this_t*>(this)->transitions(i, e, ch, next_ins);
+            // sort & remove duplicates
+            std::sort(next.begin(), next.end());
+            next.resize(std::distance(
+                next.begin(),
+                std::unique(next.begin(), next.end())));
         }
         return !next.empty();
     }
