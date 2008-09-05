@@ -59,12 +59,12 @@ protected:
     }
 
 protected:
-    void set_file_ptr(sword_t offs)
+    void set_file_ptr(word_t offs)
     {
         ::SetFilePointer(fh_, offs, 0, FILE_BEGIN);
     }
 
-    unsigned get_file_ptr()
+    word_t get_file_ptr()
     {
         return ::SetFilePointer(fh_, 0, 0, FILE_CURRENT);
     }
@@ -154,7 +154,7 @@ public:
         return chunk + len;
     }
 
-    void drop_back(sword_t offs)
+    void drop_back(word_t offs)
     {
         if (cur_ - buf_ < offs)
         {
@@ -165,7 +165,7 @@ public:
             cur_ -= offs;
     }
 
-    void skip_data(sword_t offs)
+    void skip_data(word_t offs)
     {
         if (end_ - cur_ < offs)
         {
