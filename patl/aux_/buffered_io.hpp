@@ -156,7 +156,7 @@ public:
 
     void drop_back(word_t offs)
     {
-        if (cur_ - buf_ < offs)
+        if (static_cast<word_t>(cur_ - buf_) < offs)
         {
             set_file_ptr(get_file_ptr() - (end_ - cur_) - offs);
             fill_buffer();
@@ -167,7 +167,7 @@ public:
 
     void skip_data(word_t offs)
     {
-        if (end_ - cur_ < offs)
+        if (static_cast<word_t>(end_ - cur_) < offs)
         {
             set_file_ptr(get_file_ptr() - (end_ - cur_) + offs);
             fill_buffer();
