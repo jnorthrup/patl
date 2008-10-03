@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{AEA8064F
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fuzzy_search", "demos\fuzzy_search\fuzzy_search.vcproj", "{F087F6EA-0A00-4D60-80CB-AD668DAB688F}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "insider", "demos\insider\insider.vcproj", "{F860F158-B397-4EC6-89A1-B2D6B224237E}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -77,9 +71,6 @@ Global
 		{92196235-55AE-4D48-A877-2BB12E3106AA}.Debug|Win32.Build.0 = Debug|Win32
 		{92196235-55AE-4D48-A877-2BB12E3106AA}.Release|Win32.ActiveCfg = Release|Win32
 		{92196235-55AE-4D48-A877-2BB12E3106AA}.Release|Win32.Build.0 = Release|Win32
-		{F087F6EA-0A00-4D60-80CB-AD668DAB688F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F087F6EA-0A00-4D60-80CB-AD668DAB688F}.Debug|Win32.Build.0 = Debug|Win32
-		{F087F6EA-0A00-4D60-80CB-AD668DAB688F}.Release|Win32.ActiveCfg = Release|Win32
 		{F860F158-B397-4EC6-89A1-B2D6B224237E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F860F158-B397-4EC6-89A1-B2D6B224237E}.Debug|Win32.Build.0 = Debug|Win32
 		{F860F158-B397-4EC6-89A1-B2D6B224237E}.Release|Win32.ActiveCfg = Release|Win32
@@ -117,7 +108,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F087F6EA-0A00-4D60-80CB-AD668DAB688F} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{F860F158-B397-4EC6-89A1-B2D6B224237E} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{22650F66-AEBA-4536-A77F-D5C7C81BF5F0} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{BCD738E0-1F3B-49DD-AACC-39027C29E4ED} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
