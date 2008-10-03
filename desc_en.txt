@@ -1,0 +1,16 @@
+PATL - Practical Algorithm Template Library - C++ library on PATRICIA trie
+
+Major features:
+	STL-compatible, high-performance template containers and auxiliary classes useful for stringology with fine-grained low level design. 
+
+Library features:
+- set & map containers with trie (digital/radix search tree) functionality - patl::trie_set & patl::trie_map; 
+- set & map containers with online suffix tree functionality - patl::suffix_set & patl::suffix_map - with linear time & space: 16 bytes per symbol, alphabet-independent; 
+- bunch of iterators over each type of containers - standard ([const_][reverse_]iterator), special ((post|pre|level)order_iterator), partial match iterators ([const_]partimator) and suffix_cont-special (match_iterator & [super_]maxrep_iterator); 
+- partimator's can be specialized with one of the decision functors: partial_match (filter strings with joker pattern), hamming distance (filter strings with Hamming automata), levenshtein_[tp_|ms_]distance (filter strings with Levenshtein automata with optional operations like transposition or merge-split); 
+- lowest common ancestor (LCA) requests with constant time after linear time & space postprocessing of the suffix_cont - patl::lca_oracle. 
+All features of this library can be examined with small demo programs delivered within.
+
+Compilers:
+	Visual C++ 2003/2005/2008
+	GCC G++ 3.x
