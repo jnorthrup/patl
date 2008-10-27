@@ -49,10 +49,10 @@ static inline unsigned searchInFile(
             const char
                 *stop = "\r\n",
                 *lineEnd = std::find_first_of(
-                str,
-                patl::impl::get_min(str + 160, end),
-                stop,
-                stop + sizeof(stop));
+                    str,
+                    patl::impl::get_min(str + 160, end),
+                    stop,
+                    stop + sizeof(stop));
             std::string lineS(
                 patl::impl::get_max(lineBeg, str - 12),
                 patl::impl::get_min(lineEnd, str + mit.length() + 12));
@@ -71,8 +71,10 @@ static inline unsigned searchInFile(
         for (
             MatchVector::const_iterator cit = matches.begin();
             cit != matches.end();
-        ++cit)
-            printf("%d\t... %s ...\n", cit->first, cit->second.c_str());
+            ++cit)
+                printf("%d\t... %s ...\n",
+                    cit->first,
+                    cit->second.c_str());
         printf("\n");
     }
     return matches.size();
@@ -105,13 +107,12 @@ static inline unsigned searchByMask(
         {
             do
             {
-                if (
-                    (wfData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+                if ((wfData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
                     !patl::aux::is_dots_folder(wfData.cFileName))
-                    matc += searchByMask(
-                    suffix,
-                    folder + '\\' + wfData.cFileName,
-                    mask);
+                        matc += searchByMask(
+                            suffix,
+                            folder + '\\' + wfData.cFileName,
+                            mask);
             } while (FindNextFile(hFind, &wfData));
             FindClose(hFind);
         }

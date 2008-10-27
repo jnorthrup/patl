@@ -61,6 +61,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "levenshtein", "demos\levens
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sort_lin", "demos\sort_lin\sort_lin.vcproj", "{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -103,6 +109,10 @@ Global
 		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Debug|Win32.Build.0 = Debug|Win32
 		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Release|Win32.ActiveCfg = Release|Win32
 		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}.Release|Win32.Build.0 = Release|Win32
+		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}.Debug|Win32.Build.0 = Debug|Win32
+		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}.Release|Win32.ActiveCfg = Release|Win32
+		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +126,7 @@ Global
 		{7F0FF6B7-EFB0-48A4-9C90-3F4A13A3B445} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{3A68EBA1-44F0-4AB0-AD17-4D8E75761315} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
+		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = 
