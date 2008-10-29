@@ -51,6 +51,13 @@ g++ -Wextra -O3 -I.. demos/muxoclon/muxoclon.cpp -o release\muxoclon_gcc.exe
 strip release\muxoclon_gcc.exe
 
 echo ---
+echo     building sort_lin
+echo ---
+del release\sort_lin_gcc.exe
+g++ -Wextra -O3 -I.. demos/sort_lin/sort_lin.cpp -o release\sort_lin_gcc.exe
+strip release\sort_lin_gcc.exe
+
+echo ---
 echo     building usort3
 echo ---
 del release\usort3_gcc.exe
