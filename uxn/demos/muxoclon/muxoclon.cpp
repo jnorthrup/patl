@@ -34,6 +34,66 @@ typedef std::map<unsigned, trie_string> map_sized_string;
 typedef trie_string::vertex vertex;
 typedef std::vector<vertex> vector_vertex;
 
+typedef std::map<vertex, vertex> map_vertex;
+typedef std::vector<map_vertex> vector_wave;
+
+void directed_search(
+    const trie_string &dict,
+    vector_wave &wave,
+    vector_wave &antiwave,
+    std::set<vertex> &used,
+    bool reversed,
+    vector_vertex &chain)
+{
+    wave.push_back(map_vertex());
+    map_vertex &next = wave.back();
+    const map_vertex
+        &current = wave[wave.size() - 2],
+        &antipode = antiwave.back();
+    for (map_vertex::const_iterator it = current.begin()
+        ; it != current.end()
+        ; ++it)
+    {
+        const vertex &seed = it->first;
+        typedef patl::hamming_distance<trie_string, true> hamm_dist;
+        hamm_dist hd(dict, 1, seed.key());
+        trie_string::const_partimator<hamm_dist>
+            pmi = dict.begin(hd),
+            pmi_end = dict.end(hd);
+        for (; pmi != pmi_end; ++pmi)
+        {
+            const vertex &vtx = pmi;
+            if (used.find(vtx) == used.end())
+            {
+                const map_vertex::const_iterator match = antipode.find(vtx);
+                if (match != antipode.end())
+                {
+                    wave.pop_back();
+                    vertex cur = reversed ? vtx : seed;
+                    vector_wave
+                        &front_wave = reversed ? antiwave : wave,
+                        &back_wave = reversed ? wave : antiwave;
+                    // G++ not allowed to use const_reverse_iterator
+                    // error: no match for 'operator!='
+                    for (vector_wave::reverse_iterator rit = front_wave.rbegin()
+                        ; rit != front_wave.rend()
+                        ; cur = rit++->find(cur)->second)
+                        chain.push_back(cur);
+                    std::reverse(chain.begin(), chain.end());
+                    cur = reversed ? seed : vtx;
+                    for (vector_wave::reverse_iterator rit = back_wave.rbegin()
+                        ; rit != back_wave.rend()
+                        ; cur = rit++->find(cur)->second)
+                        chain.push_back(cur);
+                    return;
+                }
+                used.insert(vtx);
+                next.insert(std::make_pair(vtx, seed));
+            }
+        }
+    }
+}
+
 bool search_work(
     const trie_string &dict,
     const vertex &src_vtx,
@@ -45,9 +105,6 @@ bool search_work(
         chain.push_back(src_vtx);
         return true;
     }
-    typedef std::map<vertex, vertex> map_vertex;
-    typedef std::vector<map_vertex> vector_wave;
-    typedef patl::hamming_distance<trie_string, true> hamm_dist;
     const vertex dict_end = dict.end();
     vector_wave front_wave, back_wave;
     front_wave.push_back(map_vertex());
@@ -60,99 +117,17 @@ bool search_work(
     for (int level = 0; ; ++level)
     {
         // front
-        {
-            front_wave.push_back(map_vertex());
-            map_vertex &next = front_wave.back();
-            const map_vertex
-                &current = front_wave[front_wave.size() - 2],
-                &antipode = back_wave.back();
-            for (map_vertex::const_iterator it = current.begin()
-                ; it != current.end()
-                ; ++it)
-            {
-                const vertex &seed = it->first;
-                hamm_dist hd(dict, 1, seed.key());
-                trie_string::const_partimator<hamm_dist>
-                    pmi = dict.begin(hd),
-                    pmi_end = dict.end(hd);
-                for (; pmi != pmi_end; ++pmi)
-                {
-                    const vertex &vtx = pmi;
-                    if (front_used.find(vtx) == front_used.end())
-                    {
-                        const map_vertex::const_iterator match = antipode.find(vtx);
-                        if (match != antipode.end())
-                        {
-                            front_wave.pop_back();
-                            vertex cur = seed;
-                            // G++ not allowed to use const_reverse_iterator
-                            // error: no match for 'operator!='
-                            for (vector_wave::reverse_iterator rit = front_wave.rbegin()
-                                ; rit != front_wave.rend()
-                                ; cur = rit++->find(cur)->second)
-                                chain.push_back(cur);
-                            std::reverse(chain.begin(), chain.end());
-                            cur = vtx;
-                            for (vector_wave::reverse_iterator rit = back_wave.rbegin()
-                                ; rit != back_wave.rend()
-                                ; cur = rit++->find(cur)->second)
-                                chain.push_back(cur);
-                            return true;
-                        }
-                        front_used.insert(vtx);
-                        next.insert(std::make_pair(vtx, seed));
-                    }
-                }
-            }
-            if (next.empty())
-                return false;
-        }
+        directed_search(dict, front_wave, back_wave, front_used, false, chain);
+        if (!chain.empty())
+            return true;
+        if (front_wave.back().empty())
+            return false;
         // back
-        {
-            back_wave.push_back(map_vertex());
-            map_vertex &next = back_wave.back();
-            const map_vertex
-                &current = back_wave[front_wave.size() - 2],
-                &antipode = front_wave.back();
-            for (map_vertex::const_iterator it = current.begin()
-                ; it != current.end()
-                ; ++it)
-            {
-                const vertex &seed = it->first;
-                hamm_dist hd(dict, 1, seed.key());
-                trie_string::const_partimator<hamm_dist>
-                    pmi = dict.begin(hd),
-                    pmi_end = dict.end(hd);
-                for (; pmi != pmi_end; ++pmi)
-                {
-                    const vertex &vtx = pmi;
-                    if (back_used.find(vtx) == back_used.end())
-                    {
-                        const map_vertex::const_iterator match = antipode.find(vtx);
-                        if (match != antipode.end())
-                        {
-                            vertex cur = vtx;
-                            for (vector_wave::reverse_iterator rit = front_wave.rbegin()
-                                ; rit != front_wave.rend()
-                                ; cur = rit++->find(cur)->second)
-                                chain.push_back(cur);
-                            std::reverse(chain.begin(), chain.end());
-                            back_wave.pop_back();
-                            cur = seed;
-                            for (vector_wave::reverse_iterator rit = back_wave.rbegin()
-                                ; rit != back_wave.rend()
-                                ; cur = rit++->find(cur)->second)
-                                chain.push_back(cur);
-                            return true;
-                        }
-                        back_used.insert(vtx);
-                        next.insert(std::make_pair(vtx, seed));
-                    }
-                }
-            }
-            if (next.empty())
-                return false;
-        }
+        directed_search(dict, back_wave, front_wave, back_used, true, chain);
+        if (!chain.empty())
+            return true;
+        if (back_wave.back().empty())
+            return false;
     }
 }
 
