@@ -76,7 +76,8 @@ class super_maxrep_iterator
             us.end(),
             us1.begin(),
             us1.end(),
-            std::inserter(isect, isect.end()));
+            std::inserter(isect, isect.end()),
+            us.key_comp());
         if (isect.empty())
             us.insert(us1.begin(), us1.end());
         else
