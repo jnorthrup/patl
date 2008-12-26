@@ -24,6 +24,11 @@ public:
         init();
     }
 
+    ~leaf_oracle()
+    {
+        unsigned_alloc_.deallocate(leaf_map_, leaf_size_);
+    }
+
     void init()
     {
         if (leaf_map_)
