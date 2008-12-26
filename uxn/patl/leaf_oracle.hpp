@@ -31,11 +31,10 @@ public:
 
     void init()
     {
-        if (leaf_map_)
-        {
-            unsigned_alloc_.deallocate(leaf_map_, leaf_size_);
-            leaf_map_ = 0;
-        }
+        // deallocate old
+        unsigned_alloc_.deallocate(leaf_map_, leaf_size_);
+        leaf_map_ = 0;
+        //
         if (cont_->size() == 0)
             return;
         leaf_map_ = unsigned_alloc_.allocate(leaf_size_ = cont_->size());
