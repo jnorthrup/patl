@@ -48,6 +48,12 @@ public:
         init();
     }
 
+    ~lca_oracle()
+    {
+        lca_alloc_.deallocate(lca_, lca_size_);
+        unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
+    }
+
     void init()
     {
         if (lca_)
