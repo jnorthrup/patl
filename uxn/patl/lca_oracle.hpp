@@ -44,6 +44,7 @@ public:
         , lca_alloc_(allocator_type())
         , lca_(0)
         , unsigned_alloc_(allocator_type())
+        , lca_map_(0)
     {
         init();
     }
@@ -56,12 +57,12 @@ public:
 
     void init()
     {
-        if (lca_)
-        {
-            lca_alloc_.deallocate(lca_, lca_size_);
-            lca_ = 0;
-            unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
-        }
+        // deallocate old
+        lca_alloc_.deallocate(lca_, lca_size_);
+        lca_ = 0;
+        unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
+        lca_map_ = 0;
+        //
         if (cont_->size() == 0)
             return;
         lca_ = lca_alloc_.allocate(lca_size_ = 2 * cont_->size());
