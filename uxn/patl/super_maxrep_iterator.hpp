@@ -22,6 +22,10 @@ class super_maxrep_iterator
     struct key_type_less
         : public std::binary_function<key_type, key_type, bool>
     {
+        key_type_less()
+        {
+        }
+
         key_type_less(const key_type &keys)
             : keys_(keys)
         {
