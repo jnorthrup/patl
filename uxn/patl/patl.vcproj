@@ -258,6 +258,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\aux_\file_mapping_io.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\aux_\file_utils.hpp"
 					>
 				</File>
