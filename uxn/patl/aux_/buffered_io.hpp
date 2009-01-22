@@ -38,7 +38,7 @@ protected:
     {
         if (fh_ == INVALID_HANDLE_VALUE)
             PATL_WIN32_EXCEPTION(CreateFile);
-        if (buf_)
+        if (!buf_)
             PATL_WIN32_EXCEPTION(VirtualAlloc);
     }
 
