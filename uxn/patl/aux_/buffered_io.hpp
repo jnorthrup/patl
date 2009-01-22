@@ -1,10 +1,11 @@
 #ifndef PATL_AUX_BUFFERED_IO_HPP
 #define PATL_AUX_BUFFERED_IO_HPP
 
+#include "../config.hpp"
+#include "file_utils.hpp"
 #include <algorithm>
 #include <exception>
 #include <windows.h>
-#include "../config.hpp"
 
 namespace uxn
 {
@@ -36,7 +37,9 @@ protected:
         , ownHandle_(true)
     {
         if (fh_ == INVALID_HANDLE_VALUE)
-            throw std::exception();
+            PATL_WIN32_EXCEPTION(CreateFile);
+        if (buf_)
+            PATL_WIN32_EXCEPTION(VirtualAlloc);
     }
 
     explicit buffered_base(HANDLE fh)

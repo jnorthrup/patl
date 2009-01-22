@@ -1,4 +1,5 @@
 #include <uxn/patl/aux_/file_utils.hpp>
+#include <uxn/patl/aux_/file_mapping_io.hpp>
 #include <uxn/patl/aux_/buffered_io.hpp>
 #include <uxn/patl/aux_/perf_timer.hpp>
 #include <uxn/patl/trie_set.hpp>
@@ -100,18 +101,12 @@ private:
 
 void sort_huge_text_file(char *infname, char *outfname)
 {
-    const HANDLE fh = CreateFile(
-        infname, GENERIC_READ, FILE_SHARE_READ, 0,
-        OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, 0);
-    if (fh == INVALID_HANDLE_VALUE)
-        return;
-    const unsigned N = patl::aux::get_file_length(fh);
-    const HANDLE fmh = CreateFileMapping(fh, 0, PAGE_READONLY, 0, N, 0);
-    if (!fmh)
-        return;
-    unsigned char * const huge = static_cast<unsigned char*>(
-        MapViewOfFile(fmh, FILE_MAP_READ, 0, 0, N));
-    const unsigned char * const end = huge + N;
+    patl::aux::file_mapping_input fmi(infname);
+    const std::auto_ptr<patl::aux::file_mapping_view> fmv =
+        fmi.create_view(128 << 20);
+    unsigned char * const huge =
+        static_cast<unsigned char*>(fmv->get_view());
+    const unsigned char * const end = huge + fmv->size();
     if (!huge)
         return;
     typedef piece<unsigned char> textline_t;
@@ -140,15 +135,9 @@ void sort_huge_text_file(char *infname, char *outfname)
         trie.size(),
         tim.get_seconds());
     //
-    {
-        patl::aux::buffered_output outbuf(outfname);
-        for (trie_t::const_iterator it = trie.begin(); it != trie.end(); ++it)
-            outbuf.write_bytes(it->begin(), it->length());
-    }
-    //
-    UnmapViewOfFile(huge);
-    CloseHandle(fmh);
-    CloseHandle(fh);
+    patl::aux::buffered_output outbuf(outfname);
+    for (trie_t::const_iterator it = trie.begin(); it != trie.end(); ++it)
+        outbuf.write_bytes(it->begin(), it->length());
 }
 
 int main(int argc, char *argv[])
@@ -158,5 +147,12 @@ int main(int argc, char *argv[])
         printf("SORT_LIN <infile> <outfile>\n");
         return 0;
     }
-    sort_huge_text_file(argv[1], argv[2]);
+    try
+    {
+        sort_huge_text_file(argv[1], argv[2]);
+    }
+    catch (const std::exception &exc)
+    {
+        printf("Error: %s\n", exc.what());
+    }
 }
