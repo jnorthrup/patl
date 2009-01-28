@@ -266,6 +266,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\aux_\generator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\aux_\perf_timer.hpp"
 					>
 				</File>
