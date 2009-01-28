@@ -18,17 +18,17 @@ class win32_exception
 {
 public:
     win32_exception(const char *fun_name, const char *fname, int loc)
-        : mess_((64 << 10) + 1000)
+        : mess_(64 << 10)
     {
         const DWORD mess_id(::GetLastError());
-        const LPSTR msg_buf(new CHAR[256]);
+        char msg_buf[1024];
         ::FormatMessage(
             FORMAT_MESSAGE_FROM_SYSTEM,
             0,
             mess_id,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             msg_buf,
-            256,
+            1024,
             0);
         sprintf(&mess_[0], "%s (%d) : code %d in %s: %s",
             fname,
@@ -36,7 +36,6 @@ public:
             mess_id,
             fun_name,
             msg_buf);
-        delete[] msg_buf;
     }
 
     ~win32_exception() throw()
@@ -54,6 +53,29 @@ private:
 
 #define PATL_WIN32_EXCEPTION(fun_name)\
     throw uxn::patl::aux::win32_exception(#fun_name, __FILE__, __LINE__)
+
+inline void delete_file(const char *fname)
+{
+    if (!::DeleteFile(fname))
+        PATL_WIN32_EXCEPTION(DeleteFile);
+}
+
+inline void move_file(const char *from_path, const char *to_path)
+{
+    if (!::MoveFileEx(from_path, to_path,
+        MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+        PATL_WIN32_EXCEPTION(MoveFileEx);
+}
+
+inline std::string get_temp_file_name(
+    const char *prefix = "TMP",
+    const char *path = ".")
+{
+    char buf[MAX_PATH];
+    if (!::GetTempFileName(path, prefix, 0, buf))
+        PATL_WIN32_EXCEPTION(GetTempFileName);
+    return std::string(buf);
+}
 
 inline word_t get_file_length(HANDLE fh)
 {

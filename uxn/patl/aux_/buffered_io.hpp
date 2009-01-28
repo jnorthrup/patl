@@ -61,6 +61,12 @@ protected:
             ::CloseHandle(fh_);
     }
 
+public:
+    long long get_file_length()
+    {
+        return get_long_file_length(fh_);
+    }
+
 protected:
     void set_file_ptr(word_t offs)
     {
@@ -88,7 +94,7 @@ private:
 };
 
 class buffered_input
-    : private buffered_base
+    : public buffered_base
 {
 public:
     explicit buffered_input(const char *fname)
@@ -103,15 +109,6 @@ public:
         , cur_(buf_)
     {
         fill_buffer();
-    }
-
-    word_t get_file_length()
-    {
-        const word_t cur = get_file_ptr();
-        ::SetFilePointer(fh_, 0, 0, FILE_END);
-        const word_t len = get_file_ptr();
-        set_file_ptr(cur);
-        return len;
     }
 
     bool is_data() const
@@ -198,7 +195,7 @@ private:
 };
 
 class buffered_output
-    : private buffered_base
+    : public buffered_base
 {
 public:
     explicit buffered_output(const char *fname)

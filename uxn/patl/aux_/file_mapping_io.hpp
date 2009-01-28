@@ -78,7 +78,7 @@ public:
         ::CloseHandle(fh_);
     }
 
-    long long get_file_length()
+    long long get_file_length() const
     {
         return get_long_file_length(fh_);
     }
@@ -91,12 +91,20 @@ public:
     std::auto_ptr<file_mapping_view> create_view(word_t size)
     {
         size = static_cast<word_t>(patl::impl::get_min(
-                static_cast<long long>(size),
+                static_cast<long long>(patl::impl::align_up<1 << 16>(size)),
                 residue_length()));
         std::auto_ptr<file_mapping_view> v(
             new file_mapping_view(fmh_, offset_, size));
         offset_ += size;
         return v;
+    }
+
+    word_t drop_back(word_t dropped)
+    {
+        dropped = static_cast<word_t>(offset_ - patl::impl::align_down<1 << 16>(
+            static_cast<word_t>(offset_ - dropped)));
+        offset_ = dropped < offset_ ? offset_ - dropped : 0;
+        return dropped;
     }
 
 private:
