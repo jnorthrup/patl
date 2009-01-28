@@ -100,6 +100,18 @@ inline long long get_long_file_length(HANDLE fh)
         (static_cast<long long>(len_h) << (8 * sizeof(long)));
 }
 
+inline long long get_long_file_length(const char *fname)
+{
+    WIN32_FIND_DATA data;
+    const HANDLE ffh = ::FindFirstFile(fname, &data);
+    if (ffh == INVALID_HANDLE_VALUE)
+        PATL_WIN32_EXCEPTION(FindFirstFile);
+    ::FindClose(ffh);
+    return
+        static_cast<long long>(data.nFileSizeLow) |
+        (static_cast<long long>(data.nFileSizeHigh) << (8 * sizeof(long)));
+}
+
 inline std::string take_file_folder(const std::string &str)
 {
     const std::string::size_type n = str.find_last_of("\\/:");
