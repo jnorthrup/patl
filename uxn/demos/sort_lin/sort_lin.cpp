@@ -12,6 +12,8 @@
 
 namespace patl = uxn::patl;
 
+//#define SORT_LIN_DEBUG
+
 template <typename T>
 class piece
 {
@@ -300,8 +302,10 @@ public:
     PATL_EMIT(line_t)
     {
         printf("\r  0%% =>   0%% of sort completed");
-        for (;;)
+        while (!merge_src_.empty() || input_continued_)
         {
+            if (!first_run_)
+                PATL_YIELD(line_t()); // конец очередного слияния
             printf("\r% 3u%% => 100%% of sort completed", amount_per100_);
             if (input_continued_)
             {
@@ -329,16 +333,10 @@ public:
                 printf("\r% 3u%% =>   0%% of sort completed",
                     amount_per100_ = static_cast<word_t>(100 * (length - tsf_gen_.residue_length()) / length));
             }
-            if (merge_src_.empty())
+            if (merge_src_.size() == 1) // все поместилось в один файл
                 break;
             else if (first_run_)
-            {
-                if (merge_src_.size() == 1) // все поместилось в один файл
-                    break;
                 first_run_ = false;
-            }
-            else
-                PATL_YIELD(line_t()); // конец очередного слияния
             // заполняем первые D строк, насколько хватит входных временных файлов
             for (it_ = merge_src_.begin()
                 ; it_ != merge_src_.end() && trie_.size() != D_
@@ -348,6 +346,11 @@ public:
                     it_->first.c_str(),
                     max_string_size_,
                     max_string_size_);
+#ifdef SORT_LIN_DEBUG
+                printf("\nuse temp file: '%s', %5.3g Mb\n",
+                    it_->first.c_str(),
+                    static_cast<double>(patl::aux::get_long_file_length(it_->first.c_str())) / 1048576.0);
+#endif
                 inserted_ = false;
                 do
                 {
@@ -403,6 +406,10 @@ public:
                         PATL_YIELD(it_->second->value());
                 delete_src();
             }
+            /*if ()
+                break;
+            else
+                PATL_YIELD(line_t()); // конец очередного слияния*/
         }
         printf("\r100%% => 100%% of sort completed\n");
     }
@@ -458,6 +465,12 @@ void sort_huge_text_file(const char *infname, const char *outfname, word_t N)
         if (value.empty())
         {
             sfmf_gen.push_front(merge_src_t::value_type(tmpfname, 0));
+#ifdef SORT_LIN_DEBUG
+            outbuf->flush_buffer();
+            printf("\nmerged to file: '%s', %5.3g Mb ***\n",
+                tmpfname.c_str(),
+                static_cast<double>(outbuf->get_file_length()) / 1048576.0);
+#endif
             tmpfname = patl::aux::get_temp_file_name();
             outbuf.reset(new patl::aux::buffered_output(tmpfname.c_str()));
         }
