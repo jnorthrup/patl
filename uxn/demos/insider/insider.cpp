@@ -109,7 +109,7 @@ int main()
     printf("\n--- partial_match\n\n");
     //
     {
-        typedef patl::partial_match<StringSet, true> part_match;
+        typedef patl::partial_match<StringSet, false> part_match;
         part_match pm(test1, "b?l?t");
         StringSet::const_partimator<part_match>
             it = test1.begin(pm),
