@@ -38,7 +38,7 @@ public:
     }
     reference operator*()
     {
-        return this->vtx_.value();
+        return this->pit_->value();
     }
 
     this_t &operator++()

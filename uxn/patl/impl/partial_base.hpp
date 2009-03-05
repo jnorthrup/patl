@@ -53,6 +53,11 @@ public:
         return true;
     }
 
+    const key_type &mask() const
+    {
+        return mask_;
+    }
+
 protected:
     key_type mask_;
     word_t
