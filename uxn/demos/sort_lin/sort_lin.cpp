@@ -406,10 +406,6 @@ public:
                         PATL_YIELD(it_->second->value());
                 delete_src();
             }
-            /*if ()
-                break;
-            else
-                PATL_YIELD(line_t()); // конец очередного слияния*/
         }
         printf("\r100%% => 100%% of sort completed\n");
     }
@@ -422,8 +418,8 @@ public:
             ++levels_completed_[level_cur_];
     }
 
-    bool first_run() const
-    { return first_run_; }
+    bool sole_tmpfname() const
+    { return merge_src_.size() == 1; }
 
     std::string first_tmpfname() const
     { return merge_src_.begin()->first; }
@@ -478,7 +474,7 @@ void sort_huge_text_file(const char *infname, const char *outfname, word_t N)
             outbuf->write_bytes(value.begin(), value.length());
     }
     outbuf.reset();
-    if (sfmf_gen.first_run())
+    if (sfmf_gen.sole_tmpfname())
     {
         patl::aux::delete_file(tmpfname.c_str());
         patl::aux::move_file(sfmf_gen.first_tmpfname().c_str(), outfname);
