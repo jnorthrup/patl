@@ -14,6 +14,7 @@ class prefix_generic
     typedef prefix_generic<Container, Node> this_t;
     typedef Node node_type;
     typedef typename Container::key_type key_type;
+    typedef typename Container::const_key_reference const_key_reference;
     typedef typename Container::bit_compare bit_compare;
     typedef typename Container::vertex vertex;
 
@@ -63,12 +64,12 @@ public:
         return skip() / bit_compare::bit_size;
     }
 
-    key_type key() const
+    const_key_reference key() const
     {
         return cont_->get_key(q_);
     }
 
-    const key_type key(word_t id) const
+    const_key_reference key(word_t id) const
     {
         return cont_->get_key(q_->get_xlink(id));
     }
