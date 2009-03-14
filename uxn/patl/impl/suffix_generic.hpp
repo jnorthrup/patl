@@ -28,6 +28,7 @@ public:
     typedef Container cont_type;
     typedef typename T::node_type node_type;
     typedef typename T::key_type key_type;
+    typedef key_type const_key_reference;
     typedef typename T::value_type value_type;
 
     explicit algorithm_gen_suffix(const cont_type *cont = 0)
@@ -62,12 +63,12 @@ public:
         return p->get_value(this->cont_->get_key(p));
     }
 
-    const key_type get_key() const
+    const_key_reference get_key() const
     {
         return this->cont_->get_key(this->get_p());
     }
 
-    const key_type get_key(const node_type *p) const
+    const_key_reference get_key(const node_type *p) const
     {
         return this->cont_->get_key(p);
     }
@@ -111,11 +112,13 @@ public:
     typedef typename super::postorder_iterator postorder_iterator;
     typedef typename super::levelorder_iterator levelorder_iterator;
 
+    typedef typename algorithm::const_key_reference const_key_reference;
+
     static const word_t delta = T::delta;
 
     static const word_t bit_size = bit_compare::bit_size;
 
-    const key_type get_key(const node_type *node) const
+    const_key_reference get_key(const node_type *node) const
     {
         return keys_ + trie_.index_of(node) * delta;
     }

@@ -56,6 +56,7 @@ public:
     typedef Container cont_type;
     typedef typename T::node_type node_type;
     typedef typename T::key_type key_type;
+    typedef typename T::const_key_reference const_key_reference;
     typedef typename T::value_type value_type;
 
     explicit algorithm_gen(const cont_type *cont = 0)
@@ -88,12 +89,12 @@ public:
         return this->get_p()->get_value();
     }
 
-    const key_type &get_key() const
+    const_key_reference get_key() const
     {
         return this->get_p()->get_key();
     }
 
-    const key_type &get_key(const node_type *p) const
+    const_key_reference get_key(const node_type *p) const
     {
         return p->get_key();
     }
@@ -104,6 +105,9 @@ struct algorithm_gen_traits
     : public T
 {
     typedef Node<T> node_type;
+
+    typedef typename T::key_type key_type;
+    typedef const key_type &const_key_reference;
 };
 
 template <

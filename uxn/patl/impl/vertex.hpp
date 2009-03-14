@@ -32,6 +32,7 @@ protected:
 
 public:
     typedef typename algorithm::key_type key_type;
+    typedef typename algorithm::const_key_reference const_key_reference;
     typedef typename algorithm::value_type value_type;
 
     explicit vertex_generic(const algorithm &pal = algorithm())
@@ -192,7 +193,7 @@ public:
         return pal_.get_qtag() != 0;
     }
 
-    key_type key() const
+    const_key_reference key() const
     {
         return pal_.get_key();
     }
