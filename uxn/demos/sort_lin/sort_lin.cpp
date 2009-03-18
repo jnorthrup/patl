@@ -310,7 +310,7 @@ public:
             if (input_continued_)
             {
                 level_cur_ = std::find(levels_completed_.rbegin(), levels_completed_.rend(), D_).base() - levels_completed_.begin() - 1;
-                if (level_cur_ == -1)
+                if (level_cur_ == ~word_t(0))
                 {
                     level_cur_ = 0;
                     const word_t init_size = merge_src_.size();
