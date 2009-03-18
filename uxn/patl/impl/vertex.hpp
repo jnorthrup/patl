@@ -83,6 +83,16 @@ public:
         return pal_.compact();
     }
 
+    word_t node_q_uid() const
+    {
+        return reinterpret_cast<word_t>(pal_.get_q());
+    }
+
+    word_t node_p_uid() const
+    {
+        return reinterpret_cast<word_t>(pal_.get_p());
+    }
+
     const_iterator begin() const
     {
         return const_iterator(*postorder_begin());
@@ -198,6 +208,11 @@ public:
         return pal_.get_key();
     }
 
+    const_key_reference parent_key() const
+    {
+        return pal_.get_key(pal_.get_q());
+    }
+
     word_t prefix_length() const
     {
         return pal_.get_prefix_length();
@@ -235,6 +250,15 @@ public:
         while (!get_qtag())
             iterate(Side);
     }
+    template <typename Callback, word_t Side>
+    void descend(Callback &cb)
+    {
+        while (!get_qtag())
+        {
+            cb(this);
+            iterate(Side);
+        }
+    }
 
     /// trie descend to the leaves limited by
     template <word_t Side>
@@ -250,6 +274,16 @@ public:
     {
         while (get_qid() == Side)
             ascend();
+        toggle();
+    }
+    template <typename Callback, word_t Side>
+    void move_subtree(Callback &cb)
+    {
+        while (get_qid() == Side)
+        {
+            ascend();
+            cb(this);
+        }
         toggle();
     }
 

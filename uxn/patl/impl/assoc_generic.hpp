@@ -277,15 +277,15 @@ private:
 public:
     const_iter_range equal_range(
         const key_type &key,
-        word_t prefixLen = ~word_t(0)) const
+        word_t prefix_len = ~word_t(0)) const
     {
         vertex vtx(root());
         if (root_)
         {
-            const word_t len = vtx.mismatch(key, prefixLen);
+            const word_t len = vtx.mismatch(key, prefix_len);
             vertex lower(vtx);
             lower.template descend<0>();
-            if (len < prefixLen)
+            if (len < prefix_len)
                 return const_iter_range(
                     const_iterator(lower),
                     const_iterator(lower));
@@ -299,15 +299,15 @@ public:
     }
     iter_range equal_range(
         const key_type &key,
-        word_t prefixLen = ~word_t(0))
+        word_t prefix_len = ~word_t(0))
     {
         vertex vtx(root());
         if (root_)
         {
-            const word_t len = vtx.mismatch(key, prefixLen);
+            const word_t len = vtx.mismatch(key, prefix_len);
             vertex lower(vtx);
             lower.template descend<0>();
-            if (len < prefixLen)
+            if (len < prefix_len)
                 return iter_range(
                     iterator(lower),
                     iterator(lower));

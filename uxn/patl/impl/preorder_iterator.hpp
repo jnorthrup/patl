@@ -96,6 +96,32 @@ public:
     {
         vtx_.template move_subtree<1>();
     }
+    template <typename Callback>
+    void next_subtree(Callback &cb)
+    {
+        vtx_.template move_subtree<Callback, 1>(cb);
+    }
+
+    template <typename Callback>
+    void increment(Callback &cb)
+    {
+        if (vtx_.get_qtag())
+            next_subtree(cb);
+        else
+            vtx_.iterate(0);
+    }
+
+    template <typename Callback>
+    void decrement(Callback &cb)
+    {
+        if (vtx_.get_qid())
+        {
+            vtx_.toggle();
+            vtx_.template descend<Callback, 1>(cb);
+        }
+        else
+            vtx_.ascend();
+    }
 
 protected:
     vertex vtx_;

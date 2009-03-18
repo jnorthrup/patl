@@ -4,6 +4,8 @@
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/partial.hpp>
 #include <uxn/patl/levenshtein.hpp>
+#include <uxn/patl/patricia_dot_creator.hpp>
+#include <iostream>
 
 namespace patl = uxn::patl;
 
@@ -36,6 +38,16 @@ void printRegexp(word_t length, const Iter &beg, const Iter &end)
         }
     }
 }
+
+template <typename Cont>
+struct preorder_iterator_callback
+    : public std::unary_function<typename Cont::vertex, void>
+{
+    void operator()(const typename Cont::vertex *vtx) const
+    {
+        printf("// %d\t%s\n", vtx->skip(), vtx->key().c_str());
+    }
+};
 
 int main()
 {
@@ -180,12 +192,14 @@ int main()
             itBeg = vtx_root.preorder_begin(),
             itEnd = vtx_root.preorder_end(),
             it = itBeg;
-        for (; it != itEnd; ++it)
+        preorder_iterator_callback<StringSet> icb;
+        for (; it != itEnd; /*++it*/it.increment(icb))
             printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
-            --it;
+            //--it;
+            it.decrement(icb);
             printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
     }
@@ -297,4 +311,8 @@ int main()
             }
         } while (suf.keys() + suf.size() != arr + sizeof(arr) / sizeof(arr[0]));
     }
+    //
+    printf("\n--- generate graphviz dot\n\n");
+    //
+    patl::patricia_dot_creator<StringSet>().create(vtx_root);
 }

@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\patricia_dot_creator.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\priority.hpp"
 				>
 			</File>
