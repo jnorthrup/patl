@@ -6,6 +6,7 @@
 #include <uxn/patl/levenshtein.hpp>
 #include <uxn/patl/patricia_dot_creator.hpp>
 #include <iostream>
+#include <fstream>
 
 namespace patl = uxn::patl;
 
@@ -49,7 +50,7 @@ struct preorder_iterator_callback
     }
 };
 
-int main()
+int main(int argc, char *argv[])
 {
     typedef patl::trie_set<std::string> StringSet;
     StringSet
@@ -315,4 +316,26 @@ int main()
     printf("\n--- generate graphviz dot\n\n");
     //
     patl::patricia_dot_creator<StringSet>().create(vtx_root);
+    {
+        std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
+        if (fin.is_open())
+        {
+            StringSet dict;
+            std::string str;
+            while (fin >> str)
+                dict.insert(str);
+            vertex vtx(dict.root());
+            vtx.mismatch("patl", 3 * 8);
+            {
+                std::ofstream fout("pat_.dot");
+                patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx);
+            }
+            {
+                std::ofstream fout("pat_.clust.dot");
+                patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx, true);
+            }
+        }
+        else
+            printf("Unable to open input file!\n");
+    }
 }

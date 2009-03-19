@@ -39,6 +39,31 @@ public:
         return q_;
     }
 
+    word_t node_uid() const
+    {
+        return reinterpret_cast<word_t>(q_);
+    }
+
+    word_t get_xtag(word_t id) const
+    {
+        return q_->get_xtag(id);
+    }
+
+    word_t get_parent_id() const
+    {
+        return q_->get_parent_id();
+    }
+
+    void go_xlink(word_t id)
+    {
+        q_ = q_->get_xlink(id);
+    }
+
+    void go_parent()
+    {
+        q_ = q_->get_parent();
+    }
+
     vertex get_vertex() const
     {
         return vertex(cont_, q_->get_parent(), q_->get_parent_id());
@@ -57,6 +82,15 @@ public:
     word_t skip() const
     {
         return q_->get_skip();
+    }
+    word_t skip(word_t id) const
+    {
+        return q_->get_xlink(id)->get_skip();
+    }
+
+    bool symbol_limit(word_t id) const
+    {
+        return skip() / bit_compare::bit_size != skip(id) / bit_compare::bit_size;
     }
 
     word_t length() const
