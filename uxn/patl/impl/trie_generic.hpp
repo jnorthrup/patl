@@ -148,6 +148,8 @@ public:
     typedef typename super::postorder_iterator postorder_iterator;
     typedef typename super::levelorder_iterator levelorder_iterator;
 
+    typedef typename algorithm::const_key_reference const_key_reference;
+
     trie_generic(const bit_compare &bit_comp, const allocator_type &alloc)
         : super(bit_comp)
         , alloc_(alloc)
