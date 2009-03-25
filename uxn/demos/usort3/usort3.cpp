@@ -1,8 +1,7 @@
 /*-
  | Burrows-Wheeler sorting program, v3.10 [O(n)-encoding with suffix tries]
  |
- | (c) 2004-2005 by Roman S. Klyujkov, rsk_comp at mail.ru
- | This is free software under GPL, http://www.gnu.org/licenses/gpl.txt
+ | (c) 2004-2005 by Roman S. Klyujkov, uxnuxn at gmail.com
 -*/
 
 #include <uxn/patl/aux_/buffered_io.hpp>

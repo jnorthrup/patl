@@ -37,6 +37,13 @@ g++ -Wextra -O3 -I.. demos/maxpals/maxpals.cpp -o release\maxpals_gcc.exe
 strip release\maxpals_gcc.exe
 
 echo ---
+echo     building multi_align
+echo ---
+del release\multi_align_gcc.exe
+g++ -Wextra -O3 -I.. demos/multi_align/multi_align.cpp -o release\multi_align_gcc.exe
+strip release\multi_align_gcc.exe
+
+echo ---
 echo     building multi_search
 echo ---
 del release\multi_search_gcc.exe

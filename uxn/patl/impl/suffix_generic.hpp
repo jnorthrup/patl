@@ -155,6 +155,13 @@ public:
         keys_ = keys;
     }
 
+    word_t vertex_index_of(const vertex &vtx) const
+    {
+        return
+            trie_.index_of(static_cast<const algorithm&>(vtx).get_q()) * 2 |
+            vtx.get_qid();
+    }
+
     word_t index_of(const vertex &vtx) const
     {
         return trie_.index_of(static_cast<const algorithm&>(vtx).get_p());

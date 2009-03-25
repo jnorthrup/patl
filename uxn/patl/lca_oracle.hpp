@@ -22,13 +22,13 @@ public:
     /// utility func
     const lca_type *get_by(const vertex &vtx) const
     {
-        return lca_ + (cont_->index_of(vtx.get_prefix()) * 2 | vtx.get_qid());
+        return lca_ + cont_->vertex_index_of(vtx);
     }
 
     /// utility func
     lca_type *get_by(const vertex &vtx)
     {
-        return lca_ + (cont_->index_of(vtx.get_prefix()) * 2 | vtx.get_qid());
+        return lca_ + cont_->vertex_index_of(vtx);
     }
 
     /// utility func
