@@ -330,10 +330,12 @@ int main(int argc, char *argv[])
                 std::ofstream fout("pat_.dot");
                 patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx);
             }
+            printf("\npat_.dot created!\n");
             {
                 std::ofstream fout("pat_.clust.dot");
                 patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx, true);
             }
+            printf("\npat_.clust.dot created!\n");
         }
         else
             printf("Unable to open input file!\n");

@@ -322,6 +322,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\patricia_dot_base.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\postorder_iterator.hpp"
 					>
 				</File>

@@ -1,6 +1,7 @@
 #ifndef PATL_PATRICIA_DOT_CREATOR_HPP
 #define PATL_PATRICIA_DOT_CREATOR_HPP
 
+#include <uxn/patl/impl/patricia_dot_base.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -9,16 +10,22 @@ namespace uxn
 namespace patl
 {
 
-template <typename Cont, typename OutStream = std::ostream>
+template <
+    typename Cont,
+    typename OutStream = std::ostream,
+    typename Base = impl::patricia_dot_base<Cont> >
 class patricia_dot_creator
+    : public Base
 {
     patricia_dot_creator &operator=(const patricia_dot_creator&);
 
     typedef Cont cont_type;
+    typedef patricia_dot_creator<cont_type, OutStream> this_t;
     typedef typename cont_type::vertex vertex;
     typedef typename cont_type::preorder_iterator preorder_iterator;
     typedef typename cont_type::bit_compare bit_compare;
     typedef typename cont_type::prefix prefix;
+    typedef typename cont_type::key_type key_type;
 
     static const word_t bit_size = bit_compare::bit_size;
 
@@ -50,15 +57,8 @@ public:
             << "]\n";
         const preorder_iterator pit_end(vtx.preorder_end());
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
-        {
             if (init_id == pit->get_qid())
-                out_ << 'n' << std::hex << pit->node_q_uid() << std::dec
-                    << "[label = \""
-                    << pit->parent_key()
-                    << "\\n"
-                    << static_cast<sword_t>(pit->skip())
-                    << "\"]\n";
-        }
+                out_node(out_, *pit);
         //
         out_ << std::hex;
         //
@@ -70,11 +70,19 @@ public:
         out_ << "\n// forward left links\n";
         out_ << "edge[tailport = sw, weight = 2]\n";
         {
-            bool linkp = false;
+            //bool linkp = false;
             for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
             {
-                if (linkp)
+                if (!pit->get_qtag() && !pit->get_qid())
+                {
+                    out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
+                    out_edge(out_, *pit);
+                }
+                /*if (linkp)
+                {
                     out_ << "->" << 'n' << pit->node_q_uid();
+                    out_edge(out_, *pit);
+                }
                 if (!pit->get_qtag() && !pit->get_qid())
                 {
                     if (!linkp)
@@ -86,43 +94,51 @@ public:
                     if (linkp)
                         out_ << "\n";
                     linkp = false;
-                }
+                }*/
             }
         }
         out_ << "\n// forward right links\n";
         out_ << "edge[tailport = se]\n";
         {
-            word_t prev_node = 0;
+            //word_t prev_node = 0;
             for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
             {
                 if (!pit->get_qtag() && pit->get_qid())
                 {
-                    if (prev_node != pit->node_q_uid())
+                    out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
+                    out_edge(out_, *pit);
+                    /*if (prev_node != pit->node_q_uid())
                     {
                         if (prev_node)
                             out_ << '\n';
                         out_ << 'n' << pit->node_q_uid();
                     }
                     prev_node = pit->node_p_uid();
-                    out_ << "->" << 'n' << prev_node;
+                    out_ << "->" << 'n' << prev_node;*/
                 }
             }
-            if (prev_node)
-                out_ << '\n';
+            /*if (prev_node)
+                out_ << '\n';*/
         }
         out_ << "\n// backward left links\n";
         out_ << "edge[style = dotted, tailport = sw, weight = 1]\n";
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && !pit->get_qid())
-                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid() << "\n";
+            {
+                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
+                out_edge(out_, *pit);
+            }
         }
         out_ << "\n// backward right links\n";
         out_ << "edge[tailport = se]\n";
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && pit->get_qid())
-                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid() << "\n";
+            {
+                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
+                out_edge(out_, *pit);
+            }
         }
         if (clustering)
         {
@@ -200,6 +216,7 @@ private:
     }
 
     OutStream &out_;
+    const key_type *key0_;
 };
 
 } // namespace patl
