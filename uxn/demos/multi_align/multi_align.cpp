@@ -8,7 +8,7 @@ namespace patl = uxn::patl;
 
 typedef unsigned char id_type; // max 256 input strings
 
-template <typename Cont>
+template <typename Cont, typename OutStream = std::ostream>
 class patricia_dot_base
 {
 public:
@@ -18,40 +18,29 @@ public:
 
     static const word_t bit_size = bit_compare::bit_size;
 
-    patricia_dot_base()
-        : h_(0)
+    patricia_dot_base(const std::vector<id_type> *ids, const std::vector<word_t> *h)
+        : ids_(ids)
+        , h_(h)
     {
     }
 
-    void init(const std::vector<id_type> *ids, const std::vector<word_t> *h)
-    {
-        ids_ = ids;
-        h_ = h;
-    }
-
-protected:
-    template <typename OutStream>
     void out_node(OutStream &out, const vertex &vtx) const
     {
-        out << 'n' << std::hex << vtx.node_q_uid() << std::dec
-            << "[label = \""
+        out << "[label = \""
             << vtx.parent_key() - vtx.cont()->keys() << ": '"
-            << patl::impl::printable_string(
+            << patl::impl::graphviz_printable_string(
                 vtx.parent_key(),
                 patl::impl::get_max<word_t>(10, patl::impl::align_up<bit_size>(patl::impl::max0(vtx.skip())) / bit_size))
             << "'\\nid: " << static_cast<word_t>((*ids_)[vtx.parent_key() - vtx.cont()->keys()])
             << "\\n"
             << static_cast<sword_t>(vtx.skip())
-            << "\"]\n";
+            << "\"]";
     }
 
-    template <typename OutStream>
     void out_edge(OutStream &out, const vertex &vtx) const
     {
         if (!vtx.get_qtag())
-            out << "[taillabel = " << (*h_)[vtx.cont()->vertex_index_of(vtx)] << "]\n";
-        else
-            out << '\n';
+            out << "[taillabel = " << (*h_)[vtx.cont()->vertex_index_of(vtx)] << ']';
     }
 
 private:
@@ -111,8 +100,10 @@ void multiple_common_substring(
     //
     /*{
         std::ofstream fout("malign_suf.dot");
-        patl::patricia_dot_creator<suffix_t, std::ofstream, patricia_dot_base<suffix_t> > dotcr(fout);
-        dotcr.init(&ids, &h);
+        patricia_dot_base<suffix_t> pdb(&ids, &h);
+        patl::patricia_dot_creator<
+            suffix_t,
+            std::ofstream, patricia_dot_base<suffix_t> > dotcr(fout, pdb);
         dotcr.create(suf.root());
     }*/
     //
