@@ -13,14 +13,13 @@ namespace patl
 template <
     typename Cont,
     typename OutStream = std::ostream,
-    typename Base = impl::patricia_dot_base<Cont> >
+    typename Base = impl::patricia_dot_base<Cont, OutStream> >
 class patricia_dot_creator
-    : public Base
 {
     patricia_dot_creator &operator=(const patricia_dot_creator&);
 
     typedef Cont cont_type;
-    typedef patricia_dot_creator<cont_type, OutStream> this_t;
+    typedef patricia_dot_creator<cont_type, OutStream, Base> this_t;
     typedef typename cont_type::vertex vertex;
     typedef typename cont_type::preorder_iterator preorder_iterator;
     typedef typename cont_type::bit_compare bit_compare;
@@ -30,8 +29,9 @@ class patricia_dot_creator
     static const word_t bit_size = bit_compare::bit_size;
 
 public:
-    patricia_dot_creator(OutStream &out = std::cout, word_t dpi = 96)
+    patricia_dot_creator(OutStream &out = std::cout, const Base &base = Base(), word_t dpi = 96)
         : out_(out)
+        , base_(base)
     {
         out_ << "strict digraph\n";
         out_ << "{\n";
@@ -58,7 +58,7 @@ public:
         const preorder_iterator pit_end(vtx.preorder_end());
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
             if (init_id == pit->get_qid())
-                out_node(out_, *pit);
+                out_node(*pit);
         //
         out_ << std::hex;
         //
@@ -69,76 +69,31 @@ public:
             << (sibl_qtag ? "dotted" : "solid") << "]\n";
         out_ << "\n// forward left links\n";
         out_ << "edge[tailport = sw, weight = 2]\n";
+        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
-            //bool linkp = false;
-            for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
-            {
-                if (!pit->get_qtag() && !pit->get_qid())
-                {
-                    out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
-                    out_edge(out_, *pit);
-                }
-                /*if (linkp)
-                {
-                    out_ << "->" << 'n' << pit->node_q_uid();
-                    out_edge(out_, *pit);
-                }
-                if (!pit->get_qtag() && !pit->get_qid())
-                {
-                    if (!linkp)
-                        out_ << 'n' << pit->node_q_uid();
-                    linkp = true;
-                }
-                else
-                {
-                    if (linkp)
-                        out_ << "\n";
-                    linkp = false;
-                }*/
-            }
+            if (!pit->get_qtag() && !pit->get_qid())
+                out_edge(*pit);
         }
         out_ << "\n// forward right links\n";
         out_ << "edge[tailport = se]\n";
+        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
-            //word_t prev_node = 0;
-            for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
-            {
-                if (!pit->get_qtag() && pit->get_qid())
-                {
-                    out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
-                    out_edge(out_, *pit);
-                    /*if (prev_node != pit->node_q_uid())
-                    {
-                        if (prev_node)
-                            out_ << '\n';
-                        out_ << 'n' << pit->node_q_uid();
-                    }
-                    prev_node = pit->node_p_uid();
-                    out_ << "->" << 'n' << prev_node;*/
-                }
-            }
-            /*if (prev_node)
-                out_ << '\n';*/
+            if (!pit->get_qtag() && pit->get_qid())
+                out_edge(*pit);
         }
         out_ << "\n// backward left links\n";
         out_ << "edge[style = dotted, tailport = sw, weight = 1]\n";
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && !pit->get_qid())
-            {
-                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
-                out_edge(out_, *pit);
-            }
+                out_edge(*pit);
         }
         out_ << "\n// backward right links\n";
         out_ << "edge[tailport = se]\n";
         for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && pit->get_qid())
-            {
-                out_ << 'n' << pit->node_q_uid() << "->" << 'n' << pit->node_p_uid();
-                out_edge(out_, *pit);
-            }
+                out_edge(*pit);
         }
         if (clustering)
         {
@@ -150,6 +105,20 @@ public:
     }
 
 private:
+    void out_node(const vertex &vtx) const
+    {
+        out_ << 'n' << std::hex << vtx.node_q_uid() << std::dec;
+        base_.out_node(out_, vtx);
+        out_ << '\n';
+    }
+
+    void out_edge(const vertex &vtx) const
+    {
+        out_ << 'n' << vtx.node_q_uid() << "->" << 'n' << vtx.node_p_uid();
+        base_.out_edge(out_, vtx);
+        out_ << '\n';
+    }
+
     void out_cluster(word_t &n, const prefix &root) const
     {
         const bool clustp =
@@ -216,7 +185,7 @@ private:
     }
 
     OutStream &out_;
-    const key_type *key0_;
+    Base base_;
 };
 
 } // namespace patl
