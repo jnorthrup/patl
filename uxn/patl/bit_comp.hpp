@@ -266,6 +266,43 @@ public:
     }
 };
 
+/// simple zero-terminated (T*) string
+template <typename T>
+class bit_comparator_0
+    : public bit_comparator<T>
+{
+    typedef bit_comparator<T> super;
+
+public:
+    typedef T char_type;
+
+    static const word_t bit_size = 8 * sizeof(T);
+
+    word_t bit_length(const T*) const
+    {
+        return ~word_t(0);
+    }
+
+    word_t get_bit(const T *s, word_t id) const
+    {
+        return super::get_bit(s[id / bit_size], id % bit_size);
+    }
+
+    word_t bit_mismatch(const T *a, const T *b) const
+    {
+        if (a == b)
+            return ~word_t(0);
+        for (word_t i = 0; ; ++i)
+        {
+            const word_t m = super::bit_mismatch(a[i], b[i]);
+            if (m != ~word_t(0))
+                return i * bit_size + m;
+            else if (!a[i])
+                return ~word_t(0);
+        }
+    }
+};
+
 } // namespace patl
 } // namespace uxn
 

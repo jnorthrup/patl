@@ -56,10 +56,18 @@ public:
         const node_type *p = this->get_p();
         return p->get_value(this->cont_->get_key(p));
     }
-
     value_type &get_value()
     {
-        const node_type *p = this->get_p();
+        node_type *p = this->get_p();
+        return p->get_value(this->cont_->get_key(p));
+    }
+
+    const value_type &get_value(const node_type *p) const
+    {
+        return p->get_value(this->cont_->get_key(p));
+    }
+    value_type &get_value(node_type *p)
+    {
         return p->get_value(this->cont_->get_key(p));
     }
 

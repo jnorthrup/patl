@@ -2,6 +2,7 @@
 #define PATL_IMPL_TRIE_GENERIC_HPP
 
 #include <algorithm>
+#include <functional>
 #include "node.hpp"
 #include "algorithm.hpp"
 #include "assoc_generic.hpp"
@@ -87,6 +88,15 @@ public:
     const value_type &get_value() const
     {
         return this->get_p()->get_value();
+    }
+
+    value_type &get_value(node_type *p)
+    {
+        return p->get_value();
+    }
+    const value_type &get_value(const node_type *p) const
+    {
+        return p->get_value();
     }
 
     const_key_reference get_key() const
@@ -259,8 +269,9 @@ public:
     }
 
     struct void_merge_handler
+        : public std::binary_function<iterator, const_iterator, void>
     {
-        void operator()(iterator, const_iterator)
+        void operator()(iterator, const_iterator) const
         {
         }
     };
@@ -302,6 +313,94 @@ public:
         }
     }
 
+    void merge(const_iterator first, const_iterator last)
+    {
+        merge(first, last, void_merge_handler());
+    }
+
+    template <typename OutIter>
+    struct default_show_value
+        : public std::binary_function<OutIter, value_type, void>
+    {
+        void operator()(OutIter &oit, const value_type &val) const
+        {
+            *oit++ = reinterpret_cast<word_t>(val);
+        }
+    };
+
+    /// serialize trie
+    template <typename OutIter, typename ShowValue>
+    void show(OutIter oit, ShowValue show_val) const
+    {
+        if (!this->root_)
+            return;
+        const vertex vtx(this->root());
+        show_val(oit, vtx.parent_key());
+        word_t skip_ins = 0;
+        for (preorder_iterator pit = vtx.preorder_begin()
+            ; pit != vtx.preorder_end()
+            ; ++pit)
+        {
+            if (pit->get_qtag())
+                ++skip_ins;
+            else
+            {
+                if (skip_ins)
+                {
+                    *oit++ = highest_bit | skip_ins;
+                    skip_ins = 0;
+                }
+                *oit++ = pit->next_skip();
+                show_val(oit, pit->key());
+            }
+        }
+    }
+
+    template <typename OutIter>
+    void show(OutIter oit) const
+    {
+        show(oit, default_show_value<OutIter>());
+    }
+
+    template <typename InIter>
+    struct default_read_value
+        : public std::unary_function<InIter, value_type>
+    {
+        value_type operator()(InIter &iit) const
+        {
+            return reinterpret_cast<value_type>(*iit++);
+        }
+    };
+
+    /// deserialize trie
+    template <typename InIter, typename ReadValue>
+    void read(InIter iit, InIter iit_end, ReadValue read_val)
+    {
+        clear();
+        if (iit == iit_end)
+            return;
+        preorder_iterator pit(vertex(add_root(read_val(iit))));
+        while (iit != iit_end)
+        {
+            const word_t skip = *iit++;
+            if (skip & highest_bit)
+                std::advance(pit, bits_but_highest(skip));
+            else
+            {
+                static_cast<algorithm&>(*pit) =
+                    add(read_val(iit), *pit, skip);
+                if (pit->get_qid())
+                    pit->toggle();
+            }
+        }
+    }
+
+    template <typename InIter>
+    void read(InIter iit, InIter iit_end)
+    {
+        read(iit, iit_end, default_read_value<InIter>());
+    }
+
     void erase(iterator delIt)
     {
         // retrieve algorithm structure from iterator
@@ -335,7 +434,7 @@ private:
     {
         if (node)
         {
-            const vertex &vtx = this->root();
+            const vertex vtx(this->root());
             for (postorder_iterator pit = vtx.postorder_begin()
                 ; pit != vtx.postorder_end()
                 ; ++pit)
@@ -343,6 +442,7 @@ private:
                 if (!pit->leaf())
                     del_node(static_cast<algorithm&>(*pit).get_p());
             }
+            del_node(node);
         }
     }
 
