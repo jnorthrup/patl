@@ -227,6 +227,15 @@ public:
         return pal_.get_value();
     }
 
+    const value_type &parent_value() const
+    {
+        return pal_.get_value(pal_.get_q());
+    }
+    value_type &parent_value()
+    {
+        return pal_.get_value(pal_.get_q());
+    }
+
     word_t skip() const
     {
         return pal_.get_q()->get_skip();

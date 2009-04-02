@@ -50,7 +50,7 @@ struct preorder_iterator_callback
     }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
     typedef patl::trie_set<std::string> StringSet;
     StringSet
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     test2.insert("bal");
     test2.insert("baton");
     //
-    test1.merge(test2.begin(), test2.end(), StringSet::void_merge_handler());
+    test1.merge(test2.begin(), test2.end());
     test1.change_root(test1.find("balon"));
     //
     {
@@ -316,8 +316,9 @@ int main(int argc, char *argv[])
     printf("\n--- generate graphviz dot\n\n");
     //
     patl::patricia_dot_creator<StringSet>().create(vtx_root);
+#if 0 // pat_.dot & pat_.clust.dot creation
     {
-        std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
+        std::ifstream fin("WORD.LST");
         if (fin.is_open())
         {
             StringSet dict;
@@ -339,5 +340,41 @@ int main(int argc, char *argv[])
         }
         else
             printf("Unable to open input file!\n");
+    }
+#endif
+    //
+    printf("\n--- show/read serialization\n\n");
+    //
+    {
+        typedef patl::trie_set<char*, patl::bit_comparator_0<char> > char_star_trie;
+        char_star_trie trie;
+        trie.insert("balon");
+        trie.insert("balka");
+        trie.insert("balet");
+        trie.insert("bulat");
+        trie.insert("bulka");
+        trie.insert("bal");
+        trie.insert("balet");
+        trie.insert("bal");
+        trie.insert("baton");
+        printf("*** before show:\n");
+        for (char_star_trie::const_iterator it = trie.begin()
+            ; it != trie.end()
+            ; ++it)
+            printf("%s\n", *it);
+        std::vector<word_t> vec;
+        trie.show(std::back_inserter(vec)/*, char_star_trie::default_show_value<OutIter>()*/);
+        //
+        printf("\n*** serialized data:\n");
+        for (word_t i = 0; i != vec.size(); ++i)
+            printf("0x%08x ", vec[i]);
+        printf("\n");
+        //
+        trie.read(vec.begin(), vec.end());
+        printf("\n*** after read:\n");
+        for (char_star_trie::const_iterator it = trie.begin()
+            ; it != trie.end()
+            ; ++it)
+            printf("%s\n", *it);
     }
 }

@@ -19,14 +19,13 @@ class postorder_iterator_generic
 {
     typedef postorder_iterator_generic<Vertex> this_t;
 
-protected:
+public:
     typedef Vertex vertex;
     typedef vertex *pointer;
     typedef vertex &reference;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
 
-public:
     explicit postorder_iterator_generic(const vertex &vtx = vertex())
         : vtx_(vtx)
     {
