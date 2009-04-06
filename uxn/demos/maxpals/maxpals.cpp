@@ -1,6 +1,10 @@
-// были найдены простые алгоритмы нахождени€ максимальных палиндромов,
-// без построени€ суффиксного дерева и структур дл€ нахождени€ LCA за O(1)
-// http://e-maxx.ru/algo/palindromes_count
+/*-
+ | Finding all maximal palindromes in linear time with and without suffix tree & O(1) LCA
+ | ---
+ | были найдены простые алгоритмы нахождени€ максимальных палиндромов,
+ | без построени€ суффиксного дерева и структур дл€ нахождени€ LCA за O(1)
+ | http://e-maxx.ru/algo/palindromes_count
+-*/
 
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/lca_oracle.hpp>

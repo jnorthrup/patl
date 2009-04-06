@@ -1,3 +1,7 @@
+/*-
+ | Word suffix tree implementation with extraction of [super]maximal repeats
+-*/
+
 #include <vector>
 #include <functional>
 #include <uxn/patl/aux_/buffered_io.hpp>

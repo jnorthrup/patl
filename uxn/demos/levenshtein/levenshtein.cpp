@@ -1,3 +1,7 @@
+/*-
+ | Interactive demo of filtering words using Levenshtein distance
+-*/
+
 #include <fstream>
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/levenshtein.hpp>

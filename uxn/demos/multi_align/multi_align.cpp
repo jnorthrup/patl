@@ -1,3 +1,8 @@
+/*-
+ | Simplest implementation of multiple string alignment problem
+ | Using suffix trees with O(1) LCA after O(N) postprocessing
+-*/
+
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/lca_oracle.hpp>
 #include <uxn/patl/patricia_dot_creator.hpp>
@@ -5,6 +10,8 @@
 #include <fstream>
 
 namespace patl = uxn::patl;
+
+//#define MULTI_ALIGN_DEBUG
 
 typedef unsigned char id_type; // max 256 input strings
 
@@ -98,14 +105,16 @@ void multiple_common_substring(
         }
     }
     //
-    /*{
+#ifdef MULTI_ALIGN_DEBUG
+    {
         std::ofstream fout("malign_suf.dot");
         patricia_dot_base<suffix_t> pdb(&ids, &h);
         patl::patricia_dot_creator<
             suffix_t,
             std::ofstream, patricia_dot_base<suffix_t> > dotcr(fout, pdb);
         dotcr.create(suf.root());
-    }*/
+    }
+#endif
     //
     std::vector<vertex> v(K + 1);
     std::vector<word_t> v_len(K + 1);
@@ -153,12 +162,14 @@ void multiple_common_substring(
         }
     }
     // multiple common substrings
-    /*printf("---\n");
+#ifdef MULTI_ALIGN_DEBUG
+    printf("---\n");
     for (word_t k = 2; k != v.size(); ++k)
     {
         if (v[k].compact())
             printf("%u\t%u\t%s\n", k, v_len[k], std::string(v[k].key(), v_len[k]).c_str());
-    }*/
+    }
+#endif
     // эвристический выбор подходящего k
     word_t k_cur = v.size() - 1;
     for (; k_cur != 1 && v_len[k_cur] < 2; --k_cur) ;
