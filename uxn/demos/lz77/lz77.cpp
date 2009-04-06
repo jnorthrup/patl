@@ -1,3 +1,7 @@
+/*-
+ | LZ77 data compression codec using online suffix tree
+-*/
+
 #include <uxn/patl/aux_/bitwise_io.hpp>
 #include <uxn/patl/suffix_set.hpp>
 
@@ -282,6 +286,7 @@ int main(int argc, char *argv[])
     switch (*argv[1])
     {
     case 'e':
+        // buffer length: 1M, window length: 64K, min 4 match chars
         lzCompress(20, 16, 4, fin, fout);
         break;
     case 'd':

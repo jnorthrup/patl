@@ -1,3 +1,7 @@
+/*-
+ | Simple demonstration of basic PATL features
+-*/
+
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/maxrep_iterator.hpp>
 #include <uxn/patl/super_maxrep_iterator.hpp>
@@ -363,7 +367,7 @@ int main()
             ; ++it)
             printf("%s\n", *it);
         std::vector<word_t> vec;
-        trie.show(std::back_inserter(vec)/*, char_star_trie::default_show_value<OutIter>()*/);
+        trie.show(std::back_inserter(vec));
         //
         printf("\n*** serialized data:\n");
         for (word_t i = 0; i != vec.size(); ++i)

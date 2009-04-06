@@ -1,3 +1,7 @@
+/*-
+ | Exact multiple string search using suffix tree
+-*/
+
 #include <algorithm>
 #include <vector>
 #include <uxn/patl/aux_/file_utils.hpp>

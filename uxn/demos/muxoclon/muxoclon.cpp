@@ -1,20 +1,21 @@
-/**
-* fly-to-elephant transform program
-* http://community.livejournal.com/coding4fun_ru/1510.html
-* examples:
-*   hit ace (length 4)
-*   pig sty (6)
-*   four five (7)
-*   play game (8)
-*   green grass (5)
-*   wheat bread (7)
-*   order chaos (12)
-*   sixth hubby (10)
-*   speedy comedy (19)
-*   chasing robbers (20)
-*   griming goblets (23)
-*   effaces cabaret (50)
-*/
+/*-
+ | Find the shortest word ladders stretching between the following pairs
+ | rus: http://community.livejournal.com/coding4fun_ru/1510.html
+ | eng: http://stason.org/TULARC/self-growth/puzzles/291-language-english-spelling-sets-of-words-ladder-p.html
+ | examples:
+ |   hit ace (length 4)
+ |   pig sty (6)
+ |   four five (7)
+ |   play game (8)
+ |   green grass (5)
+ |   wheat bread (7)
+ |   order chaos (12)
+ |   sixth hubby (10)
+ |   speedy comedy (19)
+ |   chasing robbers (20)
+ |   griming goblets (23)
+ |   effaces cabaret (50)
+-*/
 
 // C4503: decorated name length exceeded, name was truncated
 #pragma warning(disable : 4503)

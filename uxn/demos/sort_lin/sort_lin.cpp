@@ -1,3 +1,7 @@
+/*-
+ | External string mergesort using trie and C++ generators
+-*/
+
 #include <list>
 #include <uxn/patl/aux_/generator.hpp>
 #include <uxn/patl/aux_/file_utils.hpp>
