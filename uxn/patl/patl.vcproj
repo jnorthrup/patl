@@ -298,6 +298,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\core_algorithm.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\core_prefix.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\iterator.hpp"
 					>
 				</File>

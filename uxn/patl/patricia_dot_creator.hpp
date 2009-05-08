@@ -1,7 +1,7 @@
 #ifndef PATL_PATRICIA_DOT_CREATOR_HPP
 #define PATL_PATRICIA_DOT_CREATOR_HPP
 
-#include <uxn/patl/impl/patricia_dot_base.hpp>
+#include "impl/patricia_dot_base.hpp"
 #include <iostream>
 #include <iomanip>
 

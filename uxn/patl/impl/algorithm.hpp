@@ -69,7 +69,7 @@ public:
         , qq_(qid | reinterpret_cast<word_t>(q))
 #else
         , q_(const_cast<node_type*>(q))
-        , qid_(static_cast<unsigned char>(qid))
+        , qid_(qid)
 #endif
     {
     }
@@ -81,7 +81,7 @@ public:
         , qq_(qq)
 #else
         , q_(reinterpret_cast<node_type*>(qq & ~word_t(1)))
-        , qid_(static_cast<unsigned char>(qq & word_t(1)))
+        , qid_(qq & word_t(1))
 #endif
     {
     }
@@ -93,7 +93,7 @@ public:
 #ifdef PATL_ALIGNHACK
             qq_;
 #else
-            qid_ | reinterpret_cast<word_t>(q_);
+            qid_ | q_;
 #endif
     }
 
@@ -220,7 +220,7 @@ public:
     {
         const node_type
             *cur = get_q(),
-            *parent = cur->get_parent();
+            *parent = CSELF->get_parent(cur);
         word_t id = get_qid();
         while (
             parent &&
@@ -228,7 +228,7 @@ public:
         {
             id = cur->get_parent_id();
             cur = parent;
-            parent = cur->get_parent();
+            parent = CSELF->get_parent(cur);
         }
         return cur;
     }
@@ -237,13 +237,13 @@ public:
     void add(node_type *r, word_t b, word_t prefixLen)
     {
         // add new node into trie
-        r->set_parentid(get_q(), get_qid());
+        CSELF->set_parentid(r, get_q(), get_qid());
         if (!get_qtag())
-            get_p()->set_parentid(r, word_t(1) ^ b);
-        r->set_xlinktag(b, r, 1);
-        r->set_xlinktag(word_t(1) ^ b, get_p(), get_qtag());
+            CSELF->set_parentid(get_p(), r, word_t(1) ^ b);
+        CSELF->set_xlinktag(r, b, r, 1);
+        CSELF->set_xlinktag(r, word_t(1) ^ b, get_p(), get_qtag());
         r->set_skip(prefixLen);
-        get_q()->set_xlinktag(get_qid(), r, 0);
+        CSELF->set_xlinktag(get_q(), get_qid(), r, 0);
     }
 
     /**
@@ -259,19 +259,19 @@ public:
             *p = get_p();
         // p-brother is the sibling of p-node
         const word_t
-            pBrotherId = word_t(1) ^ get_qid(),
-            pBrotherTag = q->get_xtag(pBrotherId);
-        node_type *pBrother = q->get_xlink(pBrotherId);
+            p_brother_id = word_t(1) ^ get_qid(),
+            p_brother_tag = q->get_xtag(p_brother_id);
+        node_type *p_brother = CSELF->get_xlink(q, p_brother_id);
         // take the parent of q-node
-        const word_t qParentId = q->get_parent_id();
-        node_type *qParent = q->get_parent();
+        const word_t q_parent_id = q->get_parent_id();
+        node_type *q_parent = CSELF->get_parent(q);
         // if q-parent exist i.e. q-node isn't the root
-        if (qParent)
+        if (q_parent)
         {
             // replace q-node with p-brother
-            qParent->set_xlinktag(qParentId, pBrother, pBrotherTag);
-            if (!pBrotherTag)
-                pBrother->set_parentid(qParent, qParentId);
+            CSELF->set_xlinktag(q_parent, q_parent_id, p_brother, p_brother_tag);
+            if (!p_brother_tag)
+                CSELF->set_parentid(p_brother, q_parent, q_parent_id);
         }
         // if p- & q-nodes is not the same
         if (q != p)
@@ -279,14 +279,14 @@ public:
             // replace p-node with q-node
             q->set_all_but_value(p);
             // correct p-parent, if one exist
-            node_type *pParent = p->get_parent();
-            if (pParent)
-                pParent->set_xlinktag(p->get_parent_id(), q, 0);
+            node_type *p_parent = CSELF->get_parent(p);
+            if (p_parent)
+                CSELF->set_xlinktag(p_parent, p->get_parent_id(), q, 0);
             // correct p-node children
             if (!p->get_xtag(0))
-                p->get_xlink(0)->set_parentid(q, 0);
+                CSELF->set_parentid(CSELF->get_xlink(p, 0), q, 0);
             if (!p->get_xtag(1))
-                p->get_xlink(1)->set_parentid(q, 1);
+                CSELF->set_parentid(CSELF->get_xlink(p, 1), q, 1);
         }
         //
         return p;
@@ -313,7 +313,7 @@ public:
     void ascend()
     {
         node_type *q = get_q();
-        init(q->get_parent(), q->get_parent_id());
+        init(CSELF->get_parent(q), q->get_parent_id());
     }
 
     /// trie ascend to the lowest node whose prefix less or equal than prefix length
@@ -361,18 +361,18 @@ public:
         qq_ = qid | reinterpret_cast<word_t>(q);
 #else
         q_ = const_cast<node_type*>(q);
-        qid_ = static_cast<unsigned char>(qid);
+        qid_ = qid;
 #endif
     }
 
     /// return p-node
     const node_type *get_p() const
     {
-        return get_q()->get_xlink(get_qid());
+        return CSELF->get_xlink(get_q(), get_qid());
     }
     node_type *get_p()
     {
-        return get_q()->get_xlink(get_qid());
+        return CSELF->get_xlink(get_q(), get_qid());
     }
 
     /// return q-tag
@@ -412,7 +412,7 @@ public:
     bool the_end() const
     {
         const node_type *q = get_q();
-        return get_qid() && !(q && q->get_parent());
+        return get_qid() && !(q && CSELF->get_parent(q));
     }
 
     const cont_type *cont() const
