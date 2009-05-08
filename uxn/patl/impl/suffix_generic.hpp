@@ -5,9 +5,10 @@
 #include <vector>
 #include <set>
 #include "node.hpp"
-#include "algorithm.hpp"
+#include "core_algorithm.hpp"
 #include "ring_buffer.hpp"
 #include "assoc_generic.hpp"
+#include "core_prefix.hpp"
 #include "../bit_comp.hpp"
 
 namespace uxn
@@ -19,10 +20,10 @@ namespace impl
 
 template <typename T, typename Container>
 class algorithm_gen_suffix
-    : public algorithm_generic<T, algorithm_gen_suffix<T, Container>, Container>
+    : public core_algorithm_generic<T, algorithm_gen_suffix<T, Container>, Container>
 {
     typedef algorithm_gen_suffix<T, Container> this_t;
-    typedef algorithm_generic<T, this_t, Container> super;
+    typedef core_algorithm_generic<T, this_t, Container> super;
 
 public:
     typedef Container cont_type;
@@ -96,11 +97,12 @@ template <typename T>
 class suffix_generic
     : public assoc_generic<
         suffix_generic<T>,
-        suffix_generic_traits<T, algorithm_gen_suffix, suffix_generic<T> > >
+        suffix_generic_traits<T, algorithm_gen_suffix, suffix_generic<T> >,
+        core_prefix_generic>
 {
     typedef suffix_generic<T> this_t;
     typedef suffix_generic_traits<T, algorithm_gen_suffix, this_t> traits;
-    typedef assoc_generic<this_t, traits> super;
+    typedef assoc_generic<this_t, traits, core_prefix_generic> super;
 
 protected:
     typedef typename traits::node_type node_type;
@@ -343,8 +345,8 @@ protected:
         algorithm pal(this, this->root_, 0);
         if (skip)
         {
-            node_type *backP = back->get_xlink(word_t(1) ^ back->get_self_id());
-            pal.init(trie_.following(backP), 0);
+            node_type *back_p = back->get_xlink(back->get_xlink(1) == back ? 0 : 1);
+            pal.init(trie_.following(back_p), 0);
             pal.ascend(skip);
             node_type *pretender = pal.get_q();
             if (pretender != this->root_)

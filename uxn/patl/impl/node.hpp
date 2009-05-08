@@ -18,12 +18,6 @@ class node_generic
     typedef Node node_type;
 
 public:
-    /// get id of self-pointer (if any exist)
-    word_t get_self_id() const
-    {
-        return get_xlink(1) == this ? 1 : 0;
-    }
-
     /// return parent node
     const node_type *get_parent() const
     {

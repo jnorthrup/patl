@@ -4,8 +4,9 @@
 #include <algorithm>
 #include <functional>
 #include "node.hpp"
-#include "algorithm.hpp"
+#include "core_algorithm.hpp"
 #include "assoc_generic.hpp"
+#include "core_prefix.hpp"
 
 namespace uxn
 {
@@ -48,10 +49,10 @@ private:
 
 template <typename T, typename Container>
 class algorithm_gen
-    : public algorithm_generic<T, algorithm_gen<T, Container>, Container>
+    : public core_algorithm_generic<T, algorithm_gen<T, Container>, Container>
 {
     typedef algorithm_gen<T, Container> this_t;
-    typedef algorithm_generic<T, this_t, Container> super;
+    typedef core_algorithm_generic<T, this_t, Container> super;
 
 public:
     typedef Container cont_type;
@@ -135,11 +136,12 @@ template <typename T>
 class trie_generic
     : public assoc_generic<
         trie_generic<T>,
-        trie_generic_traits<T, node_gen, algorithm_gen, trie_generic<T> > >
+        trie_generic_traits<T, node_gen, algorithm_gen, trie_generic<T> >,
+        core_prefix_generic>
 {
     typedef trie_generic<T> this_t;
     typedef trie_generic_traits<T, node_gen, algorithm_gen, this_t> traits;
-    typedef assoc_generic<trie_generic<T>, traits> super;
+    typedef assoc_generic<trie_generic<T>, traits, core_prefix_generic> super;
 
 protected:
     typedef typename traits::node_type node_type;

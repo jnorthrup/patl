@@ -6,7 +6,6 @@
 #include "postorder_iterator.hpp"
 #include "iterator.hpp"
 #include "partimator.hpp"
-#include "prefix.hpp"
 #include "vertex.hpp"
 
 namespace uxn
@@ -19,7 +18,10 @@ namespace impl
 #define SELF static_cast<this_t*>(this)
 #define CSELF static_cast<const this_t*>(this)
 
-template <typename This, typename T>
+template <
+    typename This,
+    typename T,
+    template <typename, typename> class Prefix>
 class assoc_generic
 {
     typedef This this_t;
@@ -29,7 +31,7 @@ protected:
     typedef typename T::node_type node_type;
 
 public:
-    typedef prefix_generic<this_t, node_type> prefix;
+    typedef Prefix<this_t, node_type> prefix;
     typedef vertex_generic<algorithm> vertex;
     typedef levelorder_iterator_generic<vertex> levelorder_iterator;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
