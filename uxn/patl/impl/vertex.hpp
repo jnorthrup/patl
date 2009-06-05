@@ -152,7 +152,7 @@ public:
     preorder_iterator preorder_begin() const
     {
         const node_type *q = pal_.get_q();
-        return preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+        return preorder_iterator(this_t(pal_.cont(), q, q ? get_qid() : 1));
     }
 
     preorder_iterator preorder_end() const
@@ -351,11 +351,6 @@ public:
     void ascend_less(sword_t prefixLen)
     {
         pal_.ascend_less(prefixLen);
-    }
-
-    const cont_type *cont() const
-    {
-        return pal_.cont();
     }
 
     bit_compare bit_comp() const

@@ -49,37 +49,37 @@ public:
 
     this_t construct(const node_type *q, word_t qid) const
     {
-        return this_t(this->cont_, q, qid);
+        return this_t(this->cont(), q, qid);
     }
 
     const value_type &get_value() const
     {
         const node_type *p = this->get_p();
-        return p->get_value(this->cont_->get_key(p));
+        return p->get_value(this->cont()->get_key(p));
     }
     value_type &get_value()
     {
         node_type *p = this->get_p();
-        return p->get_value(this->cont_->get_key(p));
+        return p->get_value(this->cont()->get_key(p));
     }
 
     const value_type &get_value(const node_type *p) const
     {
-        return p->get_value(this->cont_->get_key(p));
+        return p->get_value(this->cont()->get_key(p));
     }
     value_type &get_value(node_type *p)
     {
-        return p->get_value(this->cont_->get_key(p));
+        return p->get_value(this->cont()->get_key(p));
     }
 
     const_key_reference get_key() const
     {
-        return this->cont_->get_key(this->get_p());
+        return this->cont()->get_key(this->get_p());
     }
 
     const_key_reference get_key(const node_type *p) const
     {
-        return this->cont_->get_key(p);
+        return this->cont()->get_key(p);
     }
 };
 
@@ -299,16 +299,16 @@ public:
         {
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
-            const this_t *cont = vtx_.cont();
-            algorithm &pal = (algorithm&)vtx_;
+            algorithm &pal = static_cast<algorithm&>(vtx_);
+            const this_t *cont = pal.cont();
             if (skip_)
             {
                 const node_type
-                    *palP = pal.get_p(),
-                    *nextQ = palP == cont->trie_.back()
+                    *pal_p = pal.get_p(),
+                    *next_q = pal_p == cont->trie_.back()
                         ? cont->root_
-                        : cont->trie_.following(palP);
-                pal.init(nextQ, 0);
+                        : cont->trie_.following(pal_p);
+                pal.init(next_q, 0);
                 pal.ascend(skip_);
                 const node_type *pretender = pal.get_q();
                 if (pretender != cont->root_)

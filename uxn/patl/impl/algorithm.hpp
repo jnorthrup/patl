@@ -4,7 +4,7 @@
  | Key features: STL-compatible, high performance with non-scalar keys
  | Compile with: MSVC 2003/2005/2008, G++ 3.x
  |
- | (c) 2005, 2007..2008 by Roman S. Klyujkov, uxnuxn at gmail.com
+ | (c) 2005, 2007..2009 by Roman S. Klyujkov, uxnuxn at gmail.com
  |
  | algorithm P class template
 -*/
@@ -29,18 +29,20 @@ namespace impl
  * Base class of algorithms & iterator's state store
  * Algorithm P, described in Knuth's TAOCP, vol. 3, put in a basis
  */
-template <typename T, typename This, typename Container>
+template <typename T, typename This, typename ContainerProvider>
 class algorithm_generic
 {
     typedef This this_t;
     typedef typename T::bit_compare bit_compare;
     typedef typename T::allocator_type allocator_type;
+    typedef ContainerProvider cont_prov_t;
 
 public:
-    typedef Container cont_type;
+    typedef typename cont_prov_t::cont_type cont_type;
     typedef typename T::key_type key_type;
     typedef typename T::value_type value_type;
-    typedef typename T::node_type node_type;
+    typedef typename T::const_node_type_ref const_node_type_ref;
+    typedef typename T::node_type_ref node_type_ref;
 
 private:
     typedef const value_type *const_pointer;
@@ -51,8 +53,8 @@ private:
 
 public:
     /// zero-init default ctor
-    explicit algorithm_generic(const cont_type *cont = 0)
-        : cont_(cont)
+    explicit algorithm_generic(const cont_prov_t *cont_prov = 0)
+        : cont_prov_(cont_prov)
 #ifdef PATL_ALIGNHACK
         , qq_(0)
 #else
@@ -63,27 +65,32 @@ public:
     }
 
     /// simple init ctor
-    algorithm_generic(const cont_type *cont, const node_type *q, word_t qid)
-        : cont_(cont)
+    algorithm_generic(const cont_prov_t *cont_prov, const_node_type_ref q, word_t qid)
+        : cont_prov_(cont_prov)
 #ifdef PATL_ALIGNHACK
         , qq_(qid | reinterpret_cast<word_t>(q))
 #else
-        , q_(const_cast<node_type*>(q))
+        , q_(const_cast<node_type_ref>(q))
         , qid_(qid)
 #endif
     {
     }
 
     /// compact init ctor
-    algorithm_generic(const cont_type *cont, word_t qq)
-        : cont_(cont)
+    algorithm_generic(const cont_prov_t *cont_prov, word_t qq)
+        : cont_prov_(cont_prov)
 #ifdef PATL_ALIGNHACK
         , qq_(qq)
 #else
-        , q_(reinterpret_cast<node_type*>(qq & ~word_t(1)))
+        , q_(reinterpret_cast<node_type_ref>(qq & ~word_t(1)))
         , qid_(qq & word_t(1))
 #endif
     {
+    }
+
+    ~algorithm_generic()
+    {
+        const_cast<cont_prov_t*>(cont_prov_)->release_provider(CSELF);
     }
 
     /// return compact representation of algorithm state
@@ -93,7 +100,7 @@ public:
 #ifdef PATL_ALIGNHACK
             qq_;
 #else
-            qid_ | q_;
+            qid_ | reinterpret_cast<word_t>(q_);
 #endif
     }
 
@@ -138,7 +145,7 @@ public:
 
     bit_compare bit_comp() const
     {
-        return cont_->bit_comp();
+        return cont_prov_->cont()->bit_comp();
     }
 
     /// this code guarantee amortized linear time for suffix indexing
@@ -216,11 +223,11 @@ public:
 #endif
 
     /// function determine highest node back-referenced from current subtree; O(log n)
-    const node_type *get_subtree_node() const
+    const_node_type_ref get_subtree_node() const
     {
-        const node_type
-            *cur = get_q(),
-            *parent = CSELF->get_parent(cur);
+        const_node_type_ref
+            cur = get_q(),
+            parent = CSELF->get_parent(cur);
         word_t id = get_qid();
         while (
             parent &&
@@ -234,7 +241,7 @@ public:
     }
 
     /// add new node into trie at current position; O(1)
-    void add(node_type *r, word_t b, word_t prefixLen)
+    void add(node_type_ref r, word_t b, word_t prefixLen)
     {
         // add new node into trie
         CSELF->set_parentid(r, get_q(), get_qid());
@@ -250,22 +257,22 @@ public:
      * erase current node from trie; O(1)
      * \return pointer to erased node for cleanup
      */
-    node_type *erase()
+    node_type_ref erase()
     {
         // p-node back-referenced from q-node (q-tag == 1)
         // q- & p-node may be the same
-        node_type
-            *q = get_q(),
-            *p = get_p();
+        node_type_ref
+            q = get_q(),
+            p = get_p();
         // p-brother is the sibling of p-node
         const word_t
             p_brother_id = word_t(1) ^ get_qid(),
             p_brother_tag = q->get_xtag(p_brother_id);
-        node_type *p_brother = CSELF->get_xlink(q, p_brother_id);
+        node_type_ref p_brother = CSELF->get_xlink(q, p_brother_id);
         // take the parent of q-node
         const word_t q_parent_id = q->get_parent_id();
-        node_type *q_parent = CSELF->get_parent(q);
-        // if q-parent exist i.e. q-node isn't the root
+        node_type_ref q_parent = CSELF->get_parent(q);
+        // if q-parent exists i.e. q-node isn't the root
         if (q_parent)
         {
             // replace q-node with p-brother
@@ -273,13 +280,13 @@ public:
             if (!p_brother_tag)
                 CSELF->set_parentid(p_brother, q_parent, q_parent_id);
         }
-        // if p- & q-nodes is not the same
+        // if p- & q-node is not the same
         if (q != p)
         {
             // replace p-node with q-node
             q->set_all_but_value(p);
-            // correct p-parent, if one exist
-            node_type *p_parent = CSELF->get_parent(p);
+            // correct p-parent, if one exists
+            node_type_ref p_parent = CSELF->get_parent(p);
             if (p_parent)
                 CSELF->set_xlinktag(p_parent, p->get_parent_id(), q, 0);
             // correct p-node children
@@ -312,7 +319,7 @@ public:
     /// ascend to parent node
     void ascend()
     {
-        node_type *q = get_q();
+        node_type_ref q = get_q();
         init(CSELF->get_parent(q), q->get_parent_id());
     }
 
@@ -355,22 +362,22 @@ public:
     }
 
     /// init function
-    void init(const node_type *q, word_t qid)
+    void init(const_node_type_ref q, word_t qid)
     {
 #ifdef PATL_ALIGNHACK
         qq_ = qid | reinterpret_cast<word_t>(q);
 #else
-        q_ = const_cast<node_type*>(q);
+        q_ = const_cast<node_type_ref>(q);
         qid_ = qid;
 #endif
     }
 
     /// return p-node
-    const node_type *get_p() const
+    const_node_type_ref get_p() const
     {
         return CSELF->get_xlink(get_q(), get_qid());
     }
-    node_type *get_p()
+    node_type_ref get_p()
     {
         return CSELF->get_xlink(get_q(), get_qid());
     }
@@ -382,24 +389,24 @@ public:
     }
 
     /// return q-node
-    const node_type *get_q() const
+    const_node_type_ref get_q() const
     {
 #ifdef PATL_ALIGNHACK
-        return reinterpret_cast<node_type*>(qq_ & ~word_t(1));
+        return reinterpret_cast<node_type_ref>(qq_ & ~word_t(1));
 #else
         return q_;
 #endif
     }
-    node_type *get_q()
+    node_type_ref get_q()
     {
 #ifdef PATL_ALIGNHACK
-        return reinterpret_cast<node_type*>(qq_ & ~word_t(1));
+        return reinterpret_cast<node_type_ref>(qq_ & ~word_t(1));
 #else
         return q_;
 #endif
     }
 
-    /// return distiction bit
+    /// return distinction bit
     word_t get_qid() const
     {
 #ifdef PATL_ALIGNHACK
@@ -411,17 +418,17 @@ public:
 
     bool the_end() const
     {
-        const node_type *q = get_q();
+        const_node_type_ref q = get_q();
         return get_qid() && !(q && CSELF->get_parent(q));
     }
 
     const cont_type *cont() const
     {
-        return cont_;
+        return cont_prov_->cont();
     }
 
-protected:
-    const cont_type *cont_;
+private:
+    const cont_prov_t *cont_prov_;
 
 private:
 #ifdef PATL_ALIGNHACK
@@ -429,7 +436,7 @@ private:
     word_t qq_;
 #else
     /// q-node
-    node_type *q_;
+    node_type_ref q_;
     /// distinction bit
     word_t qid_;
 #endif

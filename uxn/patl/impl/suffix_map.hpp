@@ -61,6 +61,8 @@ public:
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;
     typedef node_gen_suffix<this_t> node_type;
+    typedef const node_type *const_node_type_ref;
+    typedef node_type *node_type_ref;
 };
 
 } // namespace impl

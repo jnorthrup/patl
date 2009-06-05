@@ -16,10 +16,12 @@ class core_algorithm_generic
     : public algorithm_generic<T, This, Container>
 {
     typedef algorithm_generic<T, This, Container> super;
-    typedef typename super::cont_type cont_type;
-    typedef typename super::node_type node_type;
 
 public:
+    typedef typename super::cont_type cont_type;
+    typedef typename super::const_node_type_ref const_node_type_ref;
+    typedef typename super::node_type_ref node_type_ref;
+
     /// zero-init default ctor
     explicit core_algorithm_generic(const cont_type *cont = 0)
         : super(cont)
@@ -27,7 +29,7 @@ public:
     }
 
     /// simple init ctor
-    core_algorithm_generic(const cont_type *cont, const node_type *q, word_t qid)
+    core_algorithm_generic(const cont_type *cont, const_node_type_ref q, word_t qid)
         : super(cont, q, qid)
     {
     }
@@ -38,30 +40,30 @@ public:
     {
     }
 
-    const node_type *get_parent(const node_type *nod) const
+    const_node_type_ref get_parent(const_node_type_ref nod) const
     {
         return nod->get_parent();
     }
-    node_type *get_parent(node_type *nod) const
+    node_type_ref get_parent(node_type_ref nod) const
     {
         return nod->get_parent();
     }
 
-    const node_type *get_xlink(const node_type *nod, word_t id) const
+    const_node_type_ref get_xlink(const_node_type_ref nod, word_t id) const
     {
         return nod->get_xlink(id);
     }
-    node_type *get_xlink(node_type *nod, word_t id) const
+    node_type_ref get_xlink(node_type_ref nod, word_t id) const
     {
         return nod->get_xlink(id);
     }
 
-    void set_parentid(node_type *nod, node_type *parent, word_t id) const
+    void set_parentid(node_type_ref nod, node_type_ref parent, word_t id) const
     {
         return nod->set_parentid(parent, id);
     }
 
-    void set_xlinktag(node_type *nod, word_t id, const node_type *link, word_t tag) const
+    void set_xlinktag(node_type_ref nod, word_t id, const_node_type_ref link, word_t tag) const
     {
         return nod->set_xlinktag(id, link, tag);
     }

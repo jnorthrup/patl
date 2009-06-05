@@ -12,7 +12,7 @@ namespace patl
 namespace impl
 {
 
-template <typename Container, bool SameLength>
+template <typename Container, bool SameLength = false>
 class partial_base
 {
 protected:

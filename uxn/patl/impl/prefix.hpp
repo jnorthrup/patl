@@ -10,13 +10,15 @@ namespace impl
 
 #define CSELF static_cast<const this_t*>(this)
 
-template <typename This, typename Container, typename Node>
+template <typename This, typename Container, typename ConstNodeRef, typename NodeRef>
 class prefix_generic
 {
     typedef This this_t;
 
 protected:
-    typedef Node node_type;
+    //typedef Node node_type;
+    typedef ConstNodeRef const_node_type_ref;
+    typedef NodeRef node_type_ref;
 
 public:
     typedef Container cont_type;
@@ -25,7 +27,7 @@ public:
     typedef typename cont_type::bit_compare bit_compare;
     typedef typename cont_type::vertex vertex;
 
-    prefix_generic(const cont_type *cont, const node_type *q)
+    prefix_generic(const cont_type *cont, const_node_type_ref q)
         : cont_(cont)
         , q_(q)
     {
@@ -40,7 +42,7 @@ public:
         return !operator==(b);
     }
 
-    operator const node_type*() const
+    operator const_node_type_ref() const
     {
         return q_;
     }
@@ -188,7 +190,7 @@ private:
     }
 
     const cont_type *cont_;
-    const node_type *q_;
+    const_node_type_ref q_;
 };
 
 #undef CSELF

@@ -116,6 +116,8 @@ struct algorithm_gen_traits
     : public T
 {
     typedef Node<T> node_type;
+    typedef const node_type *const_node_type_ref;
+    typedef node_type *node_type_ref;
 
     typedef typename T::key_type key_type;
     typedef const key_type &const_key_reference;

@@ -21,7 +21,7 @@ namespace impl
 template <
     typename This,
     typename T,
-    template <typename, typename> class Prefix>
+    template <typename, typename, typename> class Prefix>
 class assoc_generic
 {
     typedef This this_t;
@@ -29,9 +29,12 @@ class assoc_generic
 protected:
     typedef typename T::algorithm algorithm;
     typedef typename T::node_type node_type;
+    typedef typename T::const_node_type_ref const_node_type_ref;
+    typedef typename T::node_type_ref node_type_ref;
 
 public:
-    typedef Prefix<this_t, node_type> prefix;
+    typedef this_t cont_type;
+    typedef Prefix<this_t, const_node_type_ref, node_type_ref> prefix;
     typedef vertex_generic<algorithm> vertex;
     typedef levelorder_iterator_generic<vertex> levelorder_iterator;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
@@ -55,6 +58,16 @@ public:
     explicit assoc_generic(const bit_compare &bit_comp)
         : bit_comp_(bit_comp)
         , root_(0)
+    {
+    }
+
+    const cont_type *cont() const
+    {
+        return CSELF;
+    }
+
+    /// stub
+    void release_provider(const algorithm*) const
     {
     }
 
@@ -331,7 +344,7 @@ public:
     // change root
     void change_root(vertex &vtx)
     {
-        node_type *p = static_cast<algorithm&>(vtx).get_p();
+        node_type_ref p = static_cast<algorithm&>(vtx).get_p();
         if (p != root_)
         {
             p->make_root(root_);
@@ -361,7 +374,7 @@ public:
     }
 
 protected:
-    node_type *root_;
+    node_type_ref root_;
     bit_compare bit_comp_;
 };
 
