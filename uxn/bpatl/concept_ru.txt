@@ -25,4 +25,51 @@ extalgorithm_generic - содержит extnode_generic, используется в vertex_generic, 
 
 ---
 
-Функции algorithm могут работать только с узлами, находящимися в памяти. Но в algorithm могут храниться только внешние ссылки
+Функции algorithm могут работать только с узлами, находящимися в памяти. Но в algorithm могут храниться только внешние ссылки на узлы. Это необходимо для представления состояния vertex и всех iterator's. В начале функции, использующей algorithm, должен создаваться объект внутреннего алгоритма (с указателем на закэшированный узел) и с ним должна проводиться работа. В конце функции этот объект деструктуризуется, освобождая участок кэша.
+
+---
+
+const_iterator содержит postorder_iterator, который содержит vertex, содержащий algorithm. algorithm должен хранить в себе node_block::outref и qid (возможно в составе outref). Этот algorithm, содержащий в себе информацию о внешнем узле, называется extalgorithm. extalgorithm имеет функцию exploit, которая создает объект некоторого внутреннего класса algorithm, который представляет собой тот настоящий algorithm, которым можно непосредственно пользоваться. В конструкторе этого algorithm происходит захват участка кэша с блоком указанного узла, а в деструкторе происходит отпускание захваченного блока кэша.
+
+class vertex {
+... exploit_t expl = pal_.exploit();
+
+При выходе объекта exploit_t из зоны видимости, вызывается деструктор и блок кэша отпускается.
+В vertex_generic, (post|pre|level)order_iterator, [const_][reverse_]iterator нужно добавить функции, аналогичные имеющимся, только с первым параметром типа exploit_t.
+Хотя, будет лучше иметь в каждом таком классе свою функцию exploit, создающую exploit_vertex, exploit_(post|pre|level)order_iterator и т.д. С объектами этих классов и будет происходить работа в каждом отдельном методе итераторов. Классы exploit_smth должны иметь интерфейс своих создателей.
+
+class patl_cont
+{ ...
+	typedef algorithm_generic algorithm;
+	typedef vertex_generic vertex;
+	typedef postorder_iterator_generic postorder_iterator;
+	typedef const_iterator_generic const_iterator;
+	...
+};	// все эти smth_generic содержат функцию
+	// typename smth_generic::exploit_t exploit();
+	// typedef smth_generic &exploit_t;
+	// т.е., exploit() возвращает *this;
+
+class bpatl_cont
+{ ...
+	typedef extalgorithm_generic algorithm;
+	typedef extvertex_generic vertex;
+	typedef extpostorder_iterator_generic postorder_iterator;
+	typedef extconst_iterator_generic const_iterator;
+	...
+};	// все эти extsmth_genric содержат функцию
+	// typename extsmth_generic::exploit_t exploit();
+	// typedef smth_generic exploit_t;
+	// т.е., exploit() создает новый экземпляр smth_generic();
+
+Со взятия exploit_t базового типа начинается каждый метод итератора.
+Вызывается extconst_iterator::operator++(). В нем вначале достается extpostorder_iterator::exploit_t с помощью pit_.exploit(). Т.е., создается экземпляр postorder_iterator и с ним работает метод.
+
+---
+
+extalgorithm::exploit() создает экземпляр algorithm, в котором, кроме членов q_ и qid_, должен храниться указатель на создавший его extalgorithm. Тогда в деструкторе algorithm будет обновлен extalgorithm.
+
+Тогда в patl_cont's сохраняем в algorithm указатель на сам контейнер, а в bpatl_cont's в algorithm сохраняем указатель на extalgorithm, который может использоваться для выдачи указателя на контейнер.
+Теперь в деструкторе algorithm_generic вызывается cont_prov_->release_provider(). Эта функция должна быть реализована в extalgorithm и должна обновлять его состояние по состоянию algorithm на момент вызова.
+В release_provider() нужно использовать функцию, выдающую outref_t по представлению algorithm в памяти. Этим должен заниматься block_cache.
+Как по адресу узла в кэше определить его постоянный внешний адрес (outref)?
