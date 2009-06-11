@@ -392,7 +392,7 @@ public:
     const_node_type_ref get_q() const
     {
 #ifdef PATL_ALIGNHACK
-        return reinterpret_cast<node_type_ref>(qq_ & ~word_t(1));
+        return reinterpret_cast<const_node_type_ref>(qq_ & ~word_t(1));
 #else
         return q_;
 #endif

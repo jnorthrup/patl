@@ -23,13 +23,14 @@ class node_block
     : public stxxl::typed_block<RawSize, word_t, 0, block_info>
 {
     typedef stxxl::typed_block<RawSize, word_t, 0, block_info> super;
-    typedef typename super::bid_type bid_type;
     typedef NodeType node_type;
 
     static const word_t sizeof_node_;
     static const word_t sizeof_outref_;
 
 public:
+    typedef typename super::bid_type bid_type;
+
     // ссылка на узел во внешнем блоке узлов
     // будет использоваться как указатель на узел
     // ??? должен быть внешним классом
@@ -42,12 +43,12 @@ public:
     public:
         word_t get_highest_bit() const
         {
-            return item_off_ >> (bits_in_word - 1);
+            return item_off_ >> bits_in_word - 1;
         }
 
-        void set_offset(word_t item_off)
+        void set_offsetid(word_t item_off, word_t id)
         {
-            item_off_ = item_off;
+            item_off_ = item_off | (id << bits_in_word - 1);
         }
 
     private:
@@ -87,6 +88,11 @@ public:
     node_type *get_node(word_t off)
     {
         return reinterpret_cast<node_type*>(&(*this)[off]);
+    }
+
+    word_t get_offset(const node_type *nod) const
+    {
+        return reinterpret_cast<word_t*>(nod) - &(*this)[0];
     }
 
     const node_type *get_outref(word_t off) const

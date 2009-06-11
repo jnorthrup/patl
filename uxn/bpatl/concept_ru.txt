@@ -52,12 +52,20 @@ class patl_cont
 
 class bpatl_cont
 { ...
+	typedef extnode_generic node_type;
 	typedef extalgorithm_generic algorithm;
 	typedef extvertex_generic vertex;
 	typedef extpostorder_iterator_generic postorder_iterator;
 	typedef extconst_iterator_generic const_iterator;
 	...
-};	// все эти extsmth_genric содержат функцию
+	typedef const_node_block_generic const_node_type_ref;
+	typedef node_block_generic node_type_ref;
+	typedef external_algorithm_generic coralgorithm;
+	typedef vertex_generic corvertex;
+	typedef postorder_iterator_generic corpostorder_iterator;
+	typedef const_iterator_generic corconst_iterator;
+	...
+};	// все эти extsmth_generic содержат функцию
 	// typename extsmth_generic::exploit_t exploit();
 	// typedef smth_generic exploit_t;
 	// т.е., exploit() создает новый экземпляр smth_generic();
@@ -73,3 +81,15 @@ extalgorithm::exploit() создает экземпляр algorithm, в котором, кроме членов q_ 
 Теперь в деструкторе algorithm_generic вызывается cont_prov_->release_provider(). Эта функция должна быть реализована в extalgorithm и должна обновлять его состояние по состоянию algorithm на момент вызова.
 В release_provider() нужно использовать функцию, выдающую outref_t по представлению algorithm в памяти. Этим должен заниматься block_cache.
 Как по адресу узла в кэше определить его постоянный внешний адрес (outref)?
+Это необходимо сделать при помощи block_cache.
+
+---
+
+Различные промежуточные классы core_algorithm и external_algorithm необходимы потому, что patl::node_generic может обойтись в своей работе без знания о контейнере, тогда как bpatl::node_generic не может осуществлять навигацию по узлам или их изменение без ссылки на контейнер, а точнее на block_cache.
+
+В bpatl_cont, как уже выяснилось, все алгоритмосодержащие typedef'ы на самом деле являются extsmth-классами, содержащими функцию exploit(), которая создает экземпляр того класса, который будет делать соответствующую работу.
+Что же должен содержать класс extalgorithm_generic?
+
+---
+
+В общем, все уперлось в расширенную иерархию итераторов с const-counterpart'ами. Пока их не будет, все остальное не действует.

@@ -17,10 +17,16 @@ namespace impl
 template <typename Node, typename Container>
 class const_block_node_generic
 {
+    typedef const_block_node_generic<Node, Container> this_t;
     typedef Container cont_type;
     typedef cont_type::node_type node_type;
 
 public:
+    const this_t *operator->() const
+    {
+        return this;
+    }
+
     /// return parent node
     const_node_type_ref get_parent(const cont_type *cont) const
     {
@@ -51,8 +57,20 @@ public:
         return nod_->get_skip();
     }
 
+    const node_block *get_block() const
+    {
+        return block_;
+    }
+
+    const node_type *get_node() const
+    {
+        return nod_;
+    }
+
 protected:
+    // указатель на закэшированный блок
     node_block *block_; // будет изменяться в algorithm_generic::init
+    // указатель на физическое расположение узла в закэшированном блоке
     node_type *nod_;
 };
 

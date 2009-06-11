@@ -22,13 +22,19 @@ public:
     }
 
 private:
+    // хранилище блоков в кэше
     std::deque<node_block> blocks_;
+    // свободные блоки
     std::vector<node_block*> free_;
+    // по bid_type можно узнать расположение блока в кэше и его атрибуты
     std::map<
         node_block::bid_type,
         std::pair<
             node_block*,
             word_t /* fixed count and dirty in msb */> > map_;
+    // reverse map - найти bid_type по заданному указателю на кэшированный блок
+    // теперь можно по node_block* определить bid_type в extalgorithm_generic::release_provider
+    std::map<node_block*, node_block::bid_type> rmap_;
 };
 
 } // namespace impl

@@ -238,6 +238,10 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\concept_ru.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

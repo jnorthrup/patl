@@ -15,6 +15,7 @@ class extvertex_generic
 {
 public:
     typedef patl::impl::vertex_generic exploit_t;
+    // а вот с этим надо что-то делать, const в итераторах нужен для эффективности
     typedef exploit_t const_exploit_t;
 
     const_exploit_t exploit() const

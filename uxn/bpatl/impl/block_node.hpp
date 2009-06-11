@@ -19,7 +19,14 @@ template <typename Node, typename Container>
 class block_node_generic
     : public const_block_node_generic<Node, Container>
 {
+    typedef block_node_generic<Node, Container> this_t;
+
 public:
+    this_t *operator->()
+    {
+        return this;
+    }
+
     /// return parent node
     node_type_ref get_parent(cont_type *cont)
     {
