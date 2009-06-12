@@ -1,0 +1,29 @@
+strict digraph
+{
+dpi = 64
+node[shape = box]
+
+// composition
+edge[arrowtail = diamond, arrowhead = none]
+algorithm -> const_vertex
+vertex -> { const_postorder_iterator; const_preorder_iterator; const_levelorder_iterator }
+postorder_iterator -> const_iterator
+preorder_iterator -> const_partimator
+
+// generalization (inheritance)
+edge[arrowtail = empty]
+const_algorithm -> algorithm
+const_vertex -> vertex
+{
+std_bidirectional_iterator[label = "std::iterator\n<bidirectional_iterator_tag>"]
+std_forward_iterator[label = "std::iterator\n<forward_iterator_tag>"]
+rank = same
+}
+std_bidirectional_iterator -> { const_postorder_iterator; const_preorder_iterator; const_levelorder_iterator; const_iterator }
+std_forward_iterator -> const_partimator
+const_postorder_iterator -> postorder_iterator
+const_iterator -> iterator
+const_levelorder_iterator -> levelorder_iterator
+const_preorder_iterator -> preorder_iterator
+const_partimator -> partimator
+}
