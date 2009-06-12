@@ -26,6 +26,7 @@ class const_partimator_generic
 
 protected:
     typedef Vertex vertex;
+    typedef typename Vertex::const_vertex const_vertex;
     typedef typename vertex::cont_type cont_type;
     typedef typename cont_type::bit_compare bit_compare;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
@@ -33,8 +34,8 @@ protected:
 
 public:
     typedef typename vertex::value_type value_type;
-    typedef const value_type *pointer;
-    typedef const value_type &reference;
+    typedef const value_type *const_pointer;
+    typedef const value_type &const_reference;
 
     explicit const_partimator_generic(
         const Decision &decis = Decision(),
@@ -47,7 +48,7 @@ public:
             next_fit();
     }
 
-    operator const vertex&() const
+    operator const_vertex&() const
     {
         return *pit_;
     }
@@ -66,11 +67,11 @@ public:
         return !(*this == pt);
     }
 
-    pointer operator->() const
+    const_pointer operator->() const
     {
         return &**this;
     }
-    reference operator*() const
+    const_reference operator*() const
     {
         return pit_->value();
     }

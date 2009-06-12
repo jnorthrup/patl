@@ -35,7 +35,11 @@ protected:
 public:
     typedef this_t cont_type;
     typedef Prefix<this_t, const_node_type_ref, node_type_ref> prefix;
+    typedef const_vertex_generic<algorithm> const_vertex;
     typedef vertex_generic<algorithm> vertex;
+    typedef const_levelorder_iterator_generic<vertex> const_levelorder_iterator;
+    typedef const_preorder_iterator_generic<vertex> const_preorder_iterator;
+    typedef const_postorder_iterator_generic<vertex> const_postorder_iterator;
     typedef levelorder_iterator_generic<vertex> levelorder_iterator;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
     typedef postorder_iterator_generic<vertex> postorder_iterator;
@@ -357,7 +361,11 @@ public:
         return !root_;
     }
 
-    vertex root() const
+    const_vertex root() const
+    {
+        return const_vertex(CSELF, root_, 0);
+    }
+    vertex root()
     {
         return vertex(CSELF, root_, 0);
     }

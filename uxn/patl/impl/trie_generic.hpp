@@ -438,7 +438,7 @@ private:
     {
         if (node)
         {
-            const vertex vtx(this->root());
+            vertex vtx(this->root());
             for (postorder_iterator pit = vtx.postorder_begin()
                 ; pit != vtx.postorder_end()
                 ; ++pit)

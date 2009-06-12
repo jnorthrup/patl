@@ -254,7 +254,7 @@ int main()
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
                 mrit.freq());
-            const SuffixSet::vertex vtx = mrit->get_vertex();
+            SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)

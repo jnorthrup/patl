@@ -294,7 +294,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\impl\const_levelorder_iterator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\const_partimator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\const_postorder_iterator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\const_preorder_iterator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\const_vertex.hpp"
 					>
 				</File>
 				<File

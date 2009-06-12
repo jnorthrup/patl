@@ -56,6 +56,7 @@ private:
 };
 
 typedef patl::suffix_set<char*> suffix_t;
+typedef suffix_t::const_vertex const_vertex;
 typedef suffix_t::vertex vertex;
 
 void multiple_common_substring(
@@ -120,11 +121,11 @@ void multiple_common_substring(
     std::vector<word_t> v_len(K + 1);
     //
     std::vector<word_t> s, u;
-    const vertex root = suf.root();
-    const suffix_t::postorder_iterator
+    const_vertex root = suf.root();
+    const suffix_t::const_postorder_iterator
         pit_beg = root.postorder_begin(),
         pit_end = root.postorder_end();
-    for (suffix_t::postorder_iterator pit = pit_beg; pit != pit_end; ++pit)
+    for (suffix_t::const_postorder_iterator pit = pit_beg; pit != pit_end; ++pit)
     {
         if (pit->leaf())
         {

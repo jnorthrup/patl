@@ -1,7 +1,7 @@
-#ifndef PATL_IMPL_CONST_ITERATOR_HPP
-#define PATL_IMPL_CONST_ITERATOR_HPP
+#ifndef PATL_IMPL_CONST_LEVELORDER_ITERATOR_HPP
+#define PATL_IMPL_CONST_LEVELORDER_ITERATOR_HPP
 
-#include "postorder_iterator.hpp"
+#include "preorder_iterator.hpp"
 #include <iterator>
 
 namespace uxn
@@ -12,36 +12,31 @@ namespace impl
 {
 
 template <typename Vertex>
-class const_iterator_generic
+class const_levelorder_iterator_generic
     : public std::iterator<
         std::bidirectional_iterator_tag,
-        typename Vertex::value_type>
+        Vertex>
 {
-    typedef const_iterator_generic<Vertex> this_t;
+    typedef const_levelorder_iterator_generic<Vertex> this_t;
 
 protected:
     typedef Vertex vertex;
-    typedef typename Vertex::const_vertex const_vertex;
-    typedef postorder_iterator_generic<vertex> postorder_iterator;
+    typedef typename vertex::const_vertex const_vertex;
+    typedef const_vertex *const_pointer;
+    typedef const_vertex &const_reference;
 
 public:
-    typedef typename Vertex::value_type value_type;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-
-    explicit const_iterator_generic(const vertex &vtx = vertex())
-        : pit_(vtx)
+    explicit const_levelorder_iterator_generic(
+        word_t limit,
+        const const_vertex &vtx = vertex())
+        : limit_(limit)
+        , vtx_(vtx)
     {
-    }
-
-    operator const_vertex&() const
-    {
-        return *pit_;
     }
 
     bool operator==(const this_t &it) const
     {
-        return pit_ == it.pit_;
+        return vtx_ == it.vtx_;
     }
     bool operator!=(const this_t &it) const
     {
@@ -54,13 +49,13 @@ public:
     }
     const_reference operator*() const
     {
-        return pit_->value();
+        return vtx_;
     }
 
     this_t &operator++()
     {
-        do ++pit_;
-        while (!pit_->leaf());
+        vtx_.template move_subtree<1>();
+        vtx_.template descend<0>(limit_);
         return *this;
     }
     this_t operator++(int)
@@ -72,8 +67,8 @@ public:
 
     this_t &operator--()
     {
-        do --pit_;
-        while (!pit_->leaf());
+        vtx_.template move_subtree<0>();
+        vtx_.template descend<1>(limit_);
         return *this;
     }
     this_t operator--(int)
@@ -83,8 +78,11 @@ public:
         return it;
     }
 
+private:
+    word_t limit_;
+
 protected:
-    postorder_iterator pit_;
+    vertex vtx_;
 };
 
 } // namespace impl
