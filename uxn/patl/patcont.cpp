@@ -76,7 +76,7 @@ int main(int /*argc*/,char *argv[])
         pit=cconc.equal_range("орденоносцев",5*8);
     if (pit.first==pit.second)
         std::cout<<"Not found orden*"<<std::endl;
-    for (ConcorMap::const_reverse_iterator rit=ConcorMap::const_reverse_iterator(pit.second)
+    for (ConcorMap::const_reverse_iterator rit(pit.second)
         ;rit!=ConcorMap::const_reverse_iterator(pit.first)
         ;++rit)
         std::cout<<"'"<<rit->first<<"' -> "<<rit->second<<std::endl;

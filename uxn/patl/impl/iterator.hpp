@@ -20,6 +20,8 @@ class iterator_generic
 
 public:
     typedef typename super::value_type value_type;
+    typedef const value_type *const_pointer;
+    typedef const value_type &const_reference;
     typedef value_type *pointer;
     typedef value_type &reference;
 

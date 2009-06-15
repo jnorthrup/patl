@@ -64,7 +64,7 @@ public:
 
     bool operator<(const this_t &r) const
     {
-        return pal_ < r.pal_;
+        return pal_.compact() < r.pal_.compact();
     }
 
     operator const algorithm&() const

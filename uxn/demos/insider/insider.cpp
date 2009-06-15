@@ -46,9 +46,9 @@ void printRegexp(word_t length, const Iter &beg, const Iter &end)
 
 template <typename Cont>
 struct preorder_iterator_callback
-    : public std::unary_function<typename Cont::vertex, void>
+    : public std::unary_function<typename Cont::const_vertex, void>
 {
-    void operator()(const typename Cont::vertex *vtx) const
+    void operator()(const typename Cont::const_vertex *vtx) const
     {
         printf("// %d\t%s\n", vtx->skip(), vtx->key().c_str());
     }
@@ -171,11 +171,11 @@ int main()
     //
     printf("\n--- postorder_iterator\n\n");
     //
-    typedef StringSet::vertex vertex;
-    const vertex vtx_root = test1.root();
+    typedef StringSet::const_vertex const_vertex;
+    const_vertex vtx_root = test1.root();
     {
-        typedef StringSet::postorder_iterator postorder_iterator;
-        postorder_iterator
+        typedef StringSet::const_postorder_iterator const_postorder_iterator;
+        const_postorder_iterator
             itBeg = vtx_root.postorder_begin(),
             itEnd = vtx_root.postorder_end(),
             it = itBeg;
@@ -192,8 +192,8 @@ int main()
     printf("\n--- preorder_iterator\n\n");
     //
     {
-        typedef StringSet::preorder_iterator preorder_iterator;
-        preorder_iterator
+        typedef StringSet::const_preorder_iterator const_preorder_iterator;
+        const_preorder_iterator
             itBeg = vtx_root.preorder_begin(),
             itEnd = vtx_root.preorder_end(),
             it = itBeg;
@@ -228,7 +228,7 @@ int main()
             ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
 
             printf("*** Regexp:\n");
-            const vertex vtx = rvset.root();
+            const_vertex vtx = rvset.root();
             printRegexp(0, vtx.levelorder_begin(8), vtx.levelorder_end(8));
             printf("\n");
     }
@@ -259,7 +259,7 @@ int main()
                 ; it != vtx.end()
                 ; ++it)
                 printf(" at %u", suffix.index_of(
-                    static_cast<const SuffixSet::vertex&>(it)));
+                    static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
         printf("---\n");
@@ -270,12 +270,12 @@ int main()
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
                 mrit.freq());
-            const SuffixSet::vertex vtx = mrit->get_vertex();
+            SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
                 printf(" at %u", suffix.index_of(
-                    static_cast<const SuffixSet::vertex&>(it)));
+                    static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
     }
@@ -293,7 +293,7 @@ int main()
         suffix_t suf(arr, 16 /* maximal length of tandem repeat + 1 */);
         do
         {
-            const suffix_t::vertex
+            suffix_t::const_vertex
                 vtx = suf.push_back(),
                 sibl = vtx.sibling();
             if (suf.size() > 1)

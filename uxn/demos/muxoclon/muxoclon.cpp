@@ -77,13 +77,13 @@ void directed_search(
                         &back_wave = reversed ? wave : antiwave;
                     // G++ not allowed to use const_reverse_iterator
                     // error: no match for 'operator!='
-                    for (vector_wave::const_reverse_iterator rit = front_wave.rbegin()
+                    for (vector_wave::reverse_iterator rit = front_wave.rbegin()
                         ; rit != front_wave.rend()
                         ; cur = rit++->find(cur)->second)
                         chain.push_back(cur);
                     std::reverse(chain.begin(), chain.end());
                     cur = reversed ? seed : vtx;
-                    for (vector_wave::const_reverse_iterator rit = back_wave.rbegin()
+                    for (vector_wave::reverse_iterator rit = back_wave.rbegin()
                         ; rit != back_wave.rend()
                         ; cur = rit++->find(cur)->second)
                         chain.push_back(cur);
@@ -107,7 +107,7 @@ bool search_work(
         chain.push_back(src_vtx);
         return true;
     }
-    const_vertex dict_end = dict.end();
+    const_vertex dict_end(dict.end());
     vector_wave front_wave, back_wave;
     front_wave.push_back(map_vertex());
     front_wave.back().insert(std::make_pair(src_vtx, dict_end));

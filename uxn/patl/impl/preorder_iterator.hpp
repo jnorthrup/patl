@@ -19,6 +19,8 @@ class preorder_iterator_generic
 
 public:
     typedef Vertex vertex;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
     typedef vertex *pointer;
     typedef vertex &reference;
 
@@ -33,7 +35,7 @@ public:
     }
     reference operator*()
     {
-        return vtx_;
+        return this->vtx_;
     }
 
     this_t &operator++()

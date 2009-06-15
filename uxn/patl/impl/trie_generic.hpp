@@ -157,7 +157,11 @@ public:
     typedef typename super::size_type size_type;
     typedef typename super::const_iterator const_iterator;
     typedef typename super::iterator iterator;
+    typedef typename super::const_vertex const_vertex;
     typedef typename super::vertex vertex;
+    typedef typename super::const_preorder_iterator const_preorder_iterator;
+    typedef typename super::const_postorder_iterator const_postorder_iterator;
+    typedef typename super::const_levelorder_iterator const_levelorder_iterator;
     typedef typename super::preorder_iterator preorder_iterator;
     typedef typename super::postorder_iterator postorder_iterator;
     typedef typename super::levelorder_iterator levelorder_iterator;
@@ -291,8 +295,8 @@ public:
             ++first;
         }
         algorithm pal_cur(this, this->root_, 0);
-        vertex vtx(first);
-        const algorithm &pal_end(static_cast<const vertex&>(last));
+        const_vertex vtx(first);
+        const algorithm &pal_end(static_cast<const const_vertex&>(last));
         word_t skip = 0;
         while (static_cast<const algorithm&>(vtx) != pal_end)
         {
@@ -338,10 +342,10 @@ public:
     {
         if (!this->root_)
             return;
-        const vertex vtx(this->root());
+        const_vertex vtx(this->root());
         show_val(oit, vtx.parent_key());
         word_t skip_ins = 0;
-        for (preorder_iterator pit = vtx.preorder_begin()
+        for (const_preorder_iterator pit = vtx.preorder_begin()
             ; pit != vtx.preorder_end()
             ; ++pit)
         {
@@ -408,7 +412,7 @@ public:
     void erase(iterator delIt)
     {
         // retrieve algorithm structure from iterator
-        erase_node(static_cast<vertex&>(delIt));
+        erase_node(static_cast<algorithm&>(static_cast<vertex&>(delIt)));
     }
 
     /// erase all values with specified prefix

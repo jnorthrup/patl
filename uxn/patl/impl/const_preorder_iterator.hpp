@@ -22,8 +22,10 @@ class const_preorder_iterator_generic
 public:
     typedef Vertex vertex;
     typedef typename vertex::const_vertex const_vertex;
-    typedef const_vertex *const_pointer;
-    typedef const_vertex &const_reference;
+    typedef const const_vertex *const_pointer;
+    typedef const const_vertex &const_reference;
+    typedef const_pointer pointer;
+    typedef const_reference reference;
 
     explicit const_preorder_iterator_generic(const const_vertex &vtx = vertex())
         : vtx_(vtx)

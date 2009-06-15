@@ -17,16 +17,17 @@ class lca_oracle
 
 public:
     typedef typename suffix_cont::vertex vertex;
+    typedef typename suffix_cont::const_vertex const_vertex;
     typedef typename suffix_cont::prefix prefix;
 
     /// utility func
-    const lca_type *get_by(const vertex &vtx) const
+    const lca_type *get_by(const const_vertex &vtx) const
     {
         return lca_ + cont_->vertex_index_of(vtx);
     }
 
     /// utility func
-    lca_type *get_by(const vertex &vtx)
+    lca_type *get_by(const const_vertex &vtx)
     {
         return lca_ + cont_->vertex_index_of(vtx);
     }
@@ -70,7 +71,7 @@ public:
         lca_map_ = unsigned_alloc_.allocate(lca_size_ + 1);
         // numerate, set I- & L-nodes
         word_t num = 0;
-        vertex vtx(cont_->root());
+        const_vertex vtx(cont_->root());
         const vertex vtxEnd(vtx.sibling());
         while (vtx != vtxEnd)
         {

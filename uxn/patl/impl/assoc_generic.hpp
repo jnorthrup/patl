@@ -148,7 +148,7 @@ public:
     public:
         explicit const_partimator(
             const Decision &decis = Decision(),
-            const vertex &vtx = vertex())
+            const const_vertex &vtx = const_vertex())
             : super(decis, vtx)
         {
         }
@@ -183,7 +183,7 @@ public:
     template <typename Decision>
     const_partimator<Decision> begin(const Decision &decis) const
     {
-        vertex vtx(root());
+        const_vertex vtx(root());
         if (!root_)
             vtx.toggle();
         return const_partimator<Decision>(decis, vtx);
@@ -201,7 +201,7 @@ public:
     template <typename Decision>
     const_partimator<Decision> end(const Decision &decis) const
     {
-        vertex vtx(root());
+        const_vertex vtx(root());
         vtx.toggle();
         return const_partimator<Decision>(decis, vtx);
     }
@@ -298,11 +298,11 @@ public:
         const key_type &key,
         word_t prefix_len = ~word_t(0)) const
     {
-        vertex vtx(root());
+        const_vertex vtx(root());
         if (root_)
         {
             const word_t len = vtx.mismatch(key, prefix_len);
-            vertex lower(vtx);
+            const_vertex lower(vtx);
             lower.template descend<0>();
             if (len < prefix_len)
                 return const_iter_range(

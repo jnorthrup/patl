@@ -22,8 +22,10 @@ class const_levelorder_iterator_generic
 protected:
     typedef Vertex vertex;
     typedef typename vertex::const_vertex const_vertex;
-    typedef const_vertex *const_pointer;
-    typedef const_vertex &const_reference;
+    typedef const const_vertex *const_pointer;
+    typedef const const_vertex &const_reference;
+    typedef const_pointer pointer;
+    typedef const_reference reference;
 
 public:
     explicit const_levelorder_iterator_generic(

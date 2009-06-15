@@ -117,7 +117,11 @@ public:
     typedef typename super::const_iterator const_iterator;
     typedef typename super::iterator iterator;
     typedef typename super::prefix prefix;
+    typedef typename super::const_vertex const_vertex;
     typedef typename super::vertex vertex;
+    typedef typename super::const_preorder_iterator const_preorder_iterator;
+    typedef typename super::const_postorder_iterator const_postorder_iterator;
+    typedef typename super::const_levelorder_iterator const_levelorder_iterator;
     typedef typename super::preorder_iterator preorder_iterator;
     typedef typename super::postorder_iterator postorder_iterator;
     typedef typename super::levelorder_iterator levelorder_iterator;
@@ -165,14 +169,14 @@ public:
         keys_ = keys;
     }
 
-    word_t vertex_index_of(const vertex &vtx) const
+    word_t vertex_index_of(const const_vertex &vtx) const
     {
         return
             trie_.index_of(static_cast<const algorithm&>(vtx).get_q()) * 2 |
             vtx.get_qid();
     }
 
-    word_t index_of(const vertex &vtx) const
+    word_t index_of(const const_vertex &vtx) const
     {
         return trie_.index_of(static_cast<const algorithm&>(vtx).get_p());
     }

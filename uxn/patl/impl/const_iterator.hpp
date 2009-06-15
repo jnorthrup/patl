@@ -23,20 +23,23 @@ protected:
     typedef Vertex vertex;
     typedef typename Vertex::const_vertex const_vertex;
     typedef postorder_iterator_generic<vertex> postorder_iterator;
+    typedef const_postorder_iterator_generic<vertex> const_postorder_iterator;
 
 public:
     typedef typename Vertex::value_type value_type;
     typedef const value_type *const_pointer;
     typedef const value_type &const_reference;
+    typedef const_pointer pointer;
+    typedef const_reference reference;
 
-    explicit const_iterator_generic(const vertex &vtx = vertex())
+    explicit const_iterator_generic(const const_vertex &vtx = const_vertex())
         : pit_(vtx)
     {
     }
 
-    operator const_vertex&() const
+    operator const const_vertex&() const
     {
-        return *pit_;
+        return *static_cast<const const_postorder_iterator&>(pit_);
     }
 
     bool operator==(const this_t &it) const
@@ -54,7 +57,7 @@ public:
     }
     const_reference operator*() const
     {
-        return pit_->value();
+        return static_cast<const const_postorder_iterator&>(pit_)->value();
     }
 
     this_t &operator++()

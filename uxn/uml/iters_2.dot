@@ -12,7 +12,6 @@ preorder_iterator -> const_partimator
 
 // generalization (inheritance)
 edge[arrowtail = empty]
-const_algorithm -> algorithm
 const_vertex -> vertex
 {
 std_bidirectional_iterator[label = "std::iterator\n<bidirectional_iterator_tag>"]

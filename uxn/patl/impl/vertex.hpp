@@ -55,9 +55,23 @@ public:
     {
     }
 
+    vertex_generic(const super &vtx)
+        : super(vtx)
+    {
+    }
+
+    operator const const_vertex&() const
+    {
+        return *this;
+    }
+    operator const_vertex&()
+    {
+        return *this;
+    }
+
     operator algorithm&()
     {
-        return pal_;
+        return this->pal_;
     }
 
     iterator begin()
@@ -83,8 +97,8 @@ public:
     postorder_iterator postorder_begin()
     {
         this_t vtx(*this);
-        if (compact())
-            vtx.descend<0>();
+        if (this->compact())
+            vtx.template descend<0>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -93,8 +107,8 @@ public:
     postorder_iterator postorder_end()
     {
         this_t vtx(*this);
-        if (pal_.get_q())
-            vtx.move<1>();
+        if (this->pal_.get_q())
+            vtx.template move<1>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -102,13 +116,13 @@ public:
 
     preorder_iterator preorder_begin()
     {
-        const node_type *q = pal_.get_q();
-        return preorder_iterator(this_t(pal_.cont(), q, q ? get_qid() : 1));
+        const node_type *q = this->pal_.get_q();
+        return preorder_iterator(this_t(this->pal_.cont(), q, q ? this->get_qid() : 1));
     }
 
     preorder_iterator preorder_end()
     {
-        if (pal_.get_q())
+        if (this->pal_.get_q())
         {
             preorder_iterator pit(*this);
             pit.next_subtree();
@@ -125,8 +139,8 @@ public:
     levelorder_iterator levelorder_begin(word_t limit)
     {
         this_t vtx(*this);
-        if (compact())
-            vtx.descend<0>(limit);
+        if (this->compact())
+            vtx.template descend<0>(limit);
         else
             vtx.toggle();
         return levelorder_iterator(limit, vtx);
@@ -134,7 +148,7 @@ public:
 
     levelorder_iterator levelorder_end(word_t limit)
     {
-        if (pal_.get_q())
+        if (this->pal_.get_q())
             return ++levelorder_iterator(limit, *this);
         else
         {
@@ -146,17 +160,17 @@ public:
 
     value_type &value()
     {
-        return pal_.get_value();
+        return this->pal_.get_value();
     }
 
     value_type &parent_value()
     {
-        return pal_.get_value(pal_.get_q());
+        return this->pal_.get_value(this->pal_.get_q());
     }
 
     this_t sibling()
     {
-        return this_t(pal_.sibling());
+        return this_t(this->pal_.sibling());
     }
 };
 
