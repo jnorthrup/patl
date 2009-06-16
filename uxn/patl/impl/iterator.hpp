@@ -11,35 +11,39 @@ namespace patl
 namespace impl
 {
 
-template <typename Vertex>
+template <typename PostorderIter>
 class const_iterator_generic
     : public std::iterator<
         std::bidirectional_iterator_tag,
-        typename Vertex::value_type>
+        typename PostorderIter::vertex::value_type>
 {
-    typedef const_iterator_generic<Vertex> this_t;
+    typedef const_iterator_generic<PostorderIter> this_t;
 
 protected:
-    typedef Vertex vertex;
-    typedef typename Vertex::const_vertex const_vertex;
-    typedef postorder_iterator_generic<vertex> postorder_iterator;
-    typedef const_postorder_iterator_generic<vertex> const_postorder_iterator;
+    typedef PostorderIter postorder_iterator;
+    typedef typename postorder_iterator::vertex vertex;
 
 public:
-    typedef typename Vertex::value_type value_type;
+    typedef typename vertex::value_type value_type;
     typedef const value_type *const_pointer;
     typedef const value_type &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-    explicit const_iterator_generic(const const_vertex &vtx = const_vertex())
+    explicit const_iterator_generic(const vertex &vtx = vertex())
         : pit_(vtx)
     {
     }
 
-    operator const const_vertex&() const
+    template <typename T>
+    const_iterator_generic(const const_iterator_generic<T> &obj)
+        : pit_(obj)
     {
-        return *static_cast<const const_postorder_iterator&>(pit_);
+    }
+
+    operator const vertex&() const
+    {
+        return *pit_;
     }
 
     bool operator==(const this_t &it) const
@@ -57,7 +61,7 @@ public:
     }
     const_reference operator*() const
     {
-        return static_cast<const const_postorder_iterator&>(pit_)->value();
+        return pit_->value();
     }
 
     this_t &operator++()
@@ -90,16 +94,20 @@ protected:
     postorder_iterator pit_;
 };
 
-template <typename Vertex>
+template <typename PostorderIter>
 class iterator_generic
-    : public const_iterator_generic<Vertex>
+    : public const_iterator_generic<PostorderIter>
 {
-    typedef const_iterator_generic<Vertex> super;
-    typedef iterator_generic<Vertex> this_t;
-    typedef Vertex vertex;
+    typedef const_iterator_generic<PostorderIter> super;
+    typedef iterator_generic<PostorderIter> this_t;
+    typedef PostorderIter postorder_iterator;
+    typedef typename postorder_iterator::const_postorder_iterator const_postorder_iterator;
+    typedef typename postorder_iterator::vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
 
 public:
     typedef typename super::value_type value_type;
+    typedef const_iterator_generic<const_postorder_iterator> const_iterator;
     typedef const value_type *const_pointer;
     typedef const value_type &const_reference;
     typedef value_type *pointer;

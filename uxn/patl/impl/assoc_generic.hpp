@@ -37,9 +37,9 @@ public:
     typedef Prefix<this_t, const_node_type_ref, node_type_ref> prefix;
     typedef const_vertex_generic<algorithm> const_vertex;
     typedef vertex_generic<algorithm> vertex;
-    typedef const_levelorder_iterator_generic<vertex> const_levelorder_iterator;
-    typedef const_preorder_iterator_generic<vertex> const_preorder_iterator;
-    typedef const_postorder_iterator_generic<vertex> const_postorder_iterator;
+    typedef const_levelorder_iterator_generic<const_vertex> const_levelorder_iterator;
+    typedef const_preorder_iterator_generic<const_vertex> const_preorder_iterator;
+    typedef const_postorder_iterator_generic<const_vertex> const_postorder_iterator;
     typedef levelorder_iterator_generic<vertex> levelorder_iterator;
     typedef preorder_iterator_generic<vertex> preorder_iterator;
     typedef postorder_iterator_generic<vertex> postorder_iterator;
@@ -75,9 +75,9 @@ public:
     {
     }
 
-    typedef const_iterator_generic<vertex> const_iterator;
+    typedef const_iterator_generic<const_postorder_iterator> const_iterator;
 
-    typedef iterator_generic<vertex> iterator;
+    typedef iterator_generic<postorder_iterator> iterator;
 
     // begin() declarations
     const_iterator begin() const
@@ -140,30 +140,10 @@ public:
     }
 
     template <typename Decision>
-    class const_partimator
-        : public const_partimator_generic<vertex, Decision>
-    {
-        typedef const_partimator_generic<vertex, Decision> super;
-
-    public:
-        explicit const_partimator(
-            const Decision &decis = Decision(),
-            const const_vertex &vtx = const_vertex())
-            : super(decis, vtx)
-        {
-        }
-
-        const_partimator(const super &obj)
-            : super(obj)
-        {
-        }
-    };
-
-    template <typename Decision>
     class partimator
-        : public partimator_generic<vertex, Decision>
+        : public partimator_generic<preorder_iterator, Decision>
     {
-        typedef partimator_generic<vertex, Decision> super;
+        typedef partimator_generic<preorder_iterator, Decision> super;
 
     public:
         explicit partimator(
@@ -177,6 +157,39 @@ public:
             : super(obj)
         {
         }
+    };
+
+    template <typename Decision>
+    class const_partimator
+        : public const_partimator_generic<const_preorder_iterator, Decision>
+    {
+        typedef const_partimator_generic<const_preorder_iterator, Decision> super;
+        typedef const_partimator<Decision> this_t;
+
+    public:
+        explicit const_partimator(
+            const Decision &decis = Decision(),
+            const const_vertex &vtx = const_vertex())
+            : super(decis, vtx)
+        {
+        }
+
+        const_partimator(const super &obj)
+            : super(obj)
+        {
+        }
+
+        const_partimator(const partimator<Decision> &obj)
+            : super(obj)
+        {
+        }
+/*
+        this_t &operator=(const super &obj)
+        {
+            if (&obj != this)
+                *static_cast<super*>(this) = obj;
+            return *this;
+        }*/
     };
 
     // begin() partimator declarations

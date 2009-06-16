@@ -16,21 +16,20 @@ namespace impl
 /// NOTE слишком сложен и не имеет практического смысла, потому был удален
 /// NOTE ранее decision-functor был бит-ориентированным, сейчас он
 /// NOTE символ-ориентирован, так же как и partimator engine
-template <typename Vertex, typename Decision>
+template <typename PreorderIter, typename Decision>
 class const_partimator_generic
     : public std::iterator<
         std::forward_iterator_tag,
-        typename Vertex::value_type>
+        typename PreorderIter::vertex::value_type>
 {
-    typedef const_partimator_generic<Vertex, Decision> this_t;
+    typedef const_partimator_generic<PreorderIter, Decision> this_t;
 
 protected:
-    typedef Vertex vertex;
-    typedef typename Vertex::const_vertex const_vertex;
+    typedef PreorderIter preorder_iterator;
+    typedef typename preorder_iterator::vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
     typedef typename vertex::cont_type cont_type;
     typedef typename cont_type::bit_compare bit_compare;
-    typedef preorder_iterator_generic<vertex> preorder_iterator;
-    typedef const_preorder_iterator_generic<vertex> const_preorder_iterator;
     typedef typename vertex::key_type key_type;
 
 public:
@@ -51,9 +50,16 @@ public:
             next_fit();
     }
 
+    template <typename T>
+    const_partimator_generic(const const_partimator_generic<T, Decision> &obj)
+        : decis_(obj.decis())
+        , pit_(obj)
+    {
+    }
+
     operator const const_vertex&() const
     {
-        return *static_cast<const const_preorder_iterator&>(pit_);
+        return *pit_;
     }
 
     const Decision &decis() const
@@ -76,7 +82,7 @@ public:
     }
     const_reference operator*() const
     {
-        return static_cast<const const_preorder_iterator&>(pit_)->value();
+        return pit_->value();
     }
 
     this_t &operator++()
@@ -150,18 +156,22 @@ protected:
     preorder_iterator pit_;
 };
 
-template <typename Vertex, typename Decision>
+template <typename PreorderIter, typename Decision>
 class partimator_generic
-    : public const_partimator_generic<Vertex, Decision>
+    : public const_partimator_generic<PreorderIter, Decision>
 {
-    typedef const_partimator_generic<Vertex, Decision> super;
-    typedef partimator_generic<Vertex, Decision> this_t;
+    typedef const_partimator_generic<PreorderIter, Decision> super;
+    typedef partimator_generic<PreorderIter, Decision> this_t;
 
 protected:
-    typedef Vertex vertex;
+    typedef PreorderIter preorder_iterator;
+    typedef typename preorder_iterator::const_preorder_iterator const_preorder_iterator;
+    typedef typename preorder_iterator::vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
 
 public:
     typedef typename super::value_type value_type;
+    typedef const_partimator_generic<const_preorder_iterator, Decision> const_partimator;
     typedef value_type *pointer;
     typedef value_type &reference;
 

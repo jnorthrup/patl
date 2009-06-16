@@ -21,13 +21,12 @@ class const_postorder_iterator_generic
 
 public:
     typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef const const_vertex *const_pointer;
-    typedef const const_vertex &const_reference;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-    explicit const_postorder_iterator_generic(const const_vertex &vtx = vertex())
+    explicit const_postorder_iterator_generic(const vertex &vtx = vertex())
         : vtx_(vtx)
     {
     }
@@ -88,7 +87,7 @@ public:
     }
 
 protected:
-    vertex vtx_;
+    vertex vtx_; // const_vertex OR vertex actually
 };
 
 template <typename Vertex>
@@ -100,6 +99,8 @@ class postorder_iterator_generic
 
 public:
     typedef Vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
+    typedef const_postorder_iterator_generic<const_vertex> const_postorder_iterator;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
     typedef vertex *pointer;
@@ -108,6 +109,20 @@ public:
     explicit postorder_iterator_generic(const vertex &vtx = vertex())
         : super(vtx)
     {
+    }
+
+    operator const_postorder_iterator() const
+    {
+        return const_postorder_iterator(this->vtx_);
+    }
+
+    const_pointer operator->() const
+    {
+        return &**this;
+    }
+    const_reference operator*() const
+    {
+        return this->vtx_;
     }
 
     pointer operator->()

@@ -21,13 +21,12 @@ class const_preorder_iterator_generic
 
 public:
     typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef const const_vertex *const_pointer;
-    typedef const const_vertex &const_reference;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-    explicit const_preorder_iterator_generic(const const_vertex &vtx = vertex())
+    explicit const_preorder_iterator_generic(const vertex &vtx = vertex())
         : vtx_(vtx)
     {
     }
@@ -127,6 +126,8 @@ class preorder_iterator_generic
 
 public:
     typedef Vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
+    typedef const_preorder_iterator_generic<const_vertex> const_preorder_iterator;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
     typedef vertex *pointer;
@@ -135,6 +136,20 @@ public:
     explicit preorder_iterator_generic(const vertex &vtx = vertex())
         : super(vtx)
     {
+    }
+
+    operator const_preorder_iterator() const
+    {
+        return const_preorder_iterator(this->vtx_);
+    }
+
+    const_pointer operator->() const
+    {
+        return &**this;
+    }
+    const_reference operator*() const
+    {
+        return this->vtx_;
     }
 
     pointer operator->()

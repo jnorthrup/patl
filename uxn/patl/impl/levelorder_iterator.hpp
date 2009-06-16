@@ -19,18 +19,16 @@ class const_levelorder_iterator_generic
 {
     typedef const_levelorder_iterator_generic<Vertex> this_t;
 
-protected:
+public:
     typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef const const_vertex *const_pointer;
-    typedef const const_vertex &const_reference;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-public:
     explicit const_levelorder_iterator_generic(
         word_t limit,
-        const const_vertex &vtx = vertex())
+        const vertex &vtx = vertex())
         : limit_(limit)
         , vtx_(vtx)
     {
@@ -94,19 +92,34 @@ class levelorder_iterator_generic
     typedef const_levelorder_iterator_generic<Vertex> super;
     typedef levelorder_iterator_generic<Vertex> this_t;
 
-protected:
+public:
     typedef Vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
+    typedef const_levelorder_iterator_generic<const_vertex> const_levelorder_iterator;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
     typedef vertex *pointer;
     typedef vertex &reference;
 
-public:
     explicit levelorder_iterator_generic(
         word_t limit,
         const vertex &vtx = vertex())
         : super(limit, vtx)
     {
+    }
+
+    operator const_levelorder_iterator() const
+    {
+        return const_levelorder_iterator(this->vtx_);
+    }
+
+    const_pointer operator->() const
+    {
+        return &**this;
+    }
+    const_reference operator*() const
+    {
+        return this->vtx_;
     }
 
     pointer operator->()

@@ -16,6 +16,7 @@ protected:
     typedef Algorithm algorithm;
 
 public:
+    typedef this_t const_vertex;
     typedef typename algorithm::cont_type cont_type;
 
 protected:
