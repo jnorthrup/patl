@@ -22,15 +22,21 @@ public:
     typedef cont_type::coralgorithm exploit_t; // avatar of external_algorithm
     typedef exploit_t const_exploit_t;
 
-    const_exploit_t exploit() const
+    std::auto_ptr<const_exploit_t> exploit() const
     {
         // кто должен запрашивать у кэша блок с узлом для работы?
         // скорее всего, external_algorithm, потому что он же будет отпускать этот блок
         // и запрашивать/отпускать новые блоки при навигации по узлам
-        return const_exploit_t(this, ); // а вот тут не без std::auto_ptr<exploit_t>
+        return std::auto_ptr<const_exploit_t>(
+            new const_exploit_t(this, ));
     }
-    exploit_t exploit()
+
+    // эта функция будет отличаться от предыдущей не только возвращаемым значением,
+    // но и способом захвата участка кэша с установкой флага dirty
+    std::auto_ptr<exploit_t> exploit()
     {
+        return std::auto_ptr<exploit_t>(
+            new exploit_t(this, ));
     }
 
     // этот класс является ContainerProvider'ом для algorithm_generic

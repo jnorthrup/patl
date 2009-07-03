@@ -3,6 +3,7 @@
 
 #include "../../patl/impl/vertex.hpp"
 #include "extalgorithm.hpp"
+#include <memory>
 
 namespace uxn
 {
@@ -11,24 +12,45 @@ namespace bpatl
 namespace impl
 {
 
-class extvertex_generic
+template <typename ExtAlgorithm, typename Vertex>
+class const_extvertex_generic
 {
+    typedef ExtAlgorithm extalgorithm;
+
 public:
-    typedef patl::impl::vertex_generic exploit_t;
-    // а вот с этим надо что-то делать, const в итераторах нужен для эффективности
+    typedef Vertex exploit_t;
     typedef exploit_t const_exploit_t;
 
-    const_exploit_t exploit() const
+    // тут должны быть кторы
+
+    std::auto_ptr<const_exploit_t> exploit() const
     {
-        return const_exploit_t(pal_.exploit());
-    }
-    exploit_t exploit()
-    {
-        return exploit_t(pal_.exploit());
+        return std::auto_ptr<const_exploit_t>(
+            new const_exploit_t(pal_.exploit()));
     }
 
-private:
+protected:
     extalgorithm pal_;
+};
+
+template <typename ExtAlgorithm, typename Vertex>
+class extvertex_generic
+    : public const_extvertex_generic<ExtAlgorithm, Vertex>
+{
+protected:
+    typedef const_extvertex_generic<ExtAlgorithm, Vertex> super;
+    typedef extvertex_generic<ExtAlgorithm, Vertex> this_t;
+
+public:
+    //typedef super const_extvertex; // хм... мне одному кажется, что здесь нечисто?
+    typedef Vertex exploit_t;
+    typedef typename exploit_t::const_vertex const_exploit_t;
+
+    std::auto_ptr<exploit_t> exploit()
+    {
+        return std::auto_ptr<exploit_t>(
+            new exploit_t(this->pal_.exploit());
+    }
 };
 
 } // namespace impl
