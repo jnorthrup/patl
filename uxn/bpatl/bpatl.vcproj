@@ -201,6 +201,10 @@
 				Name="impl"
 				>
 				<File
+					RelativePath=".\impl\assoc_generic.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\impl\block_cache.hpp"
 					>
 				</File>
