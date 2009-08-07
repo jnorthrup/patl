@@ -1,9 +1,10 @@
 /*-
- | Burrows-Wheeler sorting program, v3.10 [O(n)-encoding with suffix tries]
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
  |
- | (c) 2004-2005 by Roman S. Klyujkov, uxnuxn at gmail.com
+ | Burrows-Wheeler sorting program, v3.10 [O(n)-encoding with suffix tries]
 -*/
-
 #include <uxn/patl/aux_/buffered_io.hpp>
 #include <uxn/patl/aux_/perf_timer.hpp>
 #include <uxn/patl/suffix_set.hpp>
