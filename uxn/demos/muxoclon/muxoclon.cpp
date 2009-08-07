@@ -1,4 +1,8 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | Find the shortest word ladders stretching between the following pairs
  | rus: http://community.livejournal.com/coding4fun_ru/1510.html
  | eng: http://stason.org/TULARC/self-growth/puzzles/291-language-english-spelling-sets-of-words-ladder-p.html
@@ -16,7 +20,6 @@
  |   griming goblets (23)
  |   effaces cabaret (50)
 -*/
-
 // C4503: decorated name length exceeded, name was truncated
 #pragma warning(disable : 4503)
 

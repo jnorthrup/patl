@@ -1,8 +1,11 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | Simplest implementation of multiple string alignment problem
  | Using suffix trees with O(1) LCA after O(N) postprocessing
 -*/
-
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/lca_oracle.hpp>
 #include <uxn/patl/patricia_dot_creator.hpp>

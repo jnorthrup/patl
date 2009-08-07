@@ -1,7 +1,10 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | Simple demonstration of basic PATL features
 -*/
-
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/maxrep_iterator.hpp>
 #include <uxn/patl/super_maxrep_iterator.hpp>

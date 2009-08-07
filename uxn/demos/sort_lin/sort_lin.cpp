@@ -1,7 +1,10 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | External string mergesort using trie and C++ generators
 -*/
-
 #include <list>
 #include <uxn/patl/aux_/generator.hpp>
 #include <uxn/patl/aux_/file_utils.hpp>

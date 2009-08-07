@@ -1,11 +1,14 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | Finding all maximal palindromes in linear time with and without suffix tree & O(1) LCA
  | ---
  | были найдены простые алгоритмы нахождени€ максимальных палиндромов,
  | без построени€ суффиксного дерева и структур дл€ нахождени€ LCA за O(1)
  | http://e-maxx.ru/algo/palindromes_count
 -*/
-
 #include <uxn/patl/suffix_set.hpp>
 #include <uxn/patl/lca_oracle.hpp>
 #include <uxn/patl/leaf_oracle.hpp>

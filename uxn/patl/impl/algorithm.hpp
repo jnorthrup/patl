@@ -1,10 +1,12 @@
 /*-
- | trie_map, trie_set, suffix_map, suffix_set template containers, v0.x
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
+ | trie_set, trie_map, suffix_set, suffix_map template containers, v0.x
  | Based on PATRICIA trie
  | Key features: STL-compatible, high performance with non-scalar keys
- | Compile with: MSVC 2003/2005/2008, G++ 3.x
- |
- | (c) 2005, 2007..2008 by Roman S. Klyujkov, uxnuxn at gmail.com
+ | Compile with: MSVC 2003/2005/2008/2010, G++ 3.x
  |
  | algorithm P class template
 -*/

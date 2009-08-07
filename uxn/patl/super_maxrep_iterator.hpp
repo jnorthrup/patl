@@ -1,3 +1,8 @@
+/*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+-*/
 #ifndef PATL_SUPER_MAXREP_ITERATOR_HPP
 #define PATL_SUPER_MAXREP_ITERATOR_HPP
 

@@ -1,7 +1,10 @@
 /*-
+ | This source code is part of PATL (Practical Algorithm Template Library)
+ | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
+ |
  | Word suffix tree implementation with extraction of [super]maximal repeats
 -*/
-
 #include <vector>
 #include <functional>
 #include <uxn/patl/aux_/buffered_io.hpp>
