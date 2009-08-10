@@ -127,8 +127,9 @@ public:
                 ; it != current.end()
                 ; ++it)
             {
-                if (impl::bits_but_highest(it->first) == super::mask_len_ && it->second < cur_dist_)
-                    cur_dist_ = it->second;
+                const word_t rest_len = super::mask_len_ - impl::bits_but_highest(it->first);
+                if (rest_len <= dist_ - it->second && it->second + rest_len < cur_dist_)
+                    cur_dist_ = it->second + rest_len;
             }
             return cur_dist_ != ~word_t(0);
         }
