@@ -358,23 +358,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\impl\suffix_map.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\impl\suffix_set.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\impl\trie_generic.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\impl\trie_map.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\impl\trie_set.hpp"
 					>
 				</File>
 				<File
