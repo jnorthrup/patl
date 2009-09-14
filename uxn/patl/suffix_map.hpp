@@ -6,7 +6,6 @@
 #ifndef PATL_SUFFIX_MAP_HPP
 #define PATL_SUFFIX_MAP_HPP
 
-//#include "impl/suffix_map.hpp"
 #include "impl/suffix_generic.hpp"
 #include "bit_comp.hpp"
 

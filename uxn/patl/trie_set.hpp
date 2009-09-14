@@ -6,7 +6,6 @@
 #ifndef PATL_TRIE_SET_HPP
 #define PATL_TRIE_SET_HPP
 
-#include "impl/trie_set.hpp"
 #include "impl/trie_generic.hpp"
 #include "bit_comp.hpp"
 
@@ -14,6 +13,28 @@ namespace uxn
 {
 namespace patl
 {
+namespace impl
+{
+
+template <
+    typename Key,
+    typename BitComp,
+    typename Allocator>
+class trie_set_traits
+{
+public:
+    typedef Key key_type;
+    typedef Key value_type;
+    typedef BitComp bit_compare;
+    typedef Allocator allocator_type;
+
+    static const key_type &ref_key(const value_type &val)
+    {
+        return val;
+    }
+};
+
+} // namespace impl
 
 template <
     typename Key,
