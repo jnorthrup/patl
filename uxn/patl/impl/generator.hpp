@@ -3,8 +3,8 @@
  | Released under the BSD License (http://www.opensource.org/licenses/bsd-license.php)
  | Copyright (c) 2005, 2007..2009, Roman S. Klyujkov (uxnuxn AT gmail.com)
 -*/
-#ifndef PATL_AUX_GENERATOR_HPP
-#define PATL_AUX_GENERATOR_HPP
+#ifndef PATL_IMPL_GENERATOR_HPP
+#define PATL_IMPL_GENERATOR_HPP
 
 // generator/continuation for C++
 // author: Andrew Fedoniouk @ terrainformatica.com
@@ -18,7 +18,7 @@ namespace uxn
 {
 namespace patl
 {
-namespace aux
+namespace impl
 {
 
 template<typename derived_t, typename elem_t>
@@ -47,7 +47,7 @@ public:
     }
 };
 
-#define PATL_GENERATOR(NAME, T, NAME_T) class NAME : public uxn::patl::aux::generator_base<NAME_T, T>
+#define PATL_GENERATOR(NAME, T, NAME_T) class NAME : public uxn::patl::impl::generator_base<NAME_T, T>
 
 #define PATL_EMIT(T)\
     void generate_value(int generator_cur_line)\
@@ -65,7 +65,7 @@ public:
         } while (0)\
 /**/
 
-} // namespace aux
+} // namespace impl
 } // namespace patl
 } // namespace uxn
 

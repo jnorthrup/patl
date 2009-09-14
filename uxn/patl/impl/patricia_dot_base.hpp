@@ -43,7 +43,7 @@ public:
 };
 
 template <
-    typename Type, sword_t Delta, typename BitComp, typename Allocator,
+    typename Type, word_t Delta, typename BitComp, typename Allocator,
     typename OutStream>
 class patricia_dot_base<suffix_set<Type, Delta, BitComp, Allocator>, OutStream>
 {

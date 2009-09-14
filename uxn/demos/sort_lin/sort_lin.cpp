@@ -6,7 +6,7 @@
  | External string mergesort using trie and C++ generators
 -*/
 #include <list>
-#include <uxn/patl/aux_/generator.hpp>
+#include <uxn/patl/impl/generator.hpp>
 #include <uxn/patl/aux_/file_utils.hpp>
 #include <uxn/patl/aux_/file_mapping_io.hpp>
 #include <uxn/patl/aux_/buffered_io.hpp>
