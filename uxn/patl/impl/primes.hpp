@@ -90,10 +90,10 @@ public:
 
     PATL_EMIT(nat_type)
     {
-        if (n_ <= 2) yield(2);
-        if (n_ <= 3) yield(3);
-        if (n_ <= 5) yield(5);
-        if (n_ <= 7) yield(7);
+        if (n_ <= 2) PATL_YIELD(2);
+        if (n_ <= 3) PATL_YIELD(3);
+        if (n_ <= 5) PATL_YIELD(5);
+        if (n_ <= 7) PATL_YIELD(7);
         ps_.reset(new primes(3));
         ps_->next();
         p1_ = ps_->value();
