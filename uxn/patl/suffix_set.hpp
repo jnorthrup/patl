@@ -115,12 +115,11 @@ public:
 
     word_t count_reindex(const key_type from) const
     {
-        const key_type last = this->keys_ + this->size() * this->delta;
+        key_type last = this->keys_ + this->size() * this->delta;
         word_t i = this->size() - 1;
         for (
             ; last + this->trie_[i]->get_skip() / this->bit_size >= from
-            ; --i, last - this->delta) ;
-        //printf("reindex(count=%d).(size=%d).", size() - 1 - i, size());
+            ; --i, last -= this->delta) ;
         return this->size() - 1 - i;
     }
 
@@ -128,14 +127,12 @@ public:
     {
         while (i--)
             this->pop_back();
-        //printf("pop(size=%d).", size());
     }
 
     void push_reindex(word_t i)
     {
         while (i--)
             this->push_back();
-        //printf("push(size=%d).done\n", size());
     }
 };
 
