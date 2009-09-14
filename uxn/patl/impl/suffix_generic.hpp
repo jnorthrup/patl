@@ -14,7 +14,6 @@
 #include "ring_buffer.hpp"
 #include "assoc_generic.hpp"
 #include "core_prefix.hpp"
-#include "../bit_comp.hpp"
 
 namespace uxn
 {
@@ -234,10 +233,10 @@ public:
         this->root_ = 0;
     }
 
-    void reserve(size_type newSize)
+    void reserve(size_type new_size)
     {
         word_t root_pos = trie_.index_of(this->root_);
-        trie_.reserve(newSize);
+        trie_.reserve(new_size);
         this->root_ = this->root_ ? trie_[root_pos] : 0;
     }
 
@@ -255,7 +254,7 @@ public:
             , skip_(0)
             , vtx_(cont, cont->root_, 0)
         {
-            skip_ = ((algorithm&)vtx_).mismatch_suffix(key_, skip_);
+            skip_ = static_cast<algorithm&>(vtx_).mismatch_suffix(key_, skip_);
         }
 
         bool operator==(const match_iterator &it) const
@@ -305,7 +304,7 @@ public:
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
             const this_t *cont = vtx_.cont();
-            algorithm &pal = (algorithm&)vtx_;
+            algorithm &pal = static_cast<algorithm&>(vtx_);
             if (skip_)
             {
                 const node_type
@@ -342,7 +341,7 @@ public:
     };
 
 protected:
-    vertex push_back_generic(const node_type &initNode)
+    vertex push_back_generic(const node_type &init_node)
     {
         const key_type key = keys_ + trie_.size() * delta;
         node_type *back = trie_.back();
@@ -360,7 +359,7 @@ protected:
         //
         skip = pal.mismatch_suffix(key, skip);
         // brave new node
-        trie_.push_back(initNode);
+        trie_.push_back(init_node);
         node_type *r = trie_.back();
         // add new node into trie
         const word_t bit = this->bit_comp_.get_bit(key, skip);
@@ -368,9 +367,9 @@ protected:
         return vertex(this, r, bit);
     }
 
-    vertex push_back_root(const node_type &initNode)
+    vertex push_back_root(const node_type &init_node)
     {
-        trie_.push_back(initNode);
+        trie_.push_back(init_node);
         this->root_ = trie_.back();
         this->root_->init_root();
         return vertex(this, this->root_, 0);

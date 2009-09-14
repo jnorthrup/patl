@@ -270,10 +270,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\aux_\generator.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\aux_\perf_timer.hpp"
 					>
 				</File>
@@ -303,6 +299,10 @@
 				</File>
 				<File
 					RelativePath=".\impl\core_prefix.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\generator.hpp"
 					>
 				</File>
 				<File
@@ -343,6 +343,10 @@
 				</File>
 				<File
 					RelativePath=".\impl\preorder_iterator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\impl\primes.hpp"
 					>
 				</File>
 				<File

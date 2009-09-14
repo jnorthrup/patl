@@ -95,7 +95,7 @@ public:
 #ifdef PATL_ALIGNHACK
             qq_;
 #else
-            qid_ | q_;
+            qid_ | reinterpret_cast<word_t>(q_);
 #endif
     }
 
