@@ -8,7 +8,7 @@
 
 #include "../config.hpp"
 #include "../impl/trivial.hpp"
-#include <string.h>
+#include <cstring>
 
 namespace uxn
 {

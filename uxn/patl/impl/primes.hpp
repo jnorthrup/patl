@@ -7,7 +7,7 @@
 #define PATL_IMPL_PRIMES_HPP
 
 #include <memory>
-#include <math.h>
+#include <cmath>
 #include "generator.hpp"
 #include "trivial.hpp"
 
@@ -18,61 +18,6 @@ namespace patl
 namespace impl
 {
 
-template <typename Primes>
-struct gen_map
-{
-    typedef typename Primes::nat_type nat_type;
-
-    gen_map(nat_type p0, nat_type p1)
-        : lo_(p0 * p0)
-        , hi_(p1 * p1)
-        , bound_((hi_ - lo_) / 2 - 1)
-        , arr_(new word_t [bound_ / bits_in_word + 1])
-        , i_(~nat_type(0))
-        , n_(lo_)
-    {
-        for (word_t i = 0
-            ; i != bound_ / bits_in_word + 1
-            ; ++i)
-            arr_[i] = word_t(0);
-        Primes ps(3);
-        for (ps.next(); ps.value() != p1; ps.next())
-        {
-            const nat_type i = ps.value();
-            for (nat_type j = correct(i - lo_ % i, i) / 2 - 1
-                ; j < bound_
-                ; j += i)
-                arr_[j / bits_in_word] |= 1 << (j % bits_in_word);
-        }
-        next();
-    }
-
-    ~gen_map()
-    { delete[] arr_; }
-
-    bool avail() const
-    { return i_ != bound_; }
-
-    nat_type value() const
-    { return n_; }
-
-    void next()
-    {
-        do { ++i_; n_ += 2; }
-        while (
-            avail() &&
-            (arr_[i_ / bits_in_word] & (1 << (i_ % bits_in_word))));
-    }
-
-private:
-    static nat_type correct(nat_type n, nat_type i)
-    { return n & 1 ? n + i : n; }
-
-    const nat_type lo_, hi_, bound_;
-    word_t *arr_;
-    nat_type i_, n_;
-};
-
 template <typename Natural>
 inline Natural sqrt_int(Natural x)
 { return static_cast<Natural>(sqrt(static_cast<double>(x))); }
@@ -80,12 +25,16 @@ inline Natural sqrt_int(Natural x)
 template <typename Natural>
 PATL_GENERATOR(primes, Natural, primes<Natural>)
 {
+    typedef primes<Natural> this_t;
+
 public:
     typedef Natural nat_type;
 
-    primes(nat_type n = 2)
+    enum { B = 12 << 10 }; // to avoid g++ errors about variably modified type
+
+    primes(const nat_type &n = 2, const nat_type &m = ~nat_type(0))
         : n_(n)
-        , sq_n_(sqrt_int(n))
+        , m_(patl::impl::get_max<nat_type>(9, m & 1 ? m : m + 1))
     { }
 
     PATL_EMIT(nat_type)
@@ -94,29 +43,63 @@ public:
         if (n_ <= 3) PATL_YIELD(3);
         if (n_ <= 5) PATL_YIELD(5);
         if (n_ <= 7) PATL_YIELD(7);
-        ps_.reset(new primes(3));
-        ps_->next();
-        p1_ = ps_->value();
-        for (;;)
+        for (n_ = patl::impl::get_max<nat_type>(9, n_ & 1 ? n_ : n_ - 1); n_ < m_; )
         {
-            p0_ = p1_;
-            ps_->next();
-            p1_ = ps_->value();
-            if (p1_ <= sq_n_)
-                continue;
-            gmap_.reset(new gen_map<primes>(p0_, p1_));
-            for (; gmap_->avail(); gmap_->next())
-                if (gmap_->value() >= n_)
-                    PATL_YIELD(gmap_->value());
+            bound_ = static_cast<word_t>(patl::impl::get_min<nat_type>((m_ - n_) / 2, B * bits_in_word));
+            if (n_ < B)
+                bound_ = static_cast<word_t>(patl::impl::get_min<nat_type>((n_ * n_ - n_) / 2, bound_));
+            //
+            {
+                for (word_t i = 0; i != bound_ / bits_in_word + 1; ++i)
+                    arr_[i] = 0;
+                const nat_type sq_m(sqrt_int(n_ + bound_ * 2) + 1); // !!!
+                std::auto_ptr<this_t> ps(new this_t(3, sq_m));
+                if (ps->next())
+                    do
+                    {
+                        const nat_type i = ps->value();
+                        for (nat_type j = correct(corr0(n_ % i, i), i) / 2
+                            ; j < bound_
+                            ; j += i)
+                            arr_[j / bits_in_word] |= 1 << (j % bits_in_word);
+                    } while (ps->next());
+            }
+            //
+            for (i_ = 0; ; ++i_, n_ += 2)
+            {
+                {
+                    word_t
+                        sh = i_ % bits_in_word,
+                        a = ~arr_[i_ / bits_in_word] >> sh;
+                    while (!a)
+                    {
+                        i_ += bits_in_word - sh;
+                        n_ += 2 * (bits_in_word - sh);
+                        sh = 0;
+                        a = ~arr_[i_ / bits_in_word];
+                    }
+                    const word_t id = patl::impl::get_lowest_bit_id(a);
+                    i_ += id;
+                    n_ += 2 * id;
+                }
+                if (i_ == bound_)
+                    break;
+                PATL_YIELD(n_);
+            }
         }
     }
     PATL_STOP_EMIT()
 
 private:
-    const nat_type n_, sq_n_;
-    std::auto_ptr<gen_map<primes> > gmap_;
-    nat_type p0_, p1_;
-    std::auto_ptr<primes> ps_;
+    static nat_type corr0(const nat_type &n, const nat_type &i)
+    { return n ? i - n : n; }
+
+    static nat_type correct(const nat_type &n, const nat_type &i)
+    { return n & 1 ? n + i : n; }
+
+    nat_type n_, m_;
+    word_t arr_[B + 1];
+    word_t bound_, i_;
 };
 
 } // namespace impl
