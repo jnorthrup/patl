@@ -325,7 +325,9 @@ public:
                     {
                         input_continued_ = tsf_gen_.next();
                         if (input_continued_)
-                            merge_src_.push_front(merge_src_t::value_type(tsf_gen_.value(), 0));
+                            merge_src_.push_front(merge_src_t::value_type(
+                                tsf_gen_.value(),
+                                reinterpret_cast<strings_from_file_generator*>(0)));
                     }
                 }
                 else
@@ -467,7 +469,9 @@ void sort_huge_text_file(const char *infname, const char *outfname, word_t N)
         const line_t value(sfmf_gen.value());
         if (value.empty())
         {
-            sfmf_gen.push_front(merge_src_t::value_type(tmpfname, 0));
+            sfmf_gen.push_front(merge_src_t::value_type(
+                tmpfname,
+                reinterpret_cast<strings_from_file_generator*>(0)));
 #ifdef SORT_LIN_DEBUG
             outbuf->flush_buffer();
             printf("\nmerged to file: '%s', %5.3g Mb ***\n",
