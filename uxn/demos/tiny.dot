@@ -1,0 +1,48 @@
+strict digraph
+{
+// common props
+dpi = 96
+edge[arrowhead = empty]
+
+// BEGIN create from vertex
+
+// node definitions (preorder depth-first)
+sibling[shape = plaintext, label = "nil"]
+n3450b8[label = "balon\n-1"]
+n344f30[label = "bulat\n11"]
+n3450f0[label = "baton\n19"]
+n344fa0[label = "bal\n25"]
+n344ef8[label = "balet\n28"]
+n344ec0[label = "balka\n29"]
+n344f68[label = "bulka\n28"]
+
+// root link to sibling
+n3450b8->sibling[tailport = se, headport = sw, style = dotted]
+
+// forward left links
+edge[tailport = sw, weight = 2]
+n3450b8->n344f30
+n344f30->n3450f0
+n3450f0->n344fa0
+
+// forward right links
+edge[tailport = se]
+n344fa0->n344ef8
+n344ef8->n344ec0
+n344f30->n344f68
+
+// backward left links
+edge[style = dotted, tailport = sw, weight = 1]
+n344fa0->n344fa0
+n344ef8->n344ef8
+n344ec0->n344ec0
+n344f68->n344f30
+
+// backward right links
+edge[tailport = se]
+n344ec0->n3450b8
+n3450f0->n3450f0
+n344f68->n344f68
+
+// END create from vertex
+}
