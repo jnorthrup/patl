@@ -1,0 +1,204 @@
+strict digraph
+{
+// common props
+dpi = 96
+edge[arrowhead = empty]
+
+// BEGIN create from vertex
+
+// node definitions (preorder depth-first)
+sibling[shape = plaintext, label = "..."]
+na0d6f0[label = "pats\n31"]
+na0ca40[label = "patriarch\n36"]
+na0d028[label = "patrol\n37"]
+na0cf80[label = "patristic\n43"]
+na0cd50[label = "patrilineal\n44"]
+na0cbc8[label = "patrician\n46"]
+na0ca78[label = "patriarchal\n73"]
+na0cb58[label = "patriarchs\n75"]
+na0cb20[label = "patriarchies\n76"]
+na0cab0[label = "patriarchate\n83"]
+na0cae8[label = "patriarchates\n97"]
+na0cb90[label = "patriarchy\n76"]
+na0cca8[label = "patricidal\n61"]
+na0cc38[label = "patriciate\n67"]
+na0cc00[label = "patricians\n73"]
+na0cc70[label = "patriciates\n81"]
+na0cce0[label = "patricide\n69"]
+na0cd18[label = "patricides\n73"]
+na0ce30[label = "patriot\n46"]
+na0cd88[label = "patrimonial\n47"]
+na0cdf8[label = "patrimony\n67"]
+na0cdc0[label = "patrimonies\n77"]
+na0ce68[label = "patriotic\n57"]
+na0cf48[label = "patriots\n59"]
+na0ced8[label = "patriotism\n67"]
+na0cea0[label = "patriotically\n73"]
+na0cf10[label = "patriotisms\n81"]
+na0cfb8[label = "patristical\n73"]
+na0cff0[label = "patristics\n75"]
+na0d1e8[label = "patron\n46"]
+na0d060[label = "patrolled\n49"]
+na0d1b0[label = "patrols\n51"]
+na0d140[label = "patrolman\n55"]
+na0d108[label = "patrolling\n60"]
+na0d098[label = "patroller\n67"]
+na0d0d0[label = "patrollers\n73"]
+na0d178[label = "patrolmen\n61"]
+na0d680[label = "patroon\n47"]
+na0d220[label = "patronage\n49"]
+na0d5d8[label = "patrons\n51"]
+na0d338[label = "patronise\n52"]
+na0d2c8[label = "patroness\n53"]
+na0d290[label = "patronal\n60"]
+na0d258[label = "patronages\n73"]
+na0d300[label = "patronesses\n73"]
+na0d5a0[label = "patronly\n53"]
+na0d418[label = "patronization\n60"]
+na0d3e0[label = "patronising\n68"]
+na0d370[label = "patronised\n73"]
+na0d3a8[label = "patronises\n75"]
+na0d530[label = "patronizing\n68"]
+na0d488[label = "patronize\n69"]
+na0d450[label = "patronizations\n105"]
+na0d4c0[label = "patronized\n73"]
+na0d4f8[label = "patronizes\n75"]
+na0d568[label = "patronizingly\n89"]
+na0d610[label = "patronymic\n52"]
+na0d648[label = "patronymics\n81"]
+na0d6b8[label = "patroons\n57"]
+
+// root link to sibling
+na0d6f0->sibling[tailport = se, headport = nw, style = solid]
+
+// forward left links
+edge[tailport = sw, weight = 2]
+na0d6f0->na0ca40
+na0d028->na0cf80
+na0cf80->na0cd50
+na0cd50->na0cbc8
+na0cbc8->na0ca78
+na0cb58->na0cb20
+na0cb20->na0cab0
+na0cca8->na0cc38
+na0cc38->na0cc00
+na0ce30->na0cd88
+na0cdf8->na0cdc0
+na0cf48->na0ced8
+na0ced8->na0cea0
+na0d1e8->na0d060
+na0d1b0->na0d140
+na0d140->na0d108
+na0d108->na0d098
+na0d680->na0d220
+na0d5d8->na0d338
+na0d338->na0d2c8
+na0d2c8->na0d290
+na0d290->na0d258
+na0d5a0->na0d418
+na0d418->na0d3e0
+na0d3e0->na0d370
+na0d530->na0d488
+na0d488->na0d450
+
+// forward right links
+edge[tailport = se]
+na0ca40->na0d028
+na0ca78->na0cb58
+na0cab0->na0cae8
+na0cb58->na0cb90
+na0cbc8->na0cca8
+na0cc38->na0cc70
+na0cca8->na0cce0
+na0cce0->na0cd18
+na0cd50->na0ce30
+na0cd88->na0cdf8
+na0ce30->na0ce68
+na0ce68->na0cf48
+na0ced8->na0cf10
+na0cf80->na0cfb8
+na0cfb8->na0cff0
+na0d028->na0d1e8
+na0d060->na0d1b0
+na0d098->na0d0d0
+na0d140->na0d178
+na0d1e8->na0d680
+na0d220->na0d5d8
+na0d2c8->na0d300
+na0d338->na0d5a0
+na0d370->na0d3a8
+na0d418->na0d530
+na0d488->na0d4c0
+na0d4c0->na0d4f8
+na0d530->na0d568
+na0d5d8->na0d610
+na0d610->na0d648
+na0d680->na0d6b8
+
+// backward left links
+edge[style = dotted, tailport = sw, weight = 1]
+na0ca40->na0ca08
+na0ca78->na0ca40
+na0cab0->na0ca78
+na0cae8->na0cab0
+na0cb90->na0cb58
+na0cc00->na0cbc8
+na0cc70->na0cc38
+na0cce0->na0cca8
+na0cd18->na0cce0
+na0cd88->na0cd50
+na0cdc0->na0cd88
+na0ce68->na0ce30
+na0cea0->na0ce68
+na0cf10->na0ced8
+na0cfb8->na0cf80
+na0cff0->na0cfb8
+na0d060->na0d028
+na0d098->na0d060
+na0d0d0->na0d098
+na0d178->na0d140
+na0d220->na0d1e8
+na0d258->na0d220
+na0d300->na0d2c8
+na0d370->na0d338
+na0d3a8->na0d370
+na0d450->na0d418
+na0d4c0->na0d488
+na0d4f8->na0d4c0
+na0d568->na0d530
+na0d610->na0d5d8
+na0d648->na0d610
+na0d6b8->na0d680
+
+// backward right links
+edge[tailport = se]
+na0cae8->na0cae8
+na0cb20->na0cb20
+na0cb90->na0cb90
+na0cc00->na0cc00
+na0cc70->na0cc70
+na0cd18->na0cd18
+na0cdc0->na0cdc0
+na0cdf8->na0cdf8
+na0cea0->na0cea0
+na0cf10->na0cf10
+na0cf48->na0cf48
+na0cff0->na0cff0
+na0d0d0->na0d0d0
+na0d108->na0d108
+na0d178->na0d178
+na0d1b0->na0d1b0
+na0d258->na0d258
+na0d290->na0d290
+na0d300->na0d300
+na0d3a8->na0d3a8
+na0d3e0->na0d3e0
+na0d450->na0d450
+na0d4f8->na0d4f8
+na0d568->na0d568
+na0d5a0->na0d5a0
+na0d648->na0d648
+na0d6b8->na0d6b8
+
+// END create from vertex
+}
