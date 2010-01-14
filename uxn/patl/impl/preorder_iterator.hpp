@@ -17,21 +17,21 @@ namespace impl
 {
 
 template <typename Vertex>
-class preorder_iterator_generic
+class const_preorder_iterator_generic
     : public std::iterator<
         std::bidirectional_iterator_tag,
         Vertex>
 {
-    typedef preorder_iterator_generic<Vertex> this_t;
+    typedef const_preorder_iterator_generic<Vertex> this_t;
 
 public:
     typedef Vertex vertex;
-    typedef vertex *pointer;
-    typedef vertex &reference;
     typedef const vertex *const_pointer;
     typedef const vertex &const_reference;
+    typedef const_pointer pointer;
+    typedef const_reference reference;
 
-    explicit preorder_iterator_generic(const vertex &vtx = vertex())
+    explicit const_preorder_iterator_generic(const vertex &vtx = vertex())
         : vtx_(vtx)
     {
     }
@@ -50,15 +50,6 @@ public:
         return &**this;
     }
     const_reference operator*() const
-    {
-        return vtx_;
-    }
-
-    pointer operator->()
-    {
-        return &**this;
-    }
-    reference operator*()
     {
         return vtx_;
     }
@@ -103,9 +94,16 @@ public:
     template <typename Callback>
     void next_subtree(Callback &cb)
     {
-        vtx_.template move_subtree<Callback, 1>(cb);
+        vtx_.template move_subtree<1>(cb);
     }
 
+    void increment(word_t limit)
+    {
+        if (vtx_.limited(limit))
+            next_subtree();
+        else
+            vtx_.iterate(0);
+    }
     template <typename Callback>
     void increment(Callback &cb)
     {
@@ -114,14 +112,43 @@ public:
         else
             vtx_.iterate(0);
     }
+    template <typename Callback>
+    void increment(word_t limit, Callback &cb)
+    {
+        if (vtx_.limited(limit))
+            next_subtree(cb);
+        else
+            vtx_.iterate(0);
+    }
 
+    void decrement(word_t limit)
+    {
+        if (vtx_.get_qid())
+        {
+            vtx_.toggle();
+            vtx_.template descend<1>(limit);
+        }
+        else
+            vtx_.ascend();
+    }
     template <typename Callback>
     void decrement(Callback &cb)
     {
         if (vtx_.get_qid())
         {
             vtx_.toggle();
-            vtx_.template descend<Callback, 1>(cb);
+            vtx_.template descend<1>(cb);
+        }
+        else
+            vtx_.ascend();
+    }
+    template <typename Callback>
+    void decrement(word_t limit, Callback &cb)
+    {
+        if (vtx_.get_qid())
+        {
+            vtx_.toggle();
+            vtx_.template descend<1>(limit, cb);
         }
         else
             vtx_.ascend();
@@ -129,6 +156,75 @@ public:
 
 protected:
     vertex vtx_;
+};
+
+template <typename Vertex>
+class preorder_iterator_generic
+    : public const_preorder_iterator_generic<Vertex>
+{
+    typedef const_preorder_iterator_generic<Vertex> super;
+    typedef preorder_iterator_generic<Vertex> this_t;
+
+public:
+    typedef Vertex vertex;
+    typedef typename vertex::const_vertex const_vertex;
+    typedef const_preorder_iterator_generic<const_vertex> const_preorder_iterator;
+    typedef const vertex *const_pointer;
+    typedef const vertex &const_reference;
+    typedef vertex *pointer;
+    typedef vertex &reference;
+
+    explicit preorder_iterator_generic(const vertex &vtx = vertex())
+        : super(vtx)
+    {
+    }
+
+    operator const_preorder_iterator() const
+    {
+        return const_preorder_iterator(this->vtx_);
+    }
+
+    const_pointer operator->() const
+    {
+        return &**this;
+    }
+    const_reference operator*() const
+    {
+        return this->vtx_;
+    }
+
+    pointer operator->()
+    {
+        return &**this;
+    }
+    reference operator*()
+    {
+        return this->vtx_;
+    }
+
+    this_t &operator++()
+    {
+        ++(*(super*)this);
+        return *this;
+    }
+    this_t operator++(int)
+    {
+        this_t it(*this);
+        ++*this;
+        return it;
+    }
+
+    this_t &operator--()
+    {
+        --(*(super*)this);
+        return *this;
+    }
+    this_t operator--(int)
+    {
+        this_t it(*this);
+        --*this;
+        return it;
+    }
 };
 
 } // namespace impl

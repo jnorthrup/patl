@@ -23,6 +23,7 @@ class patricia_dot_base
 {
 public:
     typedef Cont cont_type;
+    typedef typename cont_type::const_vertex const_vertex;
     typedef typename cont_type::vertex vertex;
     typedef typename cont_type::bit_compare bit_compare;
 
@@ -34,7 +35,7 @@ public:
     {
     }
 
-    void out_node(OutStream &out, const vertex &vtx) const
+    void out_node(OutStream &out, const const_vertex &vtx) const
     {
         out << "[label = \""
             << vtx.parent_key() - vtx.cont()->keys() << ": '"
@@ -59,6 +60,7 @@ private:
 };
 
 typedef patl::suffix_set<char*> suffix_t;
+typedef suffix_t::const_vertex const_vertex;
 typedef suffix_t::vertex vertex;
 
 void multiple_common_substring(
@@ -96,12 +98,12 @@ void multiple_common_substring(
     {
         patl::lca_oracle<suffix_t> lca(suf);
         //
-        std::vector<vertex> last_vtx(K);
+        std::vector<const_vertex> last_vtx(K);
         //
         for (suffix_t::const_iterator it = suf.begin(); it != suf.end(); ++it)
         {
             const word_t k = ids[*it - suf.keys()];
-            const vertex &vtx = static_cast<const vertex&>(it);
+            const const_vertex &vtx = static_cast<const const_vertex&>(it);
             if (last_vtx[k].compact())
                 ++h[suf.vertex_index_of(lca(last_vtx[k], vtx))];
             last_vtx[k] = vtx;
@@ -119,17 +121,17 @@ void multiple_common_substring(
     }
 #endif
     //
-    std::vector<vertex> v(K + 1);
+    std::vector<const_vertex> v(K + 1);
     std::vector<word_t> v_len(K + 1);
     //
     std::vector<word_t> s, u;
-    const vertex root = suf.root();
-    const suffix_t::postorder_iterator
+    const const_vertex root = suf.root();
+    const suffix_t::const_postorder_iterator
         pit_beg = root.postorder_begin(),
         pit_end = root.postorder_end();
-    for (suffix_t::postorder_iterator pit = pit_beg; pit != pit_end; ++pit)
+    for (suffix_t::const_postorder_iterator pit = pit_beg; pit != pit_end; ++pit)
     {
-        if (pit->leaf())
+        if (pit->get_qtag())
         {
             s.push_back(1);
             u.push_back(0);

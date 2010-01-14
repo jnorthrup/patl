@@ -21,40 +21,52 @@ namespace patl
 namespace impl
 {
 
-template<typename derived_t, typename elem_t>
+template<typename Derived, typename Elem>
 class generator_base
 {
-protected:
-    int generator_line;
-    elem_t generator_value;
-
 public:
+    typedef Derived this_t;
+    typedef Elem elem_t;
+
     generator_base()
-        : generator_line()
-    {}
+        : generator_line(0)
+    {
+    }
+
+    this_t replica() const
+    {
+        return *static_cast<const this_t*>(this);
+    }
+
+    void init()
+    {
+        generator_line = 0;
+    }
 
     bool next()
     {
         int generator_cur_line = generator_line;
         generator_line = 0;
-        static_cast<derived_t*>(this)->generate_value(generator_cur_line);
+        static_cast<this_t*>(this)->generate_value(generator_cur_line);
         return 0 != generator_line;
     }
 
-    elem_t const& value()
+    const elem_t &value()
     {
         return generator_value;
     }
+
+protected:
+    int generator_line;
+    elem_t generator_value;
 };
 
-#define PATL_GENERATOR(NAME, T, NAME_T) class NAME : public uxn::patl::impl::generator_base<NAME_T, T>
-
-#define PATL_EMIT(T)\
+#define PATL_EMIT\
     void generate_value(int generator_cur_line)\
     { switch(generator_cur_line) { case 0:;\
 /**/
 
-#define PATL_STOP_EMIT() }}
+#define PATL_STOP_EMIT }}
 
 #define PATL_YIELD(V)\
         do {\

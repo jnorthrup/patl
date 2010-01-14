@@ -117,9 +117,8 @@ class strings_from_file_generator;
 typedef std::list<std::pair<std::string, strings_from_file_generator*> > merge_src_t;
 typedef patl::trie_map<line_t, merge_src_t::iterator> trie_map_t;
 
-PATL_GENERATOR(strings_from_file_generator,
-               line_t,
-               strings_from_file_generator)
+class strings_from_file_generator
+    : public patl::impl::generator_base<strings_from_file_generator, line_t>
 {
 public:
     strings_from_file_generator(
@@ -136,7 +135,7 @@ public:
     {
     }
 
-    PATL_EMIT(line_t)
+    PATL_EMIT
     {
         while (fmi_.residue_length())
         {
@@ -192,7 +191,7 @@ public:
             }
         }
     }
-    PATL_STOP_EMIT()
+    PATL_STOP_EMIT
 
     word_t get_lin_num() const
     { return lin_num_; }
@@ -216,9 +215,8 @@ private:
     const unsigned char *lin_beg_, *lin_cur_;
 };
 
-PATL_GENERATOR(tmp_sorted_files_generator,
-               std::string,
-               tmp_sorted_files_generator)
+class tmp_sorted_files_generator
+    : public patl::impl::generator_base<tmp_sorted_files_generator, std::string>
 {
 public:
     tmp_sorted_files_generator(
@@ -230,7 +228,7 @@ public:
     {
     }
 
-    PATL_EMIT(std::string)
+    PATL_EMIT
     {
         while (sff_gen_.next())
         {
@@ -246,7 +244,7 @@ public:
             }
         }
     }
-    PATL_STOP_EMIT()
+    PATL_STOP_EMIT
 
     long long get_file_length() const
     { return sff_gen_.get_file_length(); }
@@ -273,9 +271,8 @@ private:
     trie_t trie_;
 };
 
-PATL_GENERATOR(strings_from_merged_files_generator,
-               line_t,
-               strings_from_merged_files_generator)
+class strings_from_merged_files_generator
+    : public patl::impl::generator_base<strings_from_merged_files_generator, line_t>
 {
     strings_from_merged_files_generator &operator=(const strings_from_merged_files_generator&);
 
@@ -306,7 +303,7 @@ public:
         }
     }
 
-    PATL_EMIT(line_t)
+    PATL_EMIT
     {
         printf("\r  0%% =>   0%% of sort completed");
         while (!merge_src_.empty() || input_continued_)
@@ -418,7 +415,7 @@ public:
         }
         printf("\r100%% => 100%% of sort completed\n");
     }
-    PATL_STOP_EMIT()
+    PATL_STOP_EMIT
 
     void push_front(const merge_src_t::value_type &value)
     {

@@ -18,9 +18,9 @@ namespace impl
 /// core memory algorithm template
 template <typename T, typename This, typename Container>
 class core_algorithm_generic
-    : public algorithm_generic<T, This, Container>
+    : public algorithm_generic<T, This, Container, T::N_>
 {
-    typedef algorithm_generic<T, This, Container> super;
+    typedef algorithm_generic<T, This, Container, T::N_> super;
     typedef typename super::cont_type cont_type;
     typedef typename super::node_type node_type;
 

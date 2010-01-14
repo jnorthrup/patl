@@ -19,6 +19,7 @@ namespace impl
 template <
     typename Key,
     typename Datum,
+    word_t N,
     typename BitComp,
     typename Allocator>
 class trie_map_traits
@@ -28,6 +29,8 @@ public:
     typedef std::pair<const Key, Datum> value_type;
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;
+
+    static const word_t N_ = N;
 
     static const key_type &ref_key(const value_type &val)
     {
@@ -40,14 +43,15 @@ public:
 template <
     typename Key,
     typename Datum,
-    typename BitComp = bit_comparator<Key>,
+    word_t N = 0,
+    typename BitComp = bit_comparator<Key, N>,
     typename Allocator = std::allocator<std::pair<const Key, Datum> > >
 class trie_map
     : public impl::trie_generic<
-        impl::trie_map_traits<Key, Datum, BitComp, Allocator> >
+        impl::trie_map_traits<Key, Datum, N, BitComp, Allocator> >
 {
     typedef impl::trie_generic<
-        impl::trie_map_traits<Key, Datum, BitComp, Allocator> > super;
+        impl::trie_map_traits<Key, Datum, N, BitComp, Allocator> > super;
 
 public:
     explicit trie_map(
@@ -82,9 +86,9 @@ public:
     }
 };
 
-template <typename Key, typename Datum, typename BitComp, typename Allocator>
-inline void swap(trie_map<Key, Datum, BitComp, Allocator> &a,
-                 trie_map<Key, Datum, BitComp, Allocator> &b)
+template <typename Key, typename Datum, word_t N, typename BitComp, typename Allocator>
+inline void swap(trie_map<Key, Datum, N, BitComp, Allocator> &a,
+                 trie_map<Key, Datum, N, BitComp, Allocator> &b)
 {
     a.swap(b);
 }

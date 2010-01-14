@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{92196235-55AE-4D48-A877-2BB12E3106AA}</ProjectGUID>
+    <RootNamespace>patl</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="aux_\bitwise_io.hpp" />
+    <ClInclude Include="aux_\buffered_io.hpp" />
+    <ClInclude Include="aux_\char.hpp" />
+    <ClInclude Include="aux_\file_mapping_io.hpp" />
+    <ClInclude Include="aux_\file_utils.hpp" />
+    <ClInclude Include="aux_\perf_timer.hpp" />
+    <ClInclude Include="aux_\static_alloc.hpp" />
+    <ClInclude Include="bit_comp.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="impl\algorithm.hpp" />
+    <ClInclude Include="impl\assoc_generic.hpp" />
+    <ClInclude Include="impl\const_iterator.hpp" />
+    <ClInclude Include="impl\const_partimator.hpp" />
+    <ClInclude Include="impl\core_algorithm.hpp" />
+    <ClInclude Include="impl\core_prefix.hpp" />
+    <ClInclude Include="impl\generator.hpp" />
+    <ClInclude Include="impl\iterator.hpp" />
+    <ClInclude Include="impl\lca_base.hpp" />
+    <ClInclude Include="impl\levelorder_iterator.hpp" />
+    <ClInclude Include="impl\node.hpp" />
+    <ClInclude Include="impl\partial_base.hpp" />
+    <ClInclude Include="impl\partimator.hpp" />
+    <ClInclude Include="impl\patricia_dot_base.hpp" />
+    <ClInclude Include="impl\postorder_iterator.hpp" />
+    <ClInclude Include="impl\prefix.hpp" />
+    <ClInclude Include="impl\preorder_iterator.hpp" />
+    <ClInclude Include="impl\primes.hpp" />
+    <ClInclude Include="impl\ring_buffer.hpp" />
+    <ClInclude Include="impl\suffix_generic.hpp" />
+    <ClInclude Include="impl\trie_generic.hpp" />
+    <ClInclude Include="impl\trivial.hpp" />
+    <ClInclude Include="impl\vertex.hpp" />
+    <ClInclude Include="lca_oracle.hpp" />
+    <ClInclude Include="leaf_oracle.hpp" />
+    <ClInclude Include="levenshtein.hpp" />
+    <ClInclude Include="maxrep_iterator.hpp" />
+    <ClInclude Include="ngram_stat.hpp" />
+    <ClInclude Include="partial.hpp" />
+    <ClInclude Include="patricia_dot_creator.hpp" />
+    <ClInclude Include="priority.hpp" />
+    <ClInclude Include="range_coder.hpp" />
+    <ClInclude Include="suffix_map.hpp" />
+    <ClInclude Include="suffix_set.hpp" />
+    <ClInclude Include="suffix_utils.hpp" />
+    <ClInclude Include="super_maxrep_iterator.hpp" />
+    <ClInclude Include="trie_map.hpp" />
+    <ClInclude Include="trie_set.hpp" />
+    <ClInclude Include="unordered.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="patcont.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -15,31 +15,36 @@
 #include <iostream>
 #include <fstream>
 
+// C4503: decorated name length exceeded, name was truncated
+#pragma warning(disable : 4503)
+
 namespace patl = uxn::patl;
 
 template <typename Iter>
-void printRegexp(word_t length, const Iter &beg, const Iter &end)
+void print_regexp(word_t length, const Iter &beg, const Iter &end)
 {
-    for (Iter cur = beg; cur != end; ++cur)
+    const word_t limit = (length + 1) * 8;
+    for (Iter cur = beg; cur != end; cur.increment(limit))
     {
+        if (!cur->limited(limit))
+            continue;
+        //
         if (beg != cur)
             printf("|");
-        if (cur->leaf())
+        if (cur->get_qtag())
             printf("%s", cur->key().substr(length).c_str());
         else
         {
-            const word_t
-                next_len = cur->next_skip() / 8,
-                bit_len = 8 * (next_len + 1);
+            const word_t next_len = cur->next_skip() / 8;
             printf("%s", cur->key().substr(length, next_len - length).c_str());
             Iter
-                it1 = cur->levelorder_begin(bit_len),
-                it2 = cur->levelorder_end(bit_len);
+                it1 = cur->preorder_begin((next_len + 1) * 8),
+                it2 = cur->preorder_end();
             printf("(");
             const bool question = it1->key().size() == next_len;
             if (question)
                 ++it1;
-            printRegexp(next_len, it1, it2);
+            print_regexp(next_len, it1, it2);
             printf(")");
             if (question)
                 printf("?");
@@ -47,17 +52,17 @@ void printRegexp(word_t length, const Iter &beg, const Iter &end)
     }
 }
 
-template <typename Cont>
+template <typename Vertex>
 struct preorder_iterator_callback
-    : public std::unary_function<typename Cont::vertex, void>
+    : public std::unary_function<Vertex, void>
 {
-    void operator()(const typename Cont::vertex *vtx) const
+    void operator()(const Vertex *vtx) const
     {
         printf("// %d\t%s\n", vtx->skip(), vtx->key().c_str());
     }
 };
 
-int main()
+int main(/*int argc, char *argv[]*/)
 {
     typedef patl::trie_set<std::string> StringSet;
     StringSet
@@ -174,11 +179,11 @@ int main()
     //
     printf("\n--- postorder_iterator\n\n");
     //
-    typedef StringSet::vertex vertex;
-    const vertex vtx_root = test1.root();
+    typedef StringSet::const_vertex const_vertex;
+    const const_vertex vtx_root = test1.root();
     {
-        typedef StringSet::postorder_iterator postorder_iterator;
-        postorder_iterator
+        typedef StringSet::const_postorder_iterator const_postorder_iterator;
+        const_postorder_iterator
             itBeg = vtx_root.postorder_begin(),
             itEnd = vtx_root.postorder_end(),
             it = itBeg;
@@ -195,12 +200,12 @@ int main()
     printf("\n--- preorder_iterator\n\n");
     //
     {
-        typedef StringSet::preorder_iterator preorder_iterator;
-        preorder_iterator
+        typedef StringSet::const_preorder_iterator const_preorder_iterator;
+        const_preorder_iterator
             itBeg = vtx_root.preorder_begin(),
             itEnd = vtx_root.preorder_end(),
             it = itBeg;
-        preorder_iterator_callback<StringSet> icb;
+        preorder_iterator_callback<typename StringSet::const_vertex> icb;
         for (; it != itEnd; /*++it*/it.increment(icb))
             printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
@@ -212,7 +217,7 @@ int main()
         }
     }
     //
-    printf("\n--- levelorder_iterator\n\n");
+    printf("\n--- preorder_iterator with levelorder behavior\n\n");
     //
     {
         const char *const X[] = {
@@ -225,14 +230,14 @@ int main()
             "static", "static_cast", "struct", "switch", "template", "this", "throw",
             "true", "try", "typedef", "typeid", "typename", "union", "unsigned", 
             "using", "virtual", "void", "volatile", "wchar_t", "while"};
-
+            //
             typedef patl::trie_set<std::string> ReservSet;
-            typedef ReservSet::vertex vertex;
-            ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
-
+            typedef ReservSet::const_vertex const_vertex;
+            const ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
+            //
             printf("*** Regexp:\n");
-            const vertex vtx = rvset.root();
-            printRegexp(0, vtx.levelorder_begin(8), vtx.levelorder_end(8));
+            const_vertex vtx = rvset.root();
+            print_regexp(0, vtx.preorder_begin(8), vtx.preorder_end());
             printf("\n");
     }
     //
@@ -248,7 +253,7 @@ int main()
             //"xgtcacaytgtgacz";
         printf("*** string: '%s':\n", str);
         SuffixSet suffix(str);
-        for (unsigned i = 0; i != sizeof(str) - 1; ++i)
+        for (word_t i = 0; i != sizeof(str) - 1; ++i)
             suffix.push_back();
         for (uxn::patl::maxrep_iterator<SuffixSet> mrit(&suffix)
             ; !mrit->is_root()
@@ -257,12 +262,12 @@ int main()
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
                 mrit.freq());
-            const SuffixSet::vertex vtx = mrit->get_vertex();
+            const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
                 printf(" at %u", suffix.index_of(
-                    static_cast<const SuffixSet::vertex&>(it)));
+                    static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
         printf("---\n");
@@ -273,12 +278,12 @@ int main()
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
                 mrit.freq());
-            const SuffixSet::vertex vtx = mrit->get_vertex();
+            const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
                 printf(" at %u", suffix.index_of(
-                    static_cast<const SuffixSet::vertex&>(it)));
+                    static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
     }
@@ -296,13 +301,13 @@ int main()
         suffix_t suf(arr, 16 /* maximal length of tandem repeat + 1 */);
         do
         {
-            const suffix_t::vertex
+            const suffix_t::const_vertex
                 vtx = suf.push_back(),
                 sibl = vtx.sibling();
             if (suf.size() > 1)
             {
                 const int skip = vtx.skip() / 8 / sizeof(typ);
-                const unsigned
+                const word_t
                     delta = vtx.key() - sibl.key(),
                     count = skip / delta + 1;
                 if (count > 1)
@@ -325,25 +330,49 @@ int main()
     patl::patricia_dot_creator<StringSet>().create(vtx_root);
 #if 0 // pat_.dot & pat_.clust.dot creation
     {
-        std::ifstream fin("WORD.LST");
+        std::ifstream fin(argc > 1 ? argv[1] : "WORD.LST");
         if (fin.is_open())
         {
             StringSet dict;
             std::string str;
             while (fin >> str)
                 dict.insert(str);
-            vertex vtx(dict.root());
-            vtx.mismatch("patl", 3 * 8);
+            const_vertex vtx(dict.root());
+            //
+#if 0
+            vtx.mismatch("patch", 5 * 8);
+            typedef StringSet::const_preorder_iterator const_preorder_iterator;
+            const_preorder_iterator
+                itBeg = vtx.preorder_begin(),
+                itEnd = vtx.preorder_end(),
+                it = itBeg;
+            for (; it != itEnd; it.increment(6 * 8))
             {
-                std::ofstream fout("pat_.dot");
+                if (it->limited(6 * 8))
+                    printf("* ");
+                printf("%d\t%s\n", it->skip(), it->key().c_str());
+            }
+            printf("---\n");
+            while (it != itBeg)
+            {
+                it.decrement(6 * 8);
+                if (it->limited(6 * 8))
+                    printf("* ");
+                printf("%d\t%s\n", it->skip(), it->key().c_str());
+            }
+#else
+            vtx.mismatch("patr", 4 * 8);
+            {
+                std::ofstream fout("patr_.dot");
                 patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx);
             }
-            printf("\npat_.dot created!\n");
+            printf("\npatr_.dot created!\n");
             {
-                std::ofstream fout("pat_.clust.dot");
+                std::ofstream fout("patr_.clust.dot");
                 patl::patricia_dot_creator<StringSet, std::ofstream>(fout).create(vtx, true);
             }
-            printf("\npat_.clust.dot created!\n");
+            printf("\npatr_.clust.dot created!\n");
+#endif
         }
         else
             printf("Unable to open input file!\n");
@@ -353,7 +382,7 @@ int main()
     printf("\n--- show/read serialization\n\n");
     //
     {
-        typedef patl::trie_set<char*, patl::bit_comparator_0<char> > char_star_trie;
+        typedef patl::trie_set<char*, 0, patl::bit_comparator_0<char> > char_star_trie;
         char_star_trie trie;
         trie.insert("balon");
         trie.insert("balka");

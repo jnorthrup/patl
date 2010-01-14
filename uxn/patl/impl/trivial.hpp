@@ -32,7 +32,7 @@ inline word_t bits_but_highest(word_t x)
 
 inline word_t get_lowest_bit_id(word_t x)
 {
-    assert(x);
+    PATL_ASSERT(x);
 #ifdef PATL_INTRINSIC
 
     unsigned long r;
@@ -69,7 +69,7 @@ inline word_t get_lowest_bit_id(word_t x)
 
 inline word_t get_highest_bit_id(word_t x)
 {
-    assert(x);
+    PATL_ASSERT(x);
 #ifdef PATL_INTRINSIC
 
     unsigned long r;

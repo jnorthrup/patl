@@ -28,7 +28,7 @@ namespace patl = uxn::patl;
 
 typedef std::string WordType;
 typedef std::vector<WordType> Words;
-typedef patl::trie_set<WordType*, patl::ptr_bit_comparator<WordType> > WordSet;
+typedef patl::trie_set<WordType*, 0, patl::ptr_bit_comparator<WordType> > WordSet;
 typedef std::vector<WordType*> Text;
 typedef patl::suffix_set<WordType**> SuffixType;
 typedef std::set<WordType*, ptr_less<WordType> > WordStdSet;

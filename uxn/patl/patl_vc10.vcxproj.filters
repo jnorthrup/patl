@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\aux">
+      <UniqueIdentifier>{e4773f1d-1398-4437-85a2-5f5561c22adf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\impl">
+      <UniqueIdentifier>{91d40813-3740-490e-9903-0696c7d185d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="aux_\bitwise_io.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\buffered_io.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\char.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\file_mapping_io.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\file_utils.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\perf_timer.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\static_alloc.hpp">
+      <Filter>Header Files\aux</Filter>
+    </ClInclude>
+    <ClInclude Include="bit_comp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\algorithm.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\assoc_generic.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\const_iterator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\const_partimator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\core_algorithm.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\core_prefix.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\generator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\iterator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\lca_base.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\levelorder_iterator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\node.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\partial_base.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\partimator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\patricia_dot_base.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\postorder_iterator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\prefix.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\preorder_iterator.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\primes.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\ring_buffer.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\suffix_generic.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\trie_generic.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\trivial.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\vertex.hpp">
+      <Filter>Header Files\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="lca_oracle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="leaf_oracle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="levenshtein.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maxrep_iterator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ngram_stat.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="partial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patricia_dot_creator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="priority.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="range_coder.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="suffix_map.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="suffix_set.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="suffix_utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="super_maxrep_iterator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trie_map.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trie_set.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unordered.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="patcont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

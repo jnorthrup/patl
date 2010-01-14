@@ -43,12 +43,12 @@ public:
 };
 
 template <
-    typename Type, word_t Delta, typename BitComp, typename Allocator,
+    typename Type, word_t N, word_t Delta, typename BitComp, typename Allocator,
     typename OutStream>
-class patricia_dot_base<suffix_set<Type, Delta, BitComp, Allocator>, OutStream>
+class patricia_dot_base<suffix_set<Type, N, Delta, BitComp, Allocator>, OutStream>
 {
 public:
-    typedef suffix_set<Type, Delta, BitComp, Allocator> cont_type;
+    typedef suffix_set<Type, N, Delta, BitComp, Allocator> cont_type;
     typedef typename cont_type::vertex vertex;
     typedef typename cont_type::bit_compare bit_compare;
 

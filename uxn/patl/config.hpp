@@ -49,8 +49,15 @@ const word_t
 #ifdef _DEBUG
 
 #define PATL_DEBUG
+
 #undef PATL_ALIGNHACK
 #undef PATL_INTRINSIC
+
+#define PATL_ASSERT(x) assert(x)
+
+#else
+
+#define PATL_ASSERT(x)
 
 #endif // _DEBUG
 

@@ -52,6 +52,7 @@ private:
 template <
     typename Type,
     typename Datum,
+    word_t N,
     word_t Delta,
     typename BitComp,
     typename Allocator>
@@ -61,12 +62,14 @@ class suffix_map_traits
 
 public:
     typedef Datum mapped_type;
-    static const word_t delta = Delta;
     typedef Type key_type;
     typedef Datum value_type;
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;
     typedef node_gen_suffix<this_t> node_type;
+
+    static const word_t N_ = N;
+    static const word_t delta = Delta;
 };
 
 } // namespace impl
@@ -74,16 +77,17 @@ public:
 template <
     typename Type,
     typename Datum,
+    word_t N = 0,
     word_t Delta = 1, // расстояние в bit_size между соседними суффиксами
-    typename BitComp = bit_comparator<Type>,
+    typename BitComp = bit_comparator<Type, N>,
     typename Allocator = std::allocator<Type> >
 class suffix_map
     : public impl::suffix_generic<
-    impl::suffix_map_traits<Type, Datum, Delta, BitComp, Allocator> >
+    impl::suffix_map_traits<Type, Datum, N, Delta, BitComp, Allocator> >
 {
-    typedef suffix_map<Type, Datum, Delta, BitComp, Allocator> this_t;
+    typedef suffix_map<Type, Datum, N, Delta, BitComp, Allocator> this_t;
     typedef impl::suffix_generic<
-        impl::suffix_map_traits<Type, Datum, Delta, BitComp, Allocator> > super;
+        impl::suffix_map_traits<Type, Datum, N, Delta, BitComp, Allocator> > super;
 
 public:
     // constructor
