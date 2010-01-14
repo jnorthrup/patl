@@ -27,12 +27,64 @@ namespace impl
 #define SELF static_cast<this_t*>(this)
 #define CSELF static_cast<const this_t*>(this)
 
+template <typename T, typename This, typename Container, word_t N = 0>
+class algorithm_generic
+    : public algorithm_generic<T, This, Container, 0>
+{
+    typedef This this_t;
+    typedef algorithm_generic<T, This, Container, 0> super;
+
+public:
+    typedef Container cont_type;
+    typedef typename T::key_type key_type;
+    typedef typename T::value_type value_type;
+    typedef typename T::node_type node_type;
+
+    /// zero-init default ctor
+    explicit algorithm_generic(const cont_type *cont = 0)
+        : super(cont)
+    {
+    }
+
+    /// simple init ctor
+    algorithm_generic(const cont_type *cont, const node_type *q, word_t qid)
+        : super(cont, q, qid)
+    {
+    }
+
+    /// compact init ctor
+    algorithm_generic(const cont_type *cont, word_t qq)
+        : super(cont, qq)
+    {
+    }
+
+    /// one run of the classical algorithm P
+    void run(const key_type &key)
+    {
+        while (!CSELF->get_qtag())
+        {
+            // TODO
+            /*if ((get_p()->get_skip() >> N) != (get_q()->get_skip() >> N) &&
+                cont_->)
+            else*/
+            iterate_by_key(key);
+        }
+    }
+
+    /// one run of the classical algorithm P limited by prefix length
+    void run(const key_type &key, word_t prefixLen)
+    {
+        while (!CSELF->get_qtag() && CSELF->get_p()->get_skip() < prefixLen)
+            iterate_by_key(key);
+    }
+};
+
 /**
  * Base class of algorithms & iterator's state store
  * Algorithm P, described in Knuth's TAOCP, vol. 3, put in a basis
  */
 template <typename T, typename This, typename Container>
-class algorithm_generic
+class algorithm_generic<T, This, Container, 0>
 {
     typedef This this_t;
     typedef typename T::bit_compare bit_compare;
@@ -364,6 +416,17 @@ public:
 #else
         q_ = const_cast<node_type*>(q);
         qid_ = qid;
+#endif
+    }
+
+    /// compact init function
+    void init(word_t qq)
+    {
+#ifdef PATL_ALIGNHACK
+        qq_ = qq;
+#else
+        q_ = reinterpret_cast<node_type*>(qq & ~word_t(1));
+        qid_ = qq & word_t(1);
 #endif
     }
 

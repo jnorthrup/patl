@@ -9,6 +9,13 @@ g++ -Wextra -O3 -I.. patl/patcont.cpp -o release\patl_gcc.exe
 strip release\patl_gcc.exe
 
 echo ---
+echo     building ins_test
+echo ---
+del release\ins_test_gcc.exe
+g++ -Wextra -O3 -I.. demos/ins_test/ins_test.cpp -o release\ins_test_gcc.exe
+strip release\ins_test_gcc.exe
+
+echo ---
 echo     building insider
 echo ---
 del release\insider_gcc.exe

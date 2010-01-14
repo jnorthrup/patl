@@ -30,7 +30,7 @@ public:
         const key_type &mask,               // маска с джокерами типа '?'
         word_t mask_len = ~word_t(0),       // длина маски в символах (для бесконечных строк)
         const char_type &joker = '?',       // символ джокера
-        const char_type &terminator = '\0') // символ окончания строки
+        const char_type &terminator = char_type()) // sentinel character
         : super(cont, mask, mask_len, terminator)
         , joker_(joker)
     {
@@ -82,7 +82,7 @@ public:
         word_t dist,
         const key_type &mask,
         word_t mask_len = ~word_t(0),
-        const char_type &terminator = '\0') // символ окончания строки
+        const char_type &terminator = char_type()) // sentinel character
         : super(cont, mask, mask_len, terminator)
         , dist_(dist)
     {

@@ -46,15 +46,18 @@ private:
 
 template <
     typename Type,
+    word_t N,
     word_t Delta,
     typename BitComp,
     typename Allocator>
 class suffix_set_traits
 {
-    typedef suffix_set_traits<Type, Delta, BitComp, Allocator> this_t;
+    typedef suffix_set_traits<Type, N, Delta, BitComp, Allocator> this_t;
 
 public:
+    static const word_t N_ = N;
     static const word_t delta = Delta;
+
     typedef Type key_type;
     typedef Type value_type;
     typedef BitComp bit_compare;
@@ -66,16 +69,17 @@ public:
 
 template <
     typename Type,
+    word_t N = 0,
     word_t Delta = 1, // расстояние в bit_size между соседними суффиксами
-    typename BitComp = bit_comparator<Type>,
+    typename BitComp = bit_comparator<Type, N>,
     typename Allocator = std::allocator<Type> >
 class suffix_set
     : public impl::suffix_generic<
-        impl::suffix_set_traits<Type, Delta, BitComp, Allocator> >
+        impl::suffix_set_traits<Type, N, Delta, BitComp, Allocator> >
 {
-    typedef suffix_set<Type, Delta, BitComp, Allocator> this_t;
+    typedef suffix_set<Type, N, Delta, BitComp, Allocator> this_t;
     typedef impl::suffix_generic<
-        impl::suffix_set_traits<Type, Delta, BitComp, Allocator> > super;
+        impl::suffix_set_traits<Type, N, Delta, BitComp, Allocator> > super;
 
 public:
     typedef typename super::key_type key_type;

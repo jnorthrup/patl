@@ -18,6 +18,7 @@ namespace impl
 
 template <
     typename Key,
+    word_t N,
     typename BitComp,
     typename Allocator>
 class trie_set_traits
@@ -27,6 +28,8 @@ public:
     typedef Key value_type;
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;
+
+    static const word_t N_ = N;
 
     static const key_type &ref_key(const value_type &val)
     {
@@ -38,14 +41,15 @@ public:
 
 template <
     typename Key,
-    typename BitComp = bit_comparator<Key>,
+    word_t N = 0,
+    typename BitComp = bit_comparator<Key, N>,
     typename Allocator = std::allocator<Key> >
 class trie_set
     : public impl::trie_generic<
-        impl::trie_set_traits<Key, BitComp, Allocator> >
+        impl::trie_set_traits<Key, N, BitComp, Allocator> >
 {
     typedef impl::trie_generic<
-        impl::trie_set_traits<Key, BitComp, Allocator> > super;
+        impl::trie_set_traits<Key, N, BitComp, Allocator> > super;
 
 public:
     explicit trie_set(
@@ -64,9 +68,9 @@ public:
     }
 };
 
-template <typename Key, typename BitComp, typename Allocator>
-inline void swap(trie_set<Key, BitComp, Allocator> &a,
-                 trie_set<Key, BitComp, Allocator> &b)
+template <typename Key, word_t N, typename BitComp, typename Allocator>
+inline void swap(trie_set<Key, N, BitComp, Allocator> &a,
+                 trie_set<Key, N, BitComp, Allocator> &b)
 {
     a.swap(b);
 }

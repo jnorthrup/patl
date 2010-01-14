@@ -6,6 +6,7 @@
  | Interactive demo of filtering words using Levenshtein distance
 -*/
 #include <fstream>
+#include <uxn/patl/aux_/perf_timer.hpp>
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/levenshtein.hpp>
 
@@ -23,10 +24,15 @@ int main(int argc, char *argv[])
         return 0;
     }
     string_set dict;
-    std::string str;
-    while (fin >> str)
-        dict.insert(str);
-    printf("dict size: %u\n", dict.size());
+    patl::aux::performance_timer tim;
+    {
+        std::string str;
+        string_set::iterator hint(dict.end());
+        while (fin >> str)
+            hint = dict.insert(hint, str);
+    }
+    tim.finish();
+    printf("dict size: %u, loaded in %0.3f sec.\n", dict.size(), tim.get_seconds());
     //
     for (;;)
     {
@@ -40,11 +46,15 @@ int main(int argc, char *argv[])
             break;
         }
         leven_dist ld(dict, dist, word);
+        tim.start();
         string_set::const_partimator<leven_dist>
-            it = dict.begin(ld),
-            end = dict.end(ld);
-        for (; it != end; ++it)
+            beg(dict.begin(ld)),
+            end(dict.end(ld)),
+            it(beg);
+        for (; it != end; ++it) ;
+        tim.finish();
+        for (it = beg; it != end; ++it)
             printf("%s:%u ", it->c_str(), it.decis().distance());
-        printf("\n");
+        printf("\n%0.3f msec.\n", tim.get_seconds() * 1000.0);
     }
 }

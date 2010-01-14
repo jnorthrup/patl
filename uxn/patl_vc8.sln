@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "patl", "patl\patl.vcproj", "{92196235-55AE-4D48-A877-2BB12E3106AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "patl", "patl\patl_vc8.vcproj", "{92196235-55AE-4D48-A877-2BB12E3106AA}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -13,61 +13,67 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{AEA8064F
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "insider", "demos\insider\insider.vcproj", "{F860F158-B397-4EC6-89A1-B2D6B224237E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "insider", "demos\insider\insider_vc8.vcproj", "{F860F158-B397-4EC6-89A1-B2D6B224237E}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz77", "demos\lz77\lz77.vcproj", "{22650F66-AEBA-4536-A77F-D5C7C81BF5F0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz77", "demos\lz77\lz77_vc8.vcproj", "{22650F66-AEBA-4536-A77F-D5C7C81BF5F0}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxpals", "demos\maxpals\maxpals.vcproj", "{BCD738E0-1F3B-49DD-AACC-39027C29E4ED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxpals", "demos\maxpals\maxpals_vc8.vcproj", "{BCD738E0-1F3B-49DD-AACC-39027C29E4ED}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_search", "demos\multi_search\multi_search.vcproj", "{9E2FDDB1-8135-469C-A5DF-43EED1710F09}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_search", "demos\multi_search\multi_search_vc8.vcproj", "{9E2FDDB1-8135-469C-A5DF-43EED1710F09}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort3", "demos\usort3\usort3.vcproj", "{C0BB99CC-4103-495B-9A30-CBDE311EB844}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usort3", "demos\usort3\usort3_vc8.vcproj", "{C0BB99CC-4103-495B-9A30-CBDE311EB844}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "word_suffix", "demos\word_suffix\word_suffix.vcproj", "{7F0FF6B7-EFB0-48A4-9C90-3F4A13A3B445}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "word_suffix", "demos\word_suffix\word_suffix_vc8.vcproj", "{7F0FF6B7-EFB0-48A4-9C90-3F4A13A3B445}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "muxoclon", "demos\muxoclon\muxoclon.vcproj", "{3A68EBA1-44F0-4AB0-AD17-4D8E75761315}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "muxoclon", "demos\muxoclon\muxoclon_vc8.vcproj", "{3A68EBA1-44F0-4AB0-AD17-4D8E75761315}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "levenshtein", "demos\levenshtein\levenshtein.vcproj", "{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "levenshtein", "demos\levenshtein\levenshtein_vc8.vcproj", "{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sort_lin", "demos\sort_lin\sort_lin.vcproj", "{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sort_lin", "demos\sort_lin\sort_lin_vc8.vcproj", "{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_align", "demos\multi_align\multi_align.vcproj", "{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_align", "demos\multi_align\multi_align_vc8.vcproj", "{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ins_test", "demos\ins_test\ins_test_vc8.vcproj", "{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -123,6 +129,10 @@ Global
 		{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20}.Debug|Win32.Build.0 = Debug|Win32
 		{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20}.Release|Win32.ActiveCfg = Release|Win32
 		{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20}.Release|Win32.Build.0 = Release|Win32
+		{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA}.Debug|Win32.Build.0 = Debug|Win32
+		{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA}.Release|Win32.ActiveCfg = Release|Win32
+		{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +148,7 @@ Global
 		{5ED5F6F5-167D-44B6-B639-2CC8C2E6713F} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{4B0C81EF-8349-4B3B-8B20-9AA19FA21BBB} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 		{7A13FAC0-4E98-4A6B-A39C-CEE9BD06BB20} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
+		{0D21D7EC-BFF7-4A0E-AF36-31D8F09F52EA} = {AEA8064F-EA46-4484-9264-1D5967535DBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = 

@@ -36,7 +36,7 @@ int main(int /*argc*/,char *argv[])
     tim.finish();
     std::cout<<"Timer: "<<tim.get_seconds()<<" sec."<<std::endl;
 #endif
-    typedef patl::trie_map<std::string,unsigned,patl::reverse_bit_comparator<std::string> > ConcorMap;
+    typedef patl::trie_map<std::string, unsigned, 0, patl::reverse_bit_comparator<std::string> > ConcorMap;
     ConcorMap concor;
     std::ifstream input(argv[1]);
     if (!input.is_open())

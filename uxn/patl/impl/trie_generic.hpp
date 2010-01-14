@@ -130,23 +130,25 @@ template <
     typename T,
     template <typename> class Node,
     template <typename, typename> class Algorithm,
+    template <typename, typename> class Prefix,
     typename Container>
 struct trie_generic_traits
     : public algorithm_gen_traits<T, Node>
 {
     typedef Algorithm<algorithm_gen_traits<T, Node>, Container> algorithm;
+    typedef Prefix<Container, Node<T> > prefix;
 };
 
-template <typename T>
+#define SELF static_cast<this_t*>(this)
+#define CSELF static_cast<const this_t*>(this)
+
+template <typename T, word_t N = 0>
 class trie_generic
-    : public assoc_generic<
-        trie_generic<T>,
-        trie_generic_traits<T, node_gen, algorithm_gen, trie_generic<T> >,
-        core_prefix_generic>
+    : public trie_generic<T, 0>
 {
-    typedef trie_generic<T> this_t;
-    typedef trie_generic_traits<T, node_gen, algorithm_gen, this_t> traits;
-    typedef assoc_generic<trie_generic<T>, traits, core_prefix_generic> super;
+    typedef trie_generic<T, N> this_t;
+    typedef trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t> traits;
+    typedef assoc_generic<trie_generic<T, N>, traits, N> super;
 
 protected:
     typedef typename traits::node_type node_type;
@@ -163,9 +165,125 @@ public:
     typedef typename super::vertex vertex;
     typedef typename super::preorder_iterator preorder_iterator;
     typedef typename super::postorder_iterator postorder_iterator;
-    typedef typename super::levelorder_iterator levelorder_iterator;
 
     typedef typename algorithm::const_key_reference const_key_reference;
+
+    static const word_t N_ = N;
+
+    trie_generic(const bit_compare &bit_comp, const allocator_type &alloc)
+        : super(bit_comp, alloc)
+    {
+    }
+
+    trie_generic(const this_t &b)
+        : super(b)
+    {
+    }
+
+    trie_generic(
+        const value_type *first,
+        const value_type *last,
+        const bit_compare &bit_comp,
+        const allocator_type &alloc)
+        : super(first, last, bit_comp, alloc)
+    {
+    }
+
+private:
+    typedef std::pair<iterator, bool> iter_bool_pair;
+
+public:
+    iter_bool_pair insert(const value_type &val)
+    {
+        if (this->root_)
+        {
+            algorithm pal(CSELF, this->root_, 0);
+            // find a number of first mismatching bit
+            const word_t l = pal.mismatch(T::ref_key(val));
+            // if this number end at infinity
+            if (~word_t(0) == l)
+                // then this key already in trie
+                return iter_bool_pair(iterator(vertex(pal)), false);
+            // поднимаемся до ближайшего раздела по N
+            algorithm pal2(pal);
+            word_t diff = 0;
+            while (pal2.get_p()->get_skip() == pal2.get_q()->get_skip())
+            {
+                pal2.ascend();
+                ++diff;
+            }
+            word_t *sh = get_shortcut(pal2.compact());
+            if (sh)
+            {
+                // обновить шорткат
+            }
+            else if (diff >= N / 2)
+            {
+                // создать шорткат
+                create_shortcut(pal2.compact());
+                // пройтись по поддереву levelorder_iterator'ом и инициализировать шорткат
+                vertex vtx(pal2);
+                const word_t next = max0(vtx.skip()) + N;
+                /*levelorder_iterator
+                    lit(vtx.levelorder_begin(next)),
+                    lit_end(vtx.levelorder_end(next));*/
+                //for (; lit != lit_end; ++lit)
+            }
+            // add new node for value with unique key
+            return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
+        }
+        // if trie is empty then add root
+        return iter_bool_pair(iterator(vertex(add_root(val))), true);
+    }
+
+    /// just for backward compatibility with std assoc containers
+    iterator insert(iterator, const value_type &val)
+    {
+        return insert(val).first;
+    }
+
+    /// template of insert range
+    template <typename Iter>
+    void insert(Iter first, Iter last)
+    {
+        for (; first != last; ++first)
+            insert(*first);
+    }
+};
+
+template <typename T>
+class trie_generic<T, 0>
+    : public assoc_generic<
+        trie_generic<T, T::N_>,
+        trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, trie_generic<T, T::N_> >,
+        T::N_>
+{
+    typedef trie_generic<T, T::N_> this_t;
+    typedef trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t> traits;
+    typedef assoc_generic<trie_generic<T, T::N_>, traits, T::N_> super;
+
+protected:
+    typedef typename traits::node_type node_type;
+    typedef typename traits::algorithm algorithm;
+
+public:
+    typedef typename super::key_type key_type;
+    typedef typename super::value_type value_type;
+    typedef typename super::bit_compare bit_compare;
+    typedef typename super::allocator_type allocator_type;
+    typedef typename super::size_type size_type;
+    typedef typename super::const_iterator const_iterator;
+    typedef typename super::iterator iterator;
+    typedef typename super::const_vertex const_vertex;
+    typedef typename super::vertex vertex;
+    typedef typename super::const_preorder_iterator const_preorder_iterator;
+    typedef typename super::const_postorder_iterator const_postorder_iterator;
+    typedef typename super::preorder_iterator preorder_iterator;
+    typedef typename super::postorder_iterator postorder_iterator;
+
+    typedef typename algorithm::const_key_reference const_key_reference;
+
+    static const word_t N_ = T::N_;
 
     trie_generic(const bit_compare &bit_comp, const allocator_type &alloc)
         : super(bit_comp)
@@ -247,7 +365,7 @@ public:
     {
         if (this->root_)
         {
-            algorithm pal(this, this->root_, 0);
+            algorithm pal(CSELF, this->root_, 0);
             // find a number of first mismatching bit
             const word_t l = pal.mismatch(T::ref_key(val));
             // if this number end at infinity
@@ -261,10 +379,40 @@ public:
         return iter_bool_pair(iterator(vertex(add_root(val))), true);
     }
 
-    /// just for backward compatibility with std assoc containers
-    iterator insert(iterator, const value_type &val)
+    /// hinted insertion method
+    iterator insert(iterator hint, const value_type &val)
     {
-        return insert(val).first;
+        if (this->root_)
+        {
+            algorithm &pal = static_cast<algorithm&>(static_cast<vertex&>(hint));
+            const key_type &key = T::ref_key(val);
+            const word_t skip = this->bit_comp_.bit_mismatch(key, pal.get_key());
+            if (~word_t(0) == skip)
+                return iterator(vertex(pal));
+            pal.ascend_less(skip);
+            // find a number of first mismatching bit
+            {
+                const word_t len = this->bit_comp_.bit_length(key);
+                if (len == ~word_t(0))
+                    pal.run(key);
+                else
+                    pal.run(key, len);
+            }
+            const word_t l =
+                this->bit_comp_.bit_mismatch(key, pal.get_key(), skip);
+            // if this number end at infinity
+            if (~word_t(0) == l)
+                // then this key already in trie
+                return iterator(vertex(pal));
+            else
+            {
+                pal.ascend(l);
+                // add new node for value with unique key
+                return iterator(vertex(add(val, pal, l)));
+            }
+        }
+        // if trie is empty then add root
+        return iterator(vertex(add_root(val)));
     }
 
     /// template of insert range
@@ -294,8 +442,8 @@ public:
             ++first;
         }
         algorithm pal_cur(this, this->root_, 0);
-        vertex vtx(first);
-        const algorithm &pal_end(static_cast<const vertex&>(last));
+        const_vertex vtx(first);
+        const algorithm &pal_end(static_cast<const const_vertex&>(last));
         word_t skip = 0;
         while (static_cast<const algorithm&>(vtx) != pal_end)
         {
@@ -341,10 +489,10 @@ public:
     {
         if (!this->root_)
             return;
-        const vertex vtx(this->root());
+        const_vertex vtx(this->root());
         show_val(oit, vtx.parent_key());
         word_t skip_ins = 0;
-        for (preorder_iterator pit = vtx.preorder_begin()
+        for (const_preorder_iterator pit = vtx.preorder_begin()
             ; pit != vtx.preorder_end()
             ; ++pit)
         {
@@ -408,10 +556,10 @@ public:
         read(iit, iit_end, default_read_value<InIter>());
     }
 
-    void erase(iterator delIt)
+    void erase(iterator del_it)
     {
         // retrieve algorithm structure from iterator
-        erase_node(static_cast<vertex&>(delIt));
+        erase_node(static_cast<algorithm&>(static_cast<vertex&>(del_it)));
     }
 
     /// erase all values with specified prefix
@@ -441,12 +589,12 @@ private:
     {
         if (node)
         {
-            const vertex vtx(this->root());
+            vertex vtx(this->root());
             for (postorder_iterator pit = vtx.postorder_begin()
                 ; pit != vtx.postorder_end()
                 ; ++pit)
             {
-                if (!pit->leaf())
+                if (!pit->get_qtag())
                     del_node(static_cast<algorithm&>(*pit).get_p());
             }
             del_node(node);
@@ -493,7 +641,7 @@ protected:
         alloc_.construct(this->root_, node_type(val));
         this->root_->init_root();
         size_ = 1;
-        return algorithm(this, this->root_, 0);
+        return algorithm(CSELF, this->root_, 0);
     }
 
     /// add new node with unique key
@@ -506,13 +654,28 @@ protected:
         const word_t b = this->bit_comp_.get_bit(T::ref_key(val), prefixLen);
         pal.add(r, b, prefixLen);
         ++size_;
-        return algorithm(this, r, b);
+        return algorithm(CSELF, r, b);
     }
 
     // data members
     typename allocator_type::template rebind<node_type>::other alloc_;
     size_type size_;
 };
+
+#undef SELF
+#undef CSELF
+
+template <typename T, word_t N>
+inline bool operator==(const trie_generic<T, N> &a, const trie_generic<T, N> &b)
+{
+    return a.size() == b.size() && std::equal(a.begin(), a.end(), b.begin());
+}
+
+template <typename T, word_t N>
+inline bool operator!=(const trie_generic<T, N> &a, const trie_generic<T, N> &b)
+{
+    return !(a == b);
+}
 
 } // namespace impl
 } // namespace patl

@@ -28,14 +28,14 @@ int main()
     _strrev(pals + n + 1);
     //
     SuffixSet sufs(pals, 2 * n + 1);
-    printf("building suffix tree...");
+    printf("building suffix tree... ");
     for (int i = 0; i != 2 * n + 1; ++i)
         sufs.push_back();
     printf("done!\n");
-    printf("lca preprocessing...");
+    printf("lca preprocessing... ");
     patl::lca_oracle<SuffixSet> lca(sufs);
     printf("done!\n");
-    printf("leaf preprocessing...");
+    printf("leaf preprocessing... ");
     patl::leaf_oracle<SuffixSet> leaf(sufs);
     printf("done!\n");
     //

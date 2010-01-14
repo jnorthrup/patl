@@ -25,7 +25,9 @@ class patricia_dot_creator
 
     typedef Cont cont_type;
     typedef patricia_dot_creator<cont_type, OutStream, Base> this_t;
+    typedef typename cont_type::const_vertex const_vertex;
     typedef typename cont_type::vertex vertex;
+    typedef typename cont_type::const_preorder_iterator const_preorder_iterator;
     typedef typename cont_type::preorder_iterator preorder_iterator;
     typedef typename cont_type::bit_compare bit_compare;
     typedef typename cont_type::prefix prefix;
@@ -50,7 +52,7 @@ public:
         out_ << "}\n";
     }
 
-    void create(const vertex &vtx, bool clustering = false) const
+    void create(const const_vertex &vtx, bool clustering = false) const
     {
         out_ << "\n// BEGIN create from vertex\n";
         out_ << "\n// node definitions (preorder depth-first)\n";
@@ -60,8 +62,8 @@ public:
         out_ << "sibling[shape = plaintext, label = "
             << (vtx.skip() == ~word_t(0) ? "\"nil\"" : "\"...\"")
             << "]\n";
-        const preorder_iterator pit_end(vtx.preorder_end());
-        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
+        const const_preorder_iterator pit_end(vtx.preorder_end());
+        for (const_preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
             if (init_id == pit->get_qid())
                 out_node(*pit);
         //
@@ -74,28 +76,28 @@ public:
             << (sibl_qtag ? "dotted" : "solid") << "]\n";
         out_ << "\n// forward left links\n";
         out_ << "edge[tailport = sw, weight = 2]\n";
-        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
+        for (const_preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (!pit->get_qtag() && !pit->get_qid())
                 out_edge(*pit);
         }
         out_ << "\n// forward right links\n";
         out_ << "edge[tailport = se]\n";
-        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
+        for (const_preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (!pit->get_qtag() && pit->get_qid())
                 out_edge(*pit);
         }
         out_ << "\n// backward left links\n";
         out_ << "edge[style = dotted, tailport = sw, weight = 1]\n";
-        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
+        for (const_preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && !pit->get_qid())
                 out_edge(*pit);
         }
         out_ << "\n// backward right links\n";
         out_ << "edge[tailport = se]\n";
-        for (preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
+        for (const_preorder_iterator pit(vtx.preorder_begin()); pit != pit_end; ++pit)
         {
             if (pit->get_qtag() && pit->get_qid())
                 out_edge(*pit);
@@ -110,14 +112,14 @@ public:
     }
 
 private:
-    void out_node(const vertex &vtx) const
+    void out_node(const const_vertex &vtx) const
     {
         out_ << 'n' << std::hex << vtx.node_q_uid() << std::dec;
         base_.out_node(out_, vtx);
         out_ << '\n';
     }
 
-    void out_edge(const vertex &vtx) const
+    void out_edge(const const_vertex &vtx) const
     {
         out_ << 'n' << vtx.node_q_uid() << "->" << 'n' << vtx.node_p_uid();
         base_.out_edge(out_, vtx);

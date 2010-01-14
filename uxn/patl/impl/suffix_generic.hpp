@@ -7,8 +7,6 @@
 #define PATL_IMPL_SUFFIX_GENERIC_HPP
 
 #include <iterator>
-#include <vector>
-#include <set>
 #include "node.hpp"
 #include "core_algorithm.hpp"
 #include "ring_buffer.hpp"
@@ -90,23 +88,25 @@ public:
 template <
     typename T,
     template <typename, typename> class Algorithm,
+    template <typename, typename> class Prefix,
     typename Container>
 struct suffix_generic_traits
     : public T
 {
     typedef Algorithm<T, Container> algorithm;
+    typedef Prefix<Container, typename T::node_type> prefix;
 };
 
 template <typename T>
 class suffix_generic
     : public assoc_generic<
         suffix_generic<T>,
-        suffix_generic_traits<T, algorithm_gen_suffix, suffix_generic<T> >,
-        core_prefix_generic>
+        suffix_generic_traits<T, algorithm_gen_suffix, core_prefix_generic, suffix_generic<T> >,
+        T::N_>
 {
     typedef suffix_generic<T> this_t;
-    typedef suffix_generic_traits<T, algorithm_gen_suffix, this_t> traits;
-    typedef assoc_generic<this_t, traits, core_prefix_generic> super;
+    typedef suffix_generic_traits<T, algorithm_gen_suffix, core_prefix_generic, this_t> traits;
+    typedef assoc_generic<this_t, traits, T::N_> super;
 
 protected:
     typedef typename traits::node_type node_type;
@@ -121,13 +121,16 @@ public:
     typedef typename super::const_iterator const_iterator;
     typedef typename super::iterator iterator;
     typedef typename super::prefix prefix;
+    typedef typename super::const_vertex const_vertex;
     typedef typename super::vertex vertex;
+    typedef typename super::const_preorder_iterator const_preorder_iterator;
+    typedef typename super::const_postorder_iterator const_postorder_iterator;
     typedef typename super::preorder_iterator preorder_iterator;
     typedef typename super::postorder_iterator postorder_iterator;
-    typedef typename super::levelorder_iterator levelorder_iterator;
 
     typedef typename algorithm::const_key_reference const_key_reference;
 
+    static const word_t N_ = T::N_;
     static const word_t delta = T::delta;
 
     static const word_t bit_size = bit_compare::bit_size;
@@ -169,14 +172,14 @@ public:
         keys_ = keys;
     }
 
-    word_t vertex_index_of(const vertex &vtx) const
+    word_t vertex_index_of(const const_vertex &vtx) const
     {
         return
             trie_.index_of(static_cast<const algorithm&>(vtx).get_q()) * 2 |
             vtx.get_qid();
     }
 
-    word_t index_of(const vertex &vtx) const
+    word_t index_of(const const_vertex &vtx) const
     {
         return trie_.index_of(static_cast<const algorithm&>(vtx).get_p());
     }
@@ -191,7 +194,11 @@ public:
         return prefix(this, trie_[id]);
     }
 
-    vertex vertex_by(word_t id, word_t qid) const
+    const_vertex vertex_by(word_t id, word_t qid) const
+    {
+        return const_vertex(this, trie_[id], qid);
+    }
+    vertex vertex_by(word_t id, word_t qid)
     {
         return vertex(this, trie_[id], qid);
     }
