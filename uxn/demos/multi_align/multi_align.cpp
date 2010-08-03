@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("MULTI_ALIGN <infile> <outfile>");
+        printf("MULTI_ALIGN <infile> <outfile>\n");
         return 0;
     }
     std::vector<std::string> strs;
@@ -343,9 +343,10 @@ int main(int argc, char *argv[])
             return 0;
         }
         std::string str;
-        char buf[64 << 10];
+        char *buf = new char [64 << 10];
         for (id_type id = 0; fin.getline(buf, 64 << 10); ++id)
             strs.push_back(std::string(buf, strlen(buf)));
+        delete[] buf;
     }
     //
     std::vector<std::string> align;

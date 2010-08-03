@@ -383,7 +383,7 @@ public:
                     const long long length = it_->second->get_file_length();
                     printf("\r% 3u%% => % 3u%% of sort completed",
                         amount_per100_,
-                        100 * (length - it_->second->residue_length()) / length);
+                        static_cast<word_t>(100 * (length - it_->second->residue_length()) / length));
                 }
                 inserted_ = false;
                 strings_continued_ = !it_->second->empty();
@@ -503,8 +503,8 @@ int main(int argc, char *argv[])
 #endif
     {
         word_t N = 128;
-        if (argc > 3)
-            sscanf(argv[3], "%d", &N);
+        if (argc > 3 && sscanf(argv[3], "%d", &N) != 1)
+            printf("Illegal parameter: %s. Use default value.\n", argv[3]);
         patl::aux::performance_timer tim;
         sort_huge_text_file(argv[1], argv[2], N);
         tim.finish();
