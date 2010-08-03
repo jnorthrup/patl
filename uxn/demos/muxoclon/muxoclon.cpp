@@ -149,10 +149,10 @@ int main(int argc, char *argv[])
         sdict[str.length()].insert(str);
     for (;;)
     {
+        fseek(stdin, 0, SEEK_END);
         printf("Input two words: ");
         char word0[256] = "", word1[256] = "";
-        scanf("%s %s", word0, word1);
-        if (!*word0 || !*word1)
+        if (scanf("%s %s", word0, word1) != 2 || !*word0 || !*word1)
         {
             printf("\nBye.\n");
             break;

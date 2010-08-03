@@ -29,8 +29,9 @@ void insertions(Iter first, Iter last)
     //
     const word_t pool_size =
         (5 * sizeof(word_t) + sizeof(std::string)) * std::distance(first, last);
-    unsigned char *pool_0 = new unsigned char [pool_size];
-    unsigned char *pool_1 = new unsigned char [pool_size];
+    unsigned char
+        *pool_0 = new unsigned char [2 * pool_size],
+        *pool_1 = pool_0 + pool_size;
     //
     {
         string_set dict_0;
@@ -68,7 +69,6 @@ void insertions(Iter first, Iter last)
     }
     //
     delete[] pool_0;
-    delete[] pool_1;
 }
 
 int main(int argc, char *argv[])

@@ -36,11 +36,11 @@ int main(int argc, char *argv[])
     //
     for (;;)
     {
+        fseek(stdin, 0, SEEK_END);
         printf("Input dist & word: ");
         unsigned  dist;
         char word[256] = "";
-        scanf("%u %s", &dist, word);
-        if (!*word)
+        if (scanf("%u %s", &dist, word) != 2 || !*word)
         {
             printf("\nBye.\n");
             break;

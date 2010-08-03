@@ -50,12 +50,6 @@
     <ClInclude Include="impl\assoc_generic.hpp">
       <Filter>Header Files\impl</Filter>
     </ClInclude>
-    <ClInclude Include="impl\const_iterator.hpp">
-      <Filter>Header Files\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="impl\const_partimator.hpp">
-      <Filter>Header Files\impl</Filter>
-    </ClInclude>
     <ClInclude Include="impl\core_algorithm.hpp">
       <Filter>Header Files\impl</Filter>
     </ClInclude>
@@ -69,9 +63,6 @@
       <Filter>Header Files\impl</Filter>
     </ClInclude>
     <ClInclude Include="impl\lca_base.hpp">
-      <Filter>Header Files\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="impl\levelorder_iterator.hpp">
       <Filter>Header Files\impl</Filter>
     </ClInclude>
     <ClInclude Include="impl\node.hpp">

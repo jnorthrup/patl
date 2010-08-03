@@ -46,6 +46,8 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,6 +79,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,14 +101,11 @@
     <ClInclude Include="config.hpp" />
     <ClInclude Include="impl\algorithm.hpp" />
     <ClInclude Include="impl\assoc_generic.hpp" />
-    <ClInclude Include="impl\const_iterator.hpp" />
-    <ClInclude Include="impl\const_partimator.hpp" />
     <ClInclude Include="impl\core_algorithm.hpp" />
     <ClInclude Include="impl\core_prefix.hpp" />
     <ClInclude Include="impl\generator.hpp" />
     <ClInclude Include="impl\iterator.hpp" />
     <ClInclude Include="impl\lca_base.hpp" />
-    <ClInclude Include="impl\levelorder_iterator.hpp" />
     <ClInclude Include="impl\node.hpp" />
     <ClInclude Include="impl\partial_base.hpp" />
     <ClInclude Include="impl\partimator.hpp" />
