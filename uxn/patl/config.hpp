@@ -31,7 +31,6 @@ typedef int sword_t;
 #define PATL_NN
 typedef undefined word_t;
 typedef undefined sword_t;
-
 #endif
 
 #define PATL_INTRINSIC

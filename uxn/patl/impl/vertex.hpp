@@ -42,7 +42,7 @@ public:
     typedef typename algorithm::const_key_reference const_key_reference;
     typedef typename algorithm::value_type value_type;
 
-    explicit const_vertex_generic(const algorithm &pal = algorithm())
+    explicit const_vertex_generic(const typename algorithm &pal = algorithm())
         : pal_(pal)
     {
     }
@@ -397,7 +397,7 @@ public:
         return *this;
     }
 
-    operator algorithm&()
+    operator typename algorithm&()
     {
         return pal_;
     }
