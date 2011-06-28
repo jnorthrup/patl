@@ -6,7 +6,12 @@
 #ifndef PATL_AUX_PERF_TIMER_HPP
 #define PATL_AUX_PERF_TIMER_HPP
 
+#if _WIN32
 #include <windows.h>
+#else
+#include <cinttypes>
+#define __int64 uint64_t
+#endif
 
 namespace uxn
 {
@@ -28,16 +33,20 @@ public:
 
     void start()
     {
+#if _WIN32
         LARGE_INTEGER large;
         QueryPerformanceCounter(&large);
         start_ = large.QuadPart;
+#endif
     }
 
     void finish()
     {
+#if _WIN32
         LARGE_INTEGER large;
         QueryPerformanceCounter(&large);
         finish_ = large.QuadPart;
+#endif
     }
 
     double get_seconds() const
