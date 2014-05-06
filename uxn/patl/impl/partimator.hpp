@@ -136,12 +136,15 @@ private:
         {
             if (!decis_(i))
             {
-// C4127: conditional expression is constant
-#pragma warning(push)
-#pragma warning(disable : 4127)
+#if defined(_MSC_VER)
+# pragma warning(push)
+# pragma warning(disable : 4127) // C4127: conditional expression is constant
+#endif
                 if (Decision::accept_subtree)
                     return true;
-#pragma warning(pop)
+#if defined(_MSC_VER)
+# pragma warning(pop)
+#endif
                 pit_.next_subtree();
                 return false;
             }

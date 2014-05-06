@@ -76,7 +76,7 @@ protected:
     word_t *get_shortcut(word_t a) const
     {
         const shortcuts_t::const_iterator it(shortcuts_.find(a));
-        return a == shortcuts_.end() ? 0 : it->second;
+        return it == shortcuts_.end() ? 0 : it->second;
     }
 
     word_t *create_shortcut(word_t a)
@@ -128,8 +128,8 @@ public:
     }
 
     explicit assoc_generic(const bit_compare &bit_comp)
-        : bit_comp_(bit_comp)
-        , root_(0)
+        : root_(0)
+        , bit_comp_(bit_comp)
     {
     }
 

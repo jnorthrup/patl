@@ -8,9 +8,17 @@
 
 #ifdef __GNUG__
 
-#define PATL_32
-typedef unsigned int word_t;
-typedef int sword_t;
+# if defined(_LP64) \
+     || defined(__LP64__)
+#  define PATL_64
+# else
+#  define PATL_32
+# endif
+
+// TODO: consider using uintptr_t and intptr_t.
+// TODO: use this typedefs unconditionally.
+typedef size_t word_t;
+typedef ssize_t sword_t;
 
 #else // PATL_GCC
 

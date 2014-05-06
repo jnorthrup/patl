@@ -20,8 +20,9 @@
  |   griming goblets (23)
  |   effaces cabaret (50)
 -*/
-// C4503: decorated name length exceeded, name was truncated
-#pragma warning(disable : 4503)
+#if defined(_MSC_VER)
+# pragma warning(disable : 4503) // C4503: decorated name length exceeded, name was truncated
+#endif
 
 #include <fstream>
 #include <vector>

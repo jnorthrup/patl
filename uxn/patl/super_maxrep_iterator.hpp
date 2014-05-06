@@ -40,8 +40,8 @@ class super_maxrep_iterator
         {
             return
                 key0 == keys_ ||
-                key1 != keys_ &&
-                key0[-1] < key1[-1];
+                (key1 != keys_ &&
+                key0[-1] < key1[-1]);
         }
 
     private:

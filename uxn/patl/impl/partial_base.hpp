@@ -149,11 +149,14 @@ public:
             const word_t
                 i = states_[n].first,
                 e = states_[n].second;
-// C4127: conditional expression is constant
-#pragma warning(push)
-#pragma warning(disable : 4127)
+#if defined(_MSC_VER)
+# pragma warning(push)
+# pragma warning(disable : 4127) // C4127: conditional expression is constant
+#endif
             if (!SameLength && bits_but_highest(i) == super::mask_len_)
-#pragma warning(pop)
+#if defined(_MSC_VER)
+# pragma warning(pop)
+#endif
             {
                 states_.resize(current_end);
                 cur_dist_ = e;
@@ -259,11 +262,14 @@ public:
             const word_t
                 i = it->first,
                 e = it->second;
-// C4127: conditional expression is constant
-#pragma warning(push)
-#pragma warning(disable : 4127)
+#if defined(_MSC_VER)
+# pragma warning(push)
+# pragma warning(disable : 4127) // C4127: conditional expression is constant
+#endif
             if (!SameLength && bits_but_highest(i) == super::mask_len_)
-#pragma warning(pop)
+#if defined(_MSC_VER)
+# pragma warning(pop)
+#endif
             {
                 next.clear();
                 cur_dist_ = e;

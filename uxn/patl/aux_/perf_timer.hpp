@@ -59,12 +59,14 @@ public:
 private:
     static void query_frequency()
     {
+#if _WIN32
         if (frequency_ == 0)
         {
             LARGE_INTEGER large;
             QueryPerformanceFrequency(&large);
             frequency_ = large.QuadPart;
         }
+#endif
     }
 
     static __int64 frequency_;
