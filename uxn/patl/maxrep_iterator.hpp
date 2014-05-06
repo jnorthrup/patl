@@ -48,7 +48,7 @@ class maxrep_iterator
         const word_t sfreq1 = sfreq_.back();
         sfreq_.pop_back();
         sfreq_.back() =
-            (sfreq_.back() | sfreq1) & highest_bit |
+            ((sfreq_.back() | sfreq1) & highest_bit) |
             (impl::bits_but_highest(sfreq_.back()) + impl::bits_but_highest(sfreq1));
     }
 

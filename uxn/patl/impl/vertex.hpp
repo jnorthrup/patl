@@ -42,7 +42,7 @@ public:
     typedef typename algorithm::const_key_reference const_key_reference;
     typedef typename algorithm::value_type value_type;
 
-    explicit const_vertex_generic(const typename algorithm &pal = algorithm())
+    explicit const_vertex_generic(const algorithm &pal = algorithm())
         : pal_(pal)
     {
     }
@@ -242,7 +242,7 @@ public:
         while (!limited(limit))
             iterate(Side);
     }
-    template <typename word_t Side, typename Callback>
+    template <word_t Side, typename Callback>
     void descend(word_t limit, Callback &cb)
     {
         while (!limited(limit))
@@ -397,9 +397,9 @@ public:
         return *this;
     }
 
-    operator typename algorithm&()
+    operator algorithm&()
     {
-        return pal_;
+        return this->pal_;
     }
 
     iterator begin()
@@ -425,8 +425,8 @@ public:
     postorder_iterator postorder_begin()
     {
         this_t vtx(*this);
-        if (compact())
-            vtx.descend<0>();
+        if (this->compact())
+            vtx.template descend<0>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -435,8 +435,8 @@ public:
     postorder_iterator postorder_end()
     {
         this_t vtx(*this);
-        if (pal_.get_q())
-            vtx.move<1>();
+        if (this->pal_.get_q())
+            vtx.template move<1>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -444,13 +444,13 @@ public:
 
     preorder_iterator preorder_begin()
     {
-        const node_type *q = pal_.get_q();
-        return preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+        const node_type *q = this->pal_.get_q();
+        return preorder_iterator(this_t(this->cont(), q, q ? this->get_qid() : 1));
     }
     preorder_iterator preorder_begin(word_t limit)
     {
         this_t vtx(*this);
-        if (compact())
+        if (this->compact())
             vtx.template descend<0>(limit);
         else
             vtx.toggle();
@@ -459,7 +459,7 @@ public:
 
     preorder_iterator preorder_end()
     {
-        if (pal_.get_q())
+        if (this->pal_.get_q())
         {
             preorder_iterator pit(*this);
             pit.next_subtree();
@@ -480,7 +480,7 @@ public:
 
     value_type &parent_value()
     {
-        return this->pal_.get_value(pal_.get_q());
+        return this->pal_.get_value(this->pal_.get_q());
     }
 
     this_t sibling()

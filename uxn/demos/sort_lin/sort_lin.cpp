@@ -14,8 +14,10 @@
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/trie_map.hpp>
 
-#pragma warning(disable: 4503) // warning C4503: decorated name length exceeded, name was truncated
-#pragma warning(disable: 4127) // warning C4127: conditional expression is constant
+#if defined(_MSC_VER)
+# pragma warning(disable: 4503) // warning C4503: decorated name length exceeded, name was truncated
+# pragma warning(disable: 4127) // warning C4127: conditional expression is constant
+#endif
 
 namespace patl = uxn::patl;
 

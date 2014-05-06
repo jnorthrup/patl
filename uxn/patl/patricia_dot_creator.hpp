@@ -129,8 +129,8 @@ private:
     void out_cluster(word_t &n, const prefix &root) const
     {
         const bool clustp =
-            !root.get_xtag(0) && !root.symbol_limit(0) ||
-            !root.get_xtag(1) && !root.symbol_limit(1);
+            (!root.get_xtag(0) && !root.symbol_limit(0)) ||
+            (!root.get_xtag(1) && !root.symbol_limit(1));
         if (clustp)
             out_ << "subgraph cluster_" << n++ << "\n"
                 << "{ style = \"dashed, rounded, setlinewidth(0.2)\"; ";

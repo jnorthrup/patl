@@ -116,8 +116,8 @@ public:
             diff_.push_back(i);
             return true;
         }
-        return !SameLength && i >= super::mask_len_ ||
-               i == super::mask_len_ && ch == super::terminator_;
+        return (!SameLength && i >= super::mask_len_) ||
+               (i == super::mask_len_ && ch == super::terminator_);
     }
 
     /// проверка на возможность присутствия бита со значением id в позиции skip

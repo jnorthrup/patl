@@ -80,9 +80,9 @@ public:
             const word_t l = pal.mismatch(key);
             if (~word_t(0) == l)
                 return pal.get_value().second;
-            return add(std::make_pair(key, Datum()), pal, l).get_value().second;
+            return this->add(std::make_pair(key, Datum()), pal, l).get_value().second;
         }
-        return add_root(std::make_pair(key, Datum())).get_value().second;
+        return this->add_root(std::make_pair(key, Datum())).get_value().second;
     }
 };
 
