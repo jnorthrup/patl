@@ -59,7 +59,7 @@ struct preorder_iterator_callback
 {
     void operator()(const Vertex *vtx) const
     {
-        printf("// %d\t%s\n", vtx->skip(), vtx->key().c_str());
+        printf("// %ld\t%s\n", vtx->skip(), vtx->key().c_str());
     }
 };
 
@@ -162,7 +162,7 @@ int main(/*int argc, char *argv[]*/)
             itEnd = test1.end(hd);
         printf("*** 'bulk', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
+            printf("%s, dist: %lu\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- levenshtein_distance\n\n");
@@ -175,7 +175,7 @@ int main(/*int argc, char *argv[]*/)
             itEnd = test1.end(ld);
         printf("*** 'balt', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
+            printf("%s, dist: %lu\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- postorder_iterator\n\n");
@@ -189,12 +189,12 @@ int main(/*int argc, char *argv[]*/)
             itEnd = vtx_root.postorder_end(),
             it = itBeg;
         for (; it != itEnd; ++it)
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             --it;
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
         }
     }
     //
@@ -208,13 +208,13 @@ int main(/*int argc, char *argv[]*/)
             it = itBeg;
         preorder_iterator_callback<typename StringSet::const_vertex> icb;
         for (; it != itEnd; /*++it*/it.increment(icb))
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             //--it;
             it.decrement(icb);
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
         }
     }
     //
@@ -262,12 +262,12 @@ int main(/*int argc, char *argv[]*/)
         {
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
-                mrit.freq());
+                (int)mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
-                printf(" at %u", suffix.index_of(
+                printf(" at %lu", suffix.index_of(
                     static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
@@ -278,12 +278,12 @@ int main(/*int argc, char *argv[]*/)
         {
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
-                mrit.freq());
+                (int)mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
-                printf(" at %u", suffix.index_of(
+                printf(" at %u", (unsigned)suffix.index_of(
                     static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
@@ -313,7 +313,7 @@ int main(/*int argc, char *argv[]*/)
                     count = skip / delta + 1;
                 if (count > 1)
                 {
-                    printf("begin: %u, length: %u, count: %u\n",
+                    printf("begin: %lu, length: %lu, count: %lu\n",
                         sibl.key() - arr,
                         delta,
                         count);
@@ -385,15 +385,15 @@ int main(/*int argc, char *argv[]*/)
     {
         typedef patl::trie_set<char*, 0, patl::bit_comparator_0<char> > char_star_trie;
         char_star_trie trie;
-        trie.insert("balon");
-        trie.insert("balka");
-        trie.insert("balet");
-        trie.insert("bulat");
-        trie.insert("bulka");
-        trie.insert("bal");
-        trie.insert("balet");
-        trie.insert("bal");
-        trie.insert("baton");
+        trie.insert((char*)"balon");
+        trie.insert((char*)"balka");
+        trie.insert((char*)"balet");
+        trie.insert((char*)"bulat");
+        trie.insert((char*)"bulka");
+        trie.insert((char*)"bal");
+        trie.insert((char*)"balet");
+        trie.insert((char*)"bal");
+        trie.insert((char*)"baton");
         printf("*** before show:\n");
         for (char_star_trie::const_iterator it = trie.begin()
             ; it != trie.end()
@@ -404,7 +404,7 @@ int main(/*int argc, char *argv[]*/)
         //
         printf("\n*** serialized data:\n");
         for (word_t i = 0; i != vec.size(); ++i)
-            printf("0x%08x ", vec[i]);
+            printf("0x%08lx ", vec[i]);
         printf("\n");
         //
         trie.read(vec.begin(), vec.end());

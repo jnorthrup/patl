@@ -9,3 +9,4 @@ AUX_SOURCE_DIRECTORY(uxn/patl SRC_PATL)
 ADD_LIBRARY(patl SHARED ${SRC_PATL})
 INSTALL (TARGETS patl DESTINATION ${LIBDIR})
 
+ADD_EXECUTABLE(patl_insider uxn/demos/insider/insider.cpp)
