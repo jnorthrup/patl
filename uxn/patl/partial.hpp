@@ -50,7 +50,7 @@ public:
     {
         return i < super::mask_len_
             ? (!SameLength || ch != super::terminator_) && (super::mask_[i] == joker_ || super::mask_[i] == ch)
-            : !SameLength || i == super::mask_len_ && ch == super::terminator_;
+            : !SameLength || (i == super::mask_len_ && ch == super::terminator_);
     }
 
     /// проверка на возможность присутствия бита со значением id в позиции skip
