@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="impl">
+      <UniqueIdentifier>{5e47eb48-7185-46f3-b2d7-c058fc671bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux">
+      <UniqueIdentifier>{eb5ce4b1-b9c2-4113-ad9e-77b7e15e6230}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="impl\algorithm.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\assoc_generic.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\core_algorithm.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\core_prefix.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\generator.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\iterator.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\lca_base.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\node.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\partial_base.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\partimator.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\patricia_dot_base.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\postorder_iterator.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\prefix.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\preorder_iterator.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\primes.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\ring_buffer.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\suffix_generic.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\trie_generic.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\trivial.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="impl\vertex.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\bitwise_io.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\buffered_io.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\char.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\file_mapping_io.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\file_utils.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\perf_timer.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="aux_\static_alloc.hpp">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="bit_comp.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="lca_oracle.hpp" />
+    <ClInclude Include="leaf_oracle.hpp" />
+    <ClInclude Include="levenshtein.hpp" />
+    <ClInclude Include="maxrep_iterator.hpp" />
+    <ClInclude Include="ngram_stat.hpp" />
+    <ClInclude Include="partial.hpp" />
+    <ClInclude Include="patricia_dot_creator.hpp" />
+    <ClInclude Include="priority.hpp" />
+    <ClInclude Include="range_coder.hpp" />
+    <ClInclude Include="suffix_map.hpp" />
+    <ClInclude Include="suffix_set.hpp" />
+    <ClInclude Include="suffix_utils.hpp" />
+    <ClInclude Include="super_maxrep_iterator.hpp" />
+    <ClInclude Include="trie_map.hpp" />
+    <ClInclude Include="trie_set.hpp" />
+    <ClInclude Include="unordered.hpp" />
+  </ItemGroup>
+</Project>
