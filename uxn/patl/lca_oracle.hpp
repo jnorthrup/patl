@@ -63,10 +63,16 @@ public:
     void init()
     {
         // deallocate old
-        lca_alloc_.deallocate(lca_, lca_size_);
-        lca_ = 0;
-        unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
-        lca_map_ = 0;
+        if (lca_)
+        {
+            lca_alloc_.deallocate(lca_, lca_size_);
+            lca_ = 0;
+        }
+        if (lca_map_)
+        {
+            unsigned_alloc_.deallocate(lca_map_, lca_size_ + 1);
+            lca_map_ = 0;
+        }
         //
         if (cont_->size() == 0)
             return;

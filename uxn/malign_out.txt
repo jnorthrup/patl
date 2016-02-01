@@ -1,0 +1,8 @@
+PH    YSIOLOGI   CAL 
+PH    YSIOLOGI    QUE
+PH    YSIOLOGISCH    
+  F   YSIOLOGISCH    
+  F   YSIOLOGI   CO  
+  FIZJ   OLOGI   CZNY
+  F   YSIOLOGI    SK 
+^^^   ^^^^^^^^^^^^   

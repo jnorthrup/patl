@@ -1,3 +1,12 @@
+Release/
+Debug/
+.vs/
+*.user
+*.sdf
+*.opensdf
+*.suo
+*.VC.db
+*.VC.opendb
 CMakeCache.txt
 CMakeFiles
 Makefile

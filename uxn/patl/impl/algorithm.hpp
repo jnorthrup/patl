@@ -104,7 +104,6 @@ private:
     typedef word_t size_type;
 
 public:
-    /// zero-init default ctor
     explicit algorithm_generic(const cont_type *cont = 0)
         : cont_(cont)
 #ifdef PATL_ALIGNHACK
@@ -116,7 +115,6 @@ public:
     {
     }
 
-    /// simple init ctor
     algorithm_generic(const cont_type *cont, const node_type *q, word_t qid)
         : cont_(cont)
 #ifdef PATL_ALIGNHACK
@@ -151,7 +149,6 @@ public:
 #endif
     }
 
-    /// equality op
     bool operator==(const this_t &right) const
     {
         return
@@ -167,7 +164,6 @@ public:
         return !(*this == pal);
     }
 
-    /// return sibling of algorithm
     this_t sibling() const
     {
         return CSELF->construct(get_q(), word_t(1) ^ get_qid());
@@ -224,50 +220,6 @@ public:
                 key + skip / bit_compare::bit_size,
                 CSELF->get_key() + skip / bit_compare::bit_size);
     }
-
-#if 0 // obsolete
-    /// analogue to mismatch, for suffix_cont
-    template <bool Huge>
-    class mismatch_suffix;
-
-    /// classical algorithm P for search place for insert new node
-    template <>
-    class mismatch_suffix<false>
-    {
-        mismatch_suffix &operator=(const mismatch_suffix&);
-
-    public:
-        mismatch_suffix(this_t &pal)
-            : pal_(pal)
-        {
-        }
-
-        /**
-         * this code faster than one in mismatch_suffix<true>
-         * may used with small suffix_conts
-         */ 
-        word_t operator()(
-            const key_type &key,
-            /// number of bits in key that certainly match with available in trie
-            word_t skip)
-        {
-            const bit_compare bit_comp = pal_.bit_comp();
-            // trie traverse to the leaves
-            pal_.run(key);
-            // compute skip as the number of first mismatching bit
-            skip = align_down<bit_compare::bit_size>(skip) +
-                bit_comp.bit_mismatch(
-                    key + skip / bit_compare::bit_size,
-                    pal_.get_key() + skip / bit_compare::bit_size);
-            // trie ascend to the inserting place
-            pal_.ascend(skip);
-            return skip; // new node mismatching bit number
-        }
-
-    private:
-        this_t &pal_;
-    };
-#endif
 
     /// function determine highest node back-referenced from current subtree; O(log n)
     const node_type *get_subtree_node() const
