@@ -23,7 +23,6 @@ class node_generic
     typedef Node node_type;
 
 public:
-    /// return parent node
     const node_type *get_parent() const
     {
 #ifdef PATL_ALIGNHACK
@@ -41,7 +40,6 @@ public:
 #endif
     }
 
-    /// return node id relate to parent
     word_t get_parent_id() const
     {
 #ifdef PATL_ALIGNHACK
@@ -51,7 +49,27 @@ public:
 #endif
     }
 
-    /// return child node by id
+    void set_parentid(node_type *parent, word_t id)
+    {
+#ifdef PATL_ALIGNHACK
+        parentid_ = reinterpret_cast<word_t>(parent) | id;
+#else
+        parent_ = parent;
+        tagsid_ &= 3;
+        tagsid_ |= id << 2;
+#endif
+    }
+
+    word_t get_skip() const
+    {
+        return skip_;
+    }
+
+    void set_skip(word_t skip)
+    {
+        skip_ = skip;
+    }
+
     const node_type *get_xlink(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -69,7 +87,6 @@ public:
 #endif
     }
 
-    /// return tag of child node by id
     word_t get_xtag(word_t id) const
     {
 #ifdef PATL_ALIGNHACK
@@ -79,25 +96,6 @@ public:
 #endif
     }
 
-    /// return the number of distinction bit
-    word_t get_skip() const
-    {
-        return skip_;
-    }
-
-    /// set parent info
-    void set_parentid(node_type *parent, word_t id)
-    {
-#ifdef PATL_ALIGNHACK
-        parentid_ = reinterpret_cast<word_t>(parent) | id;
-#else
-        parent_ = parent;
-        tagsid_ &= 3;
-        tagsid_ |= id << 2;
-#endif
-    }
-
-    /// set child info by id
     void set_xlinktag(word_t id, const node_type *link, word_t tag)
     {
 #ifdef PATL_ALIGNHACK
@@ -109,55 +107,14 @@ public:
 #endif
     }
 
-    /// set the number of distinction bit
-    void set_skip(word_t skip)
-    {
-        skip_ = skip;
-    }
-
-    /// root special initialization
     void init_root()
     {
         set_parentid(0, 0);
-        // skip = -1
         set_skip(~word_t(0));
         // left link self-pointed (root)
         set_xlinktag(0, static_cast<node_type*>(this), 1);
         // right link null-pointed (end)
         set_xlinktag(1, 0, 1);
-    }
-
-    /// for debug only
-    bool integrity() const
-    {
-        const word_t
-            skip = get_skip(),
-            tag0 = get_xtag(0),
-            tag1 = get_xtag(1);
-        const node_type
-            *p0 = get_xlink(0),
-            *p1 = get_xlink(1);
-        return
-            skip == ~word_t(0) && p1 == 0 && get_parent() == 0 && get_parent_id() == 0 ||
-            !tag0 && p0->get_parent() == this && !p0->get_parent_id() && skip < p0->get_skip() ||
-            !tag1 && p1->get_parent() == this && p1->get_parent_id() && skip < p1->get_skip() ||
-            tag0 && tag1;
-    }
-
-    /// for debug only
-    const char *visualize(const node_type *id0) const
-    {
-        static char buf[256];
-        sprintf(buf, "%d skip: %d pt: %d ptId: %d lnk0: %d tag0: %d lnk1: %d tag1: %d\n",
-            this - id0,
-            get_skip(),
-            get_parent() - id0,
-            get_parent_id(),
-            get_xlink(0) - id0,
-            get_xtag(0),
-            get_xlink(1) - id0,
-            get_xtag(1));
-        return buf;
     }
 
     /// change the root
@@ -209,6 +166,39 @@ public:
         }
         else // if root
             set_xlinktag(0, new_ptr(get_xlink(0)), get_xtag(0));
+    }
+
+    /// for debug only
+    bool integrity() const
+    {
+        const word_t
+            skip = get_skip(),
+            tag0 = get_xtag(0),
+            tag1 = get_xtag(1);
+        const node_type
+            *p0 = get_xlink(0),
+            *p1 = get_xlink(1);
+        return
+            skip == ~word_t(0) && p1 == 0 && get_parent() == 0 && get_parent_id() == 0 ||
+            !tag0 && p0->get_parent() == this && !p0->get_parent_id() && skip < p0->get_skip() ||
+            !tag1 && p1->get_parent() == this && p1->get_parent_id() && skip < p1->get_skip() ||
+            tag0 && tag1;
+    }
+
+    /// for debug only
+    const char *visualize(const node_type *id0) const
+    {
+        static char buf[256];
+        sprintf(buf, "%d skip: %d pt: %d ptId: %d lnk0: %d tag0: %d lnk1: %d tag1: %d\n",
+            this - id0,
+            get_skip(),
+            get_parent() - id0,
+            get_parent_id(),
+            get_xlink(0) - id0,
+            get_xtag(0),
+            get_xlink(1) - id0,
+            get_xtag(1));
+        return buf;
     }
 
 private:

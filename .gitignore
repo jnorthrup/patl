@@ -5,3 +5,5 @@ Debug/
 *.sdf
 *.opensdf
 *.suo
+*.VC.db
+*.VC.opendb
