@@ -7,6 +7,8 @@ Debug/
 *.suo
 *.VC.db
 *.VC.opendb
+*.VC.db
+*.VC.opendb
 CMakeCache.txt
 CMakeFiles
 Makefile
