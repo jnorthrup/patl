@@ -170,12 +170,21 @@ public:
 private:
     void next_fit()
     {
+        const_preorder_iterator accepted_pit;
+        word_t accepted_i(~word_t(0));
         while (pit_ != end_)
         {
             const word_t skip0 = max0(static_cast<sword_t>(pit_->skip()));
             // if current bit is illegal in pattern - skip whole subtree
             if (!decis_.bit_level(skip0, pit_->get_qid()))
             {
+                if (accepted_i + 1)
+                {
+                    pit_ = accepted_pit;
+                    matched_ = accepted_i + 1 - skipped_;
+                    decis_.trunc(accepted_i + 1 - skipped_);
+                    return;
+                }
                 pit_.next_subtree();
                 continue;
             }
@@ -189,6 +198,13 @@ private:
                         break;
                 if (i < skipped_)
                 {
+                    if (accepted_i + 1)
+                    {
+                        pit_ = accepted_pit;
+                        matched_ = accepted_i + 1 - skipped_;
+                        decis_.trunc(accepted_i + 1 - skipped_);
+                        return;
+                    }
                     pit_.next_subtree();
                     continue;
                 }
@@ -204,35 +220,32 @@ private:
                 ++pit_;
                 continue;
             }
+            if (decis_.accepted()) // завершилось ли сопоставление
+            {
+                accepted_pit = pit_;
+                accepted_i = i;
+            }
             for (; i != limit; ++i)
             {
-                /*if (!(bit_len + 1) && pit_->get_qtag() && key[i] == sentinel_)
-                {
-                    if (decis_.accepted())
-                    {
-                        matched_ = i - skipped_;
-                        return;
-                    }
-                    else
-                        break;
-                }*/
                 if (!decis_.next_char(key[i])) // сопоставить символ key[i] в позиции i
                     break;
                 if (decis_.accepted()) // завершилось ли сопоставление
                 {
-                    matched_ = i + 1 - skipped_;
-                    return;
+                    accepted_pit = pit_;
+                    accepted_i = i;
                 }
             }
             if (i != limit)
             {
+                if (accepted_i + 1)
+                {
+                    pit_ = accepted_pit;
+                    matched_ = accepted_i + 1 - skipped_;
+                    decis_.trunc(accepted_i + 1 - skipped_);
+                    return;
+                }
                 pit_.next_subtree();
                 continue;
-            }
-            else if (pit_->get_qtag() && decis_())
-            {
-                matched_ = i - skipped_;
-                return;
             }
             ++pit_;
         }
@@ -286,6 +299,7 @@ private:
             }
             else
                 i = get_max(skipped_, skip0 / bit_compare::bit_size);
+            printf("* %u\n", i);
             decis_.trunc(i - skipped_); // сообщить функтору, с какого по счету символа начинать сопоставление
             const word_t limit = pit_->get_qtag()
                 ? bit_len           / bit_compare::bit_size - 1 // leaf
