@@ -43,7 +43,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const char_type ch,
+        word_t i, word_t e, const char_type &ch,
         std::back_insert_iterator<states_vector> next)
     {
         const word_t
@@ -119,7 +119,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const char_type ch,
+        word_t i, word_t e, const char_type &ch,
         std::back_insert_iterator<states_vector> next)
     {
         const bool transp_state = (i & highest_bit) != 0;
@@ -263,7 +263,7 @@ public:
     }
 
     void transitions(
-        word_t i, word_t e, const char_type ch,
+        word_t i, word_t e, const char_type &ch,
         std::back_insert_iterator<states_vector> next)
     {
         const bool split_state = (i & highest_bit) != 0;

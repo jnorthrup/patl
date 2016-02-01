@@ -57,6 +57,7 @@ public:
     template <typename T>
     const_partimator_generic(const const_partimator_generic<T, Decision> &obj)
         : decis_(obj.decis())
+        , prefix_(obj.prefix_)
         , pit_(obj)
     {
     }
@@ -91,7 +92,8 @@ public:
 
     this_t &operator++()
     {
-        ++pit_;
+        //++pit_;
+        pit_.next_subtree();
         next_fit();
         return *this;
     }
@@ -102,6 +104,49 @@ public:
         return pt;
     }
 
+    word_t prefix() const
+    {
+        return prefix_;
+    }
+
+#if 1
+    void next_fit()
+    {
+        while (!pit_->the_end())
+        {
+            const word_t skip0 = max0(static_cast<sword_t>(pit_->skip()));
+            // if current bit is illegal in pattern - skip whole subtree
+            if (!decis_.bit_level(skip0, pit_->get_qid()))
+            {
+                pit_.next_subtree();
+                continue;
+            }
+            word_t i = skip0 / bit_compare::bit_size;
+            decis_(i); // сообщить функтору, с какого по счету символа начинать сопоставление
+            const key_type &key = pit_->key();
+            const word_t limit = (pit_->get_qtag()
+                ? pit_->bit_comp().bit_length(key)            // leaf
+                : pit_->next_skip()) / bit_compare::bit_size; // branch
+            for (; i != limit; ++i)
+            {
+                if (!decis_(i, key[i])) // сопоставить символ key[i] в позиции i
+                    break;
+                if (decis_()) // завершилось ли сопоставление
+                {
+                    prefix_ = i + 1;
+                    return;
+                }
+            }
+            if (i != limit)
+            {
+                pit_.next_subtree();
+                continue;
+            }
+            ++pit_;
+        }
+    }
+
+#else
 private:
     void next_fit()
     {
@@ -153,8 +198,10 @@ private:
         }
         return true;
     }
+#endif
 
     Decision decis_;
+    word_t prefix_;
 
 protected:
     preorder_iterator pit_;

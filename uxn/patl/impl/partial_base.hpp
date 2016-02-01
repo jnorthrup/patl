@@ -41,16 +41,16 @@ public:
     {
     }
 
-    static const bool accept_subtree = !SameLength;
+    static const bool accept_subtree = !SameLength; // нужно только в partimator, как и SameLength
 
     //void init();
 
-    bool operator()(word_t i) const
+    void trunc(word_t i) const
     {
         return i <= mask_len_;
     }
 
-    //bool operator()(word_t i, const char_type &ch);
+    //bool next_char(const char_type &ch);
 
     /// bit-level optimization; implementation by default
     bool bit_level(word_t, word_t) const
@@ -74,6 +74,21 @@ protected:
 
 #if 1 // optimized implementation of levenshtein_generic
 
+typedef std::pair<word_t, word_t> pair_ie;
+
+#if 0
+struct pair_ie_less
+    : public std::binary_function<pair_ie, pair_ie, bool>
+{
+    bool operator()(pair_ie a, pair_ie b) const
+    {
+        const sword_t delta_a = bits_but_highest(a.first) - a.second;
+        const sword_t delta_b = bits_but_highest(b.first) - b.second;
+        return delta_a != delta_b && delta_a < delta_b || delta_a == delta_b && a < b;
+    }
+};
+#endif
+
 template <typename This, typename Container, bool SameLength>
 class levenshtein_generic
     : public partial_base<Container, SameLength>
@@ -84,7 +99,7 @@ class levenshtein_generic
     typedef typename Container::bit_compare bit_compare;
     typedef typename bit_compare::char_type char_type;
 
-    typedef std::vector<std::pair<word_t, word_t> > states_vector;
+    typedef std::vector<pair_ie> states_vector;
 
 public:
     levenshtein_generic(
@@ -113,6 +128,62 @@ public:
         return cur_dist_;
     }
 
+#if 1
+    void trunc(word_t i)
+    {
+        word_t trunc = states_.size();
+        while (begins_.size() > i + 1)
+        {
+            trunc = begins_.back();
+            begins_.pop_back();
+        }
+        states_.resize(trunc);
+    }
+
+    bool accepted() // завершилось ли сопоставление
+    {
+        cur_dist_ = ~word_t(0);
+        for (word_t n = begins_.back(); n != states_.size(); ++n)
+        {
+            const word_t acc =
+                super::mask_len_ - bits_but_highest(states_[n].first) +
+                states_[n].second;
+            if (acc <= dist_ && acc < cur_dist_)
+                cur_dist_ = acc;
+        }
+        return cur_dist_ + 1 != 0;
+#if 0 // сортировка по наименьшему расстоянию работает, но не ускоряет поиск
+        cur_dist_ =
+            super::mask_len_ - bits_but_highest(states_.back().first) +
+            states_.back().second;
+        return cur_dist_ <= dist_;
+#endif
+    }
+
+    bool next_char(const char_type &ch)
+    {
+        const word_t
+            current_beg = begins_.back(),
+            current_end = states_.size();
+        begins_.push_back(current_end);
+        for (word_t n = current_beg; n != current_end; ++n)
+            static_cast<this_t*>(this)->transitions(
+                states_[n].first, states_[n].second, ch,
+                std::back_insert_iterator<states_vector>(states_));
+#if 0 // если k < 10 быстрее работает без сортировки
+        // sort & remove duplicates
+        std::sort(
+            states_.begin() + current_end,
+            states_.end()/*,
+            pair_ie_less()*/);
+        states_.resize(std::unique(
+            states_.begin() + current_end,
+            states_.end()) - states_.begin());
+#endif
+        return states_.size() != current_end;
+    }
+
+#else
     bool operator()(word_t i)
     {
         word_t trunc = states_.size();
@@ -169,14 +240,15 @@ public:
             static_cast<this_t*>(this)->transitions(i, e, ch, next_ins);
             // sort & remove duplicates
             std::sort(
-                &states_[current_end],
-                &states_[states_.size()]);
+                states_.begin() + current_end,
+                states_.end());
             states_.resize(std::unique(
-                &states_[current_end],
-                &states_[states_.size()]) - &states_[0]);
+                states_.begin() + current_end,
+                states_.end()) - states_.begin());
         }
         return states_.size() != current_end;
     }
+#endif
 
 protected:
     word_t dist_;

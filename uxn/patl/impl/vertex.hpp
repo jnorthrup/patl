@@ -6,6 +6,8 @@
 #ifndef PATL_IMPL_VERTEX_HPP
 #define PATL_IMPL_VERTEX_HPP
 
+#include "similarity.hpp"
+
 namespace uxn
 {
 namespace patl
@@ -26,7 +28,6 @@ public:
 
 protected:
     typedef typename algorithm::node_type node_type;
-    typedef typename cont_type::bit_compare bit_compare;
     typedef typename cont_type::prefix prefix;
     typedef typename cont_type::const_preorder_iterator const_preorder_iterator;
     typedef typename cont_type::const_postorder_iterator const_postorder_iterator;
@@ -38,9 +39,11 @@ protected:
     typedef typename cont_type::reverse_iterator reverse_iterator;
 
 public:
+    typedef typename cont_type::bit_compare bit_compare;
     typedef typename algorithm::key_type key_type;
     typedef typename algorithm::const_key_reference const_key_reference;
     typedef typename algorithm::value_type value_type;
+    typedef typename bit_compare::char_type char_type;
 
     explicit const_vertex_generic(const algorithm &pal = algorithm())
         : pal_(pal)
@@ -336,6 +339,44 @@ public:
     bit_compare bit_comp() const
     {
         return pal_.bit_comp();
+    }
+
+    template <typename Decision>
+    whole_similarity<const_preorder_iterator, Decision> whole_sim(
+        const Decision &decis,
+        word_t skipped = 0,
+        const char_type &sentinel = char_type()) const
+    {
+        return whole_similarity<const_preorder_iterator, Decision>
+            (*this, decis, skipped, sentinel);
+    }
+    template <typename Decision>
+    greedy_similarity<const_preorder_iterator, Decision> greedy_sim( // ???
+        const Decision &decis,
+        word_t skipped = 0,
+        const char_type &sentinel = char_type()) const
+    {
+        return greedy_similarity<const_preorder_iterator, Decision>
+            (*this, decis, skipped, sentinel);
+    }
+    template <typename Decision>
+    narrow_similarity<const_preorder_iterator, Decision> narrow_sim(
+        const Decision &decis,
+        word_t skipped = 0,
+        const char_type &sentinel = char_type()) const
+    {
+        return narrow_similarity<const_preorder_iterator, Decision>
+            (*this, decis, skipped, sentinel);
+    }
+    template <typename Decision>
+    prefix_similarity<const_preorder_iterator, Decision> prefix_sim(
+        const Decision &decis,
+        word_t prefix,
+        word_t skipped = 0,
+        const char_type &sentinel = char_type()) const
+    {
+        return prefix_similarity<const_preorder_iterator, Decision>
+            (*this, decis, prefix, skipped, sentinel);
     }
 
 protected:

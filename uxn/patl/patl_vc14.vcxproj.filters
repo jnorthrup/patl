@@ -108,5 +108,8 @@
     <ClInclude Include="trie_map.hpp" />
     <ClInclude Include="trie_set.hpp" />
     <ClInclude Include="unordered.hpp" />
+    <ClInclude Include="impl\similarity.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@
     <ClInclude Include="impl\preorder_iterator.hpp" />
     <ClInclude Include="impl\primes.hpp" />
     <ClInclude Include="impl\ring_buffer.hpp" />
+    <ClInclude Include="impl\similarity.hpp" />
     <ClInclude Include="impl\suffix_generic.hpp" />
     <ClInclude Include="impl\trie_generic.hpp" />
     <ClInclude Include="impl\trivial.hpp" />

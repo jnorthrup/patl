@@ -247,10 +247,11 @@ int main(/*int argc, char *argv[]*/)
         typedef patl::suffix_set<char*> SuffixSet;
         char str[] =
             //"abrakadabraa";
-            "xabcyiiizabcqabcyr";
+            //"xabcyiiizabcqabcyr";
             //"cxxaxxaxxb";
             //"How many wood would a woodchuck chuck.";
             //"xgtcacaytgtgacz";
+            "0daba1daba2daba0";
         printf("*** string: '%s':\n", str);
         SuffixSet suffix(str);
         for (word_t i = 0; i != sizeof(str) - 1; ++i)

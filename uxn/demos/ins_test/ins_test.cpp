@@ -11,6 +11,7 @@
 #include <uxn/patl/trie_set.hpp>
 #include <uxn/patl/aux_/perf_timer.hpp>
 #include <uxn/patl/aux_/static_alloc.hpp>
+//#include <boost/countertree/suballocator.hpp>
 
 namespace patl = uxn::patl;
 
@@ -24,6 +25,8 @@ void insertions(Iter first, Iter last)
         0,
         patl::bit_comparator<std::string, 0>,
         patl::aux::static_alloc<std::string> > string_set;
+        //countertree::suballocator<std::allocator<std::string> > > string_set;
+        //std::allocator<std::string> > string_set;
     patl::aux::performance_timer tim;
     double min_tim = 0.0;
     //
