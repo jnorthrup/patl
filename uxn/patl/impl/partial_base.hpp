@@ -169,11 +169,11 @@ public:
             static_cast<this_t*>(this)->transitions(i, e, ch, next_ins);
             // sort & remove duplicates
             std::sort(
-                &states_[current_end],
-                &states_[states_.size()]);
+                &states_[0] + current_end,
+                &states_[0] + states_.size());
             states_.resize(std::unique(
-                &states_[current_end],
-                &states_[states_.size()]) - &states_[0]);
+                &states_[0] + current_end,
+                &states_[0] + states_.size()) - &states_[0]);
         }
         return states_.size() != current_end;
     }

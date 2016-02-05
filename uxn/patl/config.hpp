@@ -42,9 +42,16 @@ const word_t
     bits_in_word = 8 * sizeof(word_t),
     highest_bit = word_t(1) << (bits_in_word - 1);
 
-// allow to store additional info in less significant bit in some pointers
+// Sedgewick's method for identifying backtrack links
+//#define PATL_SEDGEWICK
+
+#ifndef PATL_SEDGEWICK
+
+// allow to store additional info in less significant bits in some pointers
 // used in "impl/node.hpp" and "impl/algorithm.hpp"
 #define PATL_ALIGNHACK
+
+#endif
 
 #ifdef _DEBUG
 

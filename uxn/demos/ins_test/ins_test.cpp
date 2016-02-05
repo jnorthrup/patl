@@ -14,7 +14,7 @@
 
 namespace patl = uxn::patl;
 
-const word_t N = 4;
+const word_t N = 10;
 
 template <typename Iter>
 void insertions(Iter first, Iter last)
@@ -35,7 +35,7 @@ void insertions(Iter first, Iter last)
     //
     {
         string_set dict_0;
-        printf("Casual insertion method... ");
+        printf("Regular insertion method... ");
         for (word_t n = 0; n != N; ++n)
         {
             dict_0.clear();
