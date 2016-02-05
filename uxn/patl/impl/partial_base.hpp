@@ -27,10 +27,10 @@ protected:
 
 public:
     partial_base(
-        const Container &cont,              // экземпляр контейнера
-        const key_type &mask,               // маска поиска (образец)
-        word_t mask_len = ~word_t(0),       // длина маски в символах (для бесконечных строк)
-        const char_type &terminator = '\0') // символ окончания строки
+        const Container &cont,              // ????????? ??????????
+        const key_type &mask,               // ????? ?????? (???????)
+        word_t mask_len = ~word_t(0),       // ????? ????? ? ???????? (??? ??????????? ?????)
+        const char_type &terminator = '\0') // ?????? ????????? ??????
         : mask_(mask)
         , mask_len_(get_min(
             mask_len,
@@ -172,11 +172,11 @@ public:
             static_cast<this_t*>(this)->transitions(i, e, ch, next_ins);
             // sort & remove duplicates
             std::sort(
-                &states_[current_end],
-                &states_[states_.size()]);
+                &states_[0] + current_end,
+                &states_[0] + states_.size());
             states_.resize(std::unique(
-                &states_[current_end],
-                &states_[states_.size()]) - &states_[0]);
+                &states_[0] + current_end,
+                &states_[0] + states_.size()) - &states_[0]);
         }
         return states_.size() != current_end;
     }
@@ -211,7 +211,7 @@ public:
         word_t dist,
         const key_type &mask,
         word_t mask_len = ~word_t(0),
-        const char_type &terminator = '\0') // символ окончания строки
+        const char_type &terminator = '\0') // ?????? ????????? ??????
         : super(cont, mask, mask_len, terminator)
         , dist_(dist)
         , states_(1, states_vector(1, std::make_pair(0, 0)))

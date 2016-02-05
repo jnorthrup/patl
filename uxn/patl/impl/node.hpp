@@ -44,6 +44,8 @@ public:
     {
 #ifdef PATL_ALIGNHACK
         return parentid_ & word_t(1);
+#elif defined(PATL_SEDGEWICK)
+        return parent_ && parent_->link_[0] != static_cast<const node_type*>(this) ? 1 : 0;
 #else
         return tagsid_ >> 2 & word_t(1);
 #endif
@@ -55,8 +57,10 @@ public:
         parentid_ = reinterpret_cast<word_t>(parent) | id;
 #else
         parent_ = parent;
+#ifndef PATL_SEDGEWICK
         tagsid_ &= 3;
         tagsid_ |= id << 2;
+#endif
 #endif
     }
 
@@ -91,6 +95,9 @@ public:
     {
 #ifdef PATL_ALIGNHACK
         return linktag_[id] & word_t(1);
+#elif defined(PATL_SEDGEWICK)
+        const auto link{link_[id]};
+        return link && static_cast<sword_t>(skip_) < static_cast<sword_t>(link->skip_) ? 0 : 1;
 #else
         return tagsid_ >> id & word_t(1);
 #endif
@@ -102,8 +109,10 @@ public:
         linktag_[id] = reinterpret_cast<word_t>(link) | tag;
 #else
         link_[id] = const_cast<node_type*>(link);
+#ifndef PATL_SEDGEWICK
         tagsid_ &= ~(1 << id);
         tagsid_ |= tag << id;
+#endif
 #endif
     }
 
@@ -129,7 +138,9 @@ public:
         std::swap(parent_, old_root->parent_);
         std::swap(link_[0], old_root->link_[0]);
         std::swap(link_[1], old_root->link_[1]);
+#ifndef PATL_SEDGEWICK
         std::swap(tagsid_, old_root->tagsid_);
+#endif
 #endif
         old_root->get_parent()->set_xlinktag(old_root->get_parent_id(), old_root, 0);
         if (!old_root->get_xtag(0))
@@ -151,7 +162,9 @@ public:
         parent_ = right->parent_;
         link_[0] = right->link_[0];
         link_[1] = right->link_[1];
+#ifndef PATL_SEDGEWICK
         tagsid_ = right->tagsid_;
+#endif
 #endif
     }
 
@@ -213,7 +226,9 @@ private:
     node_type
         *parent_, /// parent node
         *link_[2]; /// child nodes
+#ifndef PATL_SEDGEWICK
     word_t tagsid_; /// parent-id with child tags
+#endif
 #endif
 };
 
