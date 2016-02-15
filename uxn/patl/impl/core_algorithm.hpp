@@ -20,9 +20,9 @@ template <typename T, typename This, typename Container>
 class core_algorithm_generic
     : public algorithm_generic<T, This, Container, T::N_>
 {
-    typedef algorithm_generic<T, This, Container, T::N_> super;
-    typedef typename super::cont_type cont_type;
-    typedef typename super::node_type node_type;
+    using super = algorithm_generic<T, This, Container, T::N_>;
+    using cont_type = typename super::cont_type;
+    using node_type = typename super::node_type;
 
 public:
     explicit core_algorithm_generic(const cont_type *cont = 0)

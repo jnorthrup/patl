@@ -31,14 +31,14 @@ template <typename T, typename This, typename Container, word_t N = 0>
 class algorithm_generic
     : public algorithm_generic<T, This, Container, 0>
 {
-    typedef This this_t;
-    typedef algorithm_generic<T, This, Container, 0> super;
+    using this_t = This;
+    using super = algorithm_generic<T, This, Container, 0>;
 
 public:
-    typedef Container cont_type;
-    typedef typename T::key_type key_type;
-    typedef typename T::value_type value_type;
-    typedef typename T::node_type node_type;
+    using cont_type = Container;
+    using key_type = typename T::key_type;
+    using value_type = typename T::value_type;
+    using node_type = typename T::node_type;
 
     /// zero-init default ctor
     explicit algorithm_generic(const cont_type *cont = 0)
@@ -86,22 +86,22 @@ public:
 template <typename T, typename This, typename Container>
 class algorithm_generic<T, This, Container, 0>
 {
-    typedef This this_t;
-    typedef typename T::bit_compare bit_compare;
-    typedef typename T::allocator_type allocator_type;
+    using this_t = This;
+    using bit_compare = typename T::bit_compare;
+    using allocator_type = typename T::allocator_type;
 
 public:
-    typedef Container cont_type;
-    typedef typename T::key_type key_type;
-    typedef typename T::value_type value_type;
-    typedef typename T::node_type node_type;
+    using cont_type = Container;
+    using key_type = typename T::key_type;
+    using value_type = typename T::value_type;
+    using node_type = typename T::node_type;
 
 private:
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef value_type *pointer;
-    typedef value_type &reference;
-    typedef word_t size_type;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using size_type = word_t;
 
 public:
     explicit algorithm_generic(const cont_type *cont = 0)

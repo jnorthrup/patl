@@ -17,30 +17,30 @@ template <typename Algorithm>
 class const_vertex_generic
 {
 protected:
-    typedef const_vertex_generic<Algorithm> this_t;
-    typedef Algorithm algorithm;
+    using this_t = const_vertex_generic<Algorithm>;
+    using algorithm = Algorithm;
 
 public:
-    typedef this_t const_vertex;
-    typedef typename algorithm::cont_type cont_type;
+    using const_vertex = this_t;
+    using cont_type = typename algorithm::cont_type;
 
 protected:
-    typedef typename algorithm::node_type node_type;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename cont_type::prefix prefix;
-    typedef typename cont_type::const_preorder_iterator const_preorder_iterator;
-    typedef typename cont_type::const_postorder_iterator const_postorder_iterator;
-    typedef typename cont_type::preorder_iterator preorder_iterator;
-    typedef typename cont_type::postorder_iterator postorder_iterator;
-    typedef typename cont_type::const_iterator const_iterator;
-    typedef typename cont_type::iterator iterator;
-    typedef typename cont_type::const_reverse_iterator const_reverse_iterator;
-    typedef typename cont_type::reverse_iterator reverse_iterator;
+    using node_type = typename algorithm::node_type;
+    using bit_compare = typename cont_type::bit_compare;
+    using prefix = typename cont_type::prefix;
+    using const_preorder_iterator = typename cont_type::const_preorder_iterator;
+    using const_postorder_iterator = typename cont_type::const_postorder_iterator;
+    using preorder_iterator = typename cont_type::preorder_iterator;
+    using postorder_iterator = typename cont_type::postorder_iterator;
+    using const_iterator = typename cont_type::const_iterator;
+    using iterator = typename cont_type::iterator;
+    using const_reverse_iterator = typename cont_type::const_reverse_iterator;
+    using reverse_iterator = typename cont_type::reverse_iterator;
 
 public:
-    typedef typename algorithm::key_type key_type;
-    typedef typename algorithm::const_key_reference const_key_reference;
-    typedef typename algorithm::value_type value_type;
+    using key_type = typename algorithm::key_type;
+    using const_key_reference = typename algorithm::const_key_reference;
+    using value_type = typename algorithm::value_type;
 
     explicit const_vertex_generic(const algorithm &pal = algorithm())
         : pal_(pal)
@@ -242,7 +242,7 @@ public:
         while (!limited(limit))
             iterate(Side);
     }
-    template <typename word_t Side, typename Callback>
+    template <word_t Side, typename Callback>
     void descend(word_t limit, Callback &cb)
     {
         while (!limited(limit))
@@ -281,9 +281,7 @@ public:
 
     // low-level functions
 
-    word_t mismatch(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0))
+    word_t mismatch(const key_type &key, word_t prefixLen = ~word_t(0))
     {
         return pal_.mismatch(key, prefixLen);
     }
@@ -347,26 +345,26 @@ class vertex_generic
     : public const_vertex_generic<Algorithm>
 {
 protected:
-    typedef const_vertex_generic<Algorithm> super;
-    typedef vertex_generic<Algorithm> this_t;
-    typedef Algorithm algorithm;
+    using super = const_vertex_generic<Algorithm>;
+    using this_t = vertex_generic<Algorithm>;
+    using algorithm = Algorithm;
 
 public:
-    typedef super const_vertex;
-    typedef typename algorithm::cont_type cont_type;
+    using const_vertex = super;
+    using cont_type = typename algorithm::cont_type;
 
 protected:
-    typedef typename algorithm::node_type node_type;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename cont_type::prefix prefix;
-    typedef typename cont_type::preorder_iterator preorder_iterator;
-    typedef typename cont_type::postorder_iterator postorder_iterator;
-    typedef typename cont_type::iterator iterator;
-    typedef typename cont_type::reverse_iterator reverse_iterator;
+    using node_type = typename algorithm::node_type;
+    using bit_compare = typename cont_type::bit_compare;
+    using prefix = typename cont_type::prefix;
+    using preorder_iterator = typename cont_type::preorder_iterator;
+    using postorder_iterator = typename cont_type::postorder_iterator;
+    using iterator = typename cont_type::iterator;
+    using reverse_iterator = typename cont_type::reverse_iterator;
 
 public:
-    typedef typename algorithm::key_type key_type;
-    typedef typename algorithm::value_type value_type;
+    using key_type = typename algorithm::key_type;
+    using value_type = typename algorithm::value_type;
 
     explicit vertex_generic(const algorithm &pal = algorithm())
         : super(pal)

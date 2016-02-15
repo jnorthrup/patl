@@ -33,32 +33,32 @@ template <typename This, typename T, word_t N = 0>
 class assoc_generic
     : public assoc_generic<This, T, 0>
 {
-    typedef This this_t;
-    typedef assoc_generic<This, T, 0> super;
+    using this_t = This;
+    using super = assoc_generic<This, T, 0>;
 
 protected:
-    typedef typename T::algorithm algorithm;
-    typedef typename T::node_type node_type;
+    using algorithm = typename T::algorithm;
+    using node_type = typename T::node_type;
 
 public:
-    typedef typename T::prefix prefix;
-    typedef vertex_generic<algorithm> vertex;
-    typedef preorder_iterator_generic<vertex> preorder_iterator;
-    typedef postorder_iterator_generic<vertex> postorder_iterator;
-    typedef typename T::key_type key_type;
-    typedef typename T::value_type value_type;
-    typedef typename T::bit_compare bit_compare;
-    typedef typename T::allocator_type allocator_type;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef value_type *pointer;
-    typedef value_type &reference;
-    typedef typename allocator_type::difference_type difference_type;
-    typedef word_t size_type;
-    //typedef shortcut_generic<T> shortcut; // TODO
+    using prefix = typename T::prefix;
+    using vertex = vertex_generic<algorithm>;
+    using preorder_iterator = preorder_iterator_generic<vertex>;
+    using postorder_iterator = postorder_iterator_generic<vertex>;
+    using key_type = typename T::key_type;
+    using value_type = typename T::value_type;
+    using bit_compare = typename T::bit_compare;
+    using allocator_type = typename T::allocator_type;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using difference_type = typename allocator_type::difference_type;
+    using size_type = word_t;
+    //using shortcut = shortcut_generic<T>; // TODO
 
-    typedef const_iterator_generic<vertex> const_iterator;
-    typedef iterator_generic<vertex> iterator;
+    using const_iterator = const_iterator_generic<vertex>;
+    using iterator = iterator_generic<vertex>;
 
     static const word_t N_ = N;
 
@@ -95,30 +95,30 @@ private:
 template <typename This, typename T>
 class assoc_generic<This, T, 0>
 {
-    typedef This this_t;
+    using this_t = This;
 
 protected:
-    typedef typename T::algorithm algorithm;
-    typedef typename T::node_type node_type;
+    using algorithm = typename T::algorithm;
+    using node_type = typename T::node_type;
 
 public:
-    typedef typename T::prefix prefix;
-    typedef const_vertex_generic<algorithm> const_vertex;
-    typedef vertex_generic<algorithm> vertex;
-    typedef const_preorder_iterator_generic<const_vertex> const_preorder_iterator;
-    typedef const_postorder_iterator_generic<const_vertex> const_postorder_iterator;
-    typedef preorder_iterator_generic<vertex> preorder_iterator;
-    typedef postorder_iterator_generic<vertex> postorder_iterator;
-    typedef typename T::key_type key_type;
-    typedef typename T::value_type value_type;
-    typedef typename T::bit_compare bit_compare;
-    typedef typename T::allocator_type allocator_type;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef value_type *pointer;
-    typedef value_type &reference;
-    typedef typename allocator_type::difference_type difference_type;
-    typedef word_t size_type;
+    using prefix = typename T::prefix;
+    using const_vertex = const_vertex_generic<algorithm>;
+    using vertex = vertex_generic<algorithm>;
+    using const_preorder_iterator = const_preorder_iterator_generic<const_vertex>;
+    using const_postorder_iterator = const_postorder_iterator_generic<const_vertex>;
+    using preorder_iterator = preorder_iterator_generic<vertex>;
+    using postorder_iterator = postorder_iterator_generic<vertex>;
+    using key_type = typename T::key_type;
+    using value_type = typename T::value_type;
+    using bit_compare = typename T::bit_compare;
+    using allocator_type = typename T::allocator_type;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using difference_type = typename allocator_type::difference_type;
+    using size_type = word_t;
 
     static const word_t N_ = 0;
 
@@ -133,8 +133,8 @@ public:
     {
     }
 
-    typedef const_iterator_generic<const_postorder_iterator> const_iterator;
-    typedef iterator_generic<postorder_iterator> iterator;
+    using const_iterator = const_iterator_generic<const_postorder_iterator>;
+    using iterator = iterator_generic<postorder_iterator>;
 
     const_iterator begin() const
     {
@@ -193,57 +193,10 @@ public:
     }
 
     template <typename Decision>
-    class partimator
-        : public partimator_generic<preorder_iterator, Decision>
-    {
-        typedef partimator_generic<preorder_iterator, Decision> super;
-
-    public:
-        explicit partimator(
-            const Decision &decis = Decision(),
-            const vertex &vtx = vertex())
-            : super(decis, vtx)
-        {
-        }
-
-        partimator(const super &obj)
-            : super(obj)
-        {
-        }
-    };
+    using partimator = partimator_generic<preorder_iterator, Decision>;
 
     template <typename Decision>
-    class const_partimator
-        : public const_partimator_generic<const_preorder_iterator, Decision>
-    {
-        typedef const_partimator_generic<const_preorder_iterator, Decision> super;
-        typedef const_partimator<Decision> this_t;
-
-    public:
-        explicit const_partimator(
-            const Decision &decis = Decision(),
-            const const_vertex &vtx = const_vertex())
-            : super(decis, vtx)
-        {
-        }
-
-        const_partimator(const super &obj)
-            : super(obj)
-        {
-        }
-
-        const_partimator(const partimator<Decision> &obj)
-            : super(obj)
-        {
-        }
-/*
-        this_t &operator=(const super &obj)
-        {
-            if (&obj != this)
-                *static_cast<super*>(this) = obj;
-            return *this;
-        }*/
-    };
+    using const_partimator = const_partimator_generic<const_preorder_iterator, Decision>;
 
     template <typename Decision>
     const_partimator<Decision> begin(const Decision &decis) const
@@ -295,9 +248,7 @@ public:
         return end();
     }
 
-    const_iterator lower_bound(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0)) const
+    const_iterator lower_bound(const key_type &key, word_t prefixLen = ~word_t(0)) const
     {
         const_vertex vtx(root());
         // find a nearest match
@@ -309,9 +260,7 @@ public:
         }
         return end();
     }
-    iterator lower_bound(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0))
+    iterator lower_bound(const key_type &key, word_t prefixLen = ~word_t(0))
     {
         vertex vtx(root());
         // find a nearest match
@@ -324,9 +273,7 @@ public:
         return end();
     }
 
-    const_iterator upper_bound(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0)) const
+    const_iterator upper_bound(const key_type &key, word_t prefixLen = ~word_t(0)) const
     {
         const_vertex vtx(root());
         if (root_)
@@ -338,9 +285,7 @@ public:
         }
         return end();
     }
-    iterator upper_bound(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0))
+    iterator upper_bound(const key_type &key, word_t prefixLen = ~word_t(0))
     {
         vertex vtx(root());
         if (root_)
@@ -358,9 +303,7 @@ private:
     typedef std::pair<iterator, iterator> iter_range;
 
 public:
-    const_iter_range equal_range(
-        const key_type &key,
-        word_t prefix_len = ~word_t(0)) const
+    const_iter_range equal_range(const key_type &key, word_t prefix_len = ~word_t(0)) const
     {
         const_vertex vtx(root());
         if (root_)
@@ -369,20 +312,14 @@ public:
             vertex lower(vtx);
             lower.template descend<0>();
             if (len < prefix_len)
-                return const_iter_range(
-                    const_iterator(lower),
-                    const_iterator(lower));
+                return const_iter_range(const_iterator(lower), const_iterator(lower));
             vtx.template move<1>();
             vtx.template descend<0>();
-            return const_iter_range(
-                const_iterator(lower),
-                const_iterator(vtx));
+            return const_iter_range(const_iterator(lower), const_iterator(vtx));
         }
         return const_iter_range(end(), end());
     }
-    iter_range equal_range(
-        const key_type &key,
-        word_t prefix_len = ~word_t(0))
+    iter_range equal_range(const key_type &key, word_t prefix_len = ~word_t(0))
     {
         vertex vtx(root());
         if (root_)
@@ -391,14 +328,10 @@ public:
             vertex lower(vtx);
             lower.template descend<0>();
             if (len < prefix_len)
-                return iter_range(
-                    iterator(lower),
-                    iterator(lower));
+                return iter_range(iterator(lower), iterator(lower));
             vtx.template move<1>();
             vtx.template descend<0>();
-            return iter_range(
-                iterator(lower),
-                iterator(vtx));
+            return iter_range(iterator(lower), iterator(vtx));
         }
         return iter_range(end(), end());
     }

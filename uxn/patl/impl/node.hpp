@@ -20,7 +20,7 @@ namespace impl
 template <typename Node>
 class node_generic
 {
-    typedef Node node_type;
+    using node_type = Node;
 
 public:
     const node_type *get_parent() const
