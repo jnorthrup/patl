@@ -221,24 +221,25 @@ int main(/*int argc, char *argv[]*/)
     //
     {
         const char *const X[] = {
-            "asm", "auto", "bool", "break", "case", "catch", "char", "class", "const", 
-            "const_cast", "continue", "default", "delete", "do", "double", 
+            "asm", "auto", "bool", "break", "case", "catch", "char", "class", "const",
+            "const_cast", "continue", "default", "delete", "do", "double",
             "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false",
             "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable",
-            "namespace", "new", "operator", "private", "protected", "public", 
+            "namespace", "new", "operator", "private", "protected", "public",
             "register", "reinterpret_cast", "return", "short", "signed", "sizeof",
             "static", "static_cast", "struct", "switch", "template", "this", "throw",
-            "true", "try", "typedef", "typeid", "typename", "union", "unsigned", 
-            "using", "virtual", "void", "volatile", "wchar_t", "while"};
-            //
-            typedef patl::trie_set<std::string> ReservSet;
-            typedef ReservSet::const_vertex const_vertex;
-            const ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
-            //
-            printf("*** Regexp:\n");
-            const_vertex vtx = rvset.root();
-            print_regexp(0, vtx.preorder_begin(8), vtx.preorder_end());
-            printf("\n");
+            "true", "try", "typedef", "typeid", "typename", "union", "unsigned",
+            "using", "virtual", "void", "volatile", "wchar_t", "while"
+        };
+        //
+        typedef patl::trie_set<std::string> ReservSet;
+        typedef ReservSet::const_vertex const_vertex;
+        const ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
+        //
+        printf("*** Regexp:\n");
+        const_vertex vtx = rvset.root();
+        print_regexp(0, vtx.preorder_begin(8), vtx.preorder_end());
+        printf("\n");
     }
     //
     printf("\n--- [super_]maxrep_iterator\n\n");
