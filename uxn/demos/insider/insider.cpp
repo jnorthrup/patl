@@ -32,16 +32,16 @@ void print_regexp(word_t length, const Iter &beg, const Iter &end)
         if (beg != cur)
             printf("|");
         if (cur->get_qtag())
-            printf("%s", cur->key().substr(length).c_str());
+            printf("%s", cur->get_key().substr(length).c_str());
         else
         {
             const word_t next_len = cur->next_skip() / 8;
-            printf("%s", cur->key().substr(length, next_len - length).c_str());
+            printf("%s", cur->get_key().substr(length, next_len - length).c_str());
             Iter
                 it1 = cur->preorder_begin((next_len + 1) * 8),
                 it2 = cur->preorder_end();
             printf("(");
-            const bool question = it1->key().size() == next_len;
+            const bool question = it1->get_key().size() == next_len;
             if (question)
                 ++it1;
             print_regexp(next_len, it1, it2);
@@ -58,7 +58,7 @@ struct preorder_iterator_callback
 {
     void operator()(const Vertex *vtx) const
     {
-        printf("// %d\t%s\n", vtx->skip(), vtx->key().c_str());
+        printf("// %d\t%s\n", vtx->skip(), vtx->get_key().c_str());
     }
 };
 
@@ -188,12 +188,12 @@ int main(/*int argc, char *argv[]*/)
             itEnd = vtx_root.postorder_end(),
             it = itBeg;
         for (; it != itEnd; ++it)
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->get_key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             --it;
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->get_key().c_str());
         }
     }
     //
@@ -207,13 +207,13 @@ int main(/*int argc, char *argv[]*/)
             it = itBeg;
         preorder_iterator_callback<typename StringSet::const_vertex> icb;
         for (; it != itEnd; /*++it*/it.increment(icb))
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->get_key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             //--it;
             it.decrement(icb);
-            printf("%d\t%s\n", it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->get_key().c_str());
         }
     }
     //
@@ -261,7 +261,7 @@ int main(/*int argc, char *argv[]*/)
             ; ++mrit)
         {
             printf("'%s' x %d:",
-                std::string(mrit->key(), mrit->length()).c_str(),
+                std::string(mrit->get_key(), mrit->length()).c_str(),
                 mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
@@ -277,7 +277,7 @@ int main(/*int argc, char *argv[]*/)
             ; ++mrit)
         {
             printf("'%s' x %d:",
-                std::string(mrit->key(), mrit->length()).c_str(),
+                std::string(mrit->get_key(), mrit->length()).c_str(),
                 mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
@@ -303,21 +303,21 @@ int main(/*int argc, char *argv[]*/)
         do
         {
             const suffix_t::const_vertex
-                vtx = suf.push_back(),
-                sibl = vtx.sibling();
+                vtx{suf.push_back()},
+                sibl{vtx.sibling()};
             if (suf.size() > 1)
             {
                 const int skip = vtx.skip() / 8 / sizeof(typ);
                 const word_t
-                    delta = vtx.key() - sibl.key(),
+                    delta = vtx.get_key() - sibl.get_key(),
                     count = skip / delta + 1;
                 if (count > 1)
                 {
                     printf("begin: %u, length: %u, count: %u\n",
-                        sibl.key() - arr,
+                        sibl.get_key() - arr,
                         delta,
                         count);
-                    suf.rebind(sibl.key() + delta * count);
+                    suf.rebind(sibl.get_key() + delta * count);
                     suf.clear();
                 }
                 if (!suf.empty() && suf.endpoint())
@@ -351,7 +351,7 @@ int main(/*int argc, char *argv[]*/)
             {
                 if (it->limited(6 * 8))
                     printf("* ");
-                printf("%d\t%s\n", it->skip(), it->key().c_str());
+                printf("%d\t%s\n", it->skip(), it->get_key().c_str());
             }
             printf("---\n");
             while (it != itBeg)
@@ -359,7 +359,7 @@ int main(/*int argc, char *argv[]*/)
                 it.decrement(6 * 8);
                 if (it->limited(6 * 8))
                     printf("* ");
-                printf("%d\t%s\n", it->skip(), it->key().c_str());
+                printf("%d\t%s\n", it->skip(), it->get_key().c_str());
             }
 #else
             vtx.mismatch("patr", 4 * 8);

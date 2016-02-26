@@ -60,7 +60,7 @@ void directed_search(
     {
         const const_vertex &seed = it->first;
         typedef patl::hamming_distance<trie_string, true> hamm_dist;
-        hamm_dist hd(dict, 1, seed.key());
+        hamm_dist hd(dict, 1, seed.get_key());
         trie_string::const_partimator<hamm_dist>
             pmi = dict.begin(hd),
             pmi_end = dict.end(hd);
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
             for (vector_vertex::const_iterator it = chain.begin()
                 ; it != chain.end()
                 ; ++it)
-                printf("%s ", it->key().c_str());
+                printf("%s ", it->get_key().c_str());
             printf("\n");
         }
         else

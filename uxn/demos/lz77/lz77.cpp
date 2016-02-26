@@ -88,7 +88,7 @@ int lz_compress(unsigned n_pow, unsigned w_pow, unsigned min_match, Input &src, 
                     std::min(
                         patl::impl::max0(v.skip()) / 8,
                         patl::impl::unsigned_cast(end - cur)));
-                const char *match = v.sibling().key();
+                const char *match = v.sibling().get_key();
                 ++count;
                 if (skip < min_match)
                 {

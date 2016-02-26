@@ -301,7 +301,7 @@ public:
             return skip_ / bit_size;
         }
 
-        const key_type key() const
+        const key_type get_key() const
         {
             return key_;
         }

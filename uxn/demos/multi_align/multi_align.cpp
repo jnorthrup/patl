@@ -172,7 +172,7 @@ void multiple_common_substring(
     for (word_t k = 2; k != v.size(); ++k)
     {
         if (v[k].compact())
-            printf("%u\t%u\t%s\n", k, v_len[k], std::string(v[k].key(), v_len[k]).c_str());
+            printf("%u\t%u\t%s\n", k, v_len[k], std::string(v[k].get_key(), v_len[k]).c_str());
     }
 #endif
     // эвристический выбор подходящего k
@@ -215,7 +215,7 @@ void multiple_common_substring(
     }
     const word_t motif_len = v_len[k_cur];
     const std::string
-        motif(v[k_cur].key(), motif_len),
+        motif(v[k_cur].get_key(), motif_len),
         padding(motif_len, ' ');
     align.clear();
     for (id_type i = 0; i != K; ++i)

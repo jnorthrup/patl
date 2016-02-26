@@ -65,7 +65,7 @@ public:
     }
     const_reference operator*() const
     {
-        return pit_->value();
+        return pit_->get_value();
     }
 
     this_t &operator++()
@@ -133,7 +133,7 @@ public:
     }
     reference operator*()
     {
-        return this->pit_->value();
+        return this->pit_->get_value();
     }
 
     this_t &operator++()
