@@ -86,7 +86,7 @@ public:
     }
     const_reference operator*() const
     {
-        return pit_->value();
+        return pit_->get_value();
     }
 
     this_t &operator++()
@@ -128,7 +128,7 @@ private:
             return false;
         }
         word_t i = skip0 / bit_compare::bit_size;
-        const key_type &key = pit_->key();
+        const key_type &key = pit_->get_key();
         const word_t limit =
             (leaf ? pit_->bit_comp().bit_length(key) : pit_->next_skip()) /
             bit_compare::bit_size;
@@ -195,7 +195,7 @@ public:
     }
     reference operator*()
     {
-        return this->pit_->value();
+        return this->pit_->get_value();
     }
 
     this_t &operator++()

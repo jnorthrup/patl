@@ -448,12 +448,12 @@ public:
         while (static_cast<const algorithm&>(vtx) != pal_end)
         {
             pal_cur.ascend_less(skip);
-            const word_t l = pal_cur.mismatch(vtx.key());
+            const word_t l = pal_cur.mismatch(vtx.get_key());
             if (~word_t(0) == l)
                 // identical keys found - handler must be applied
                 handler(iterator(vertex(pal_cur)), const_iterator(vtx));
             else
-                add(vtx.value(), pal_cur, l);
+                add(vtx.get_value(), pal_cur, l);
             // move to the next
             if (vtx.get_qid())
             {
@@ -506,7 +506,7 @@ public:
                     skip_ins = 0;
                 }
                 *oit++ = pit->next_skip();
-                show_val(oit, pit->key());
+                show_val(oit, pit->get_key());
             }
         }
     }

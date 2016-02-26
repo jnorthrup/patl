@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
     CntVector counts(suffix.size());
     patl::super_maxrep_iterator<SuffixType> mrit(&suffix);
     for (; !mrit->is_root(); ++mrit)
-        counts[mrit->key() - suffix.keys()] = mrit.freq();
+        counts[mrit->get_key() - suffix.keys()] = mrit.freq();
     for (unsigned i = 0; i != counts.size(); ++i)
     {
         const unsigned cnt = counts[i];

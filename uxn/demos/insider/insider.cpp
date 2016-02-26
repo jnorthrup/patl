@@ -33,16 +33,16 @@ void print_regexp(word_t length, const Iter &beg, const Iter &end)
         if (beg != cur)
             printf("|");
         if (cur->get_qtag())
-            printf("%s", cur->key().substr(length).c_str());
+            printf("%s", cur->get_key().substr(length).c_str());
         else
         {
             const word_t next_len = cur->next_skip() / 8;
-            printf("%s", cur->key().substr(length, next_len - length).c_str());
+            printf("%s", cur->get_key().substr(length, next_len - length).c_str());
             Iter
                 it1 = cur->preorder_begin((next_len + 1) * 8),
                 it2 = cur->preorder_end();
             printf("(");
-            const bool question = it1->key().size() == next_len;
+            const bool question = it1->get_key().size() == next_len;
             if (question)
                 ++it1;
             print_regexp(next_len, it1, it2);
@@ -162,7 +162,7 @@ int main(/*int argc, char *argv[]*/)
             itEnd = test1.end(hd);
         printf("*** 'bulk', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s, dist: %lu\n", it->c_str(), it.decis().distance());
+            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- levenshtein_distance\n\n");
@@ -175,7 +175,7 @@ int main(/*int argc, char *argv[]*/)
             itEnd = test1.end(ld);
         printf("*** 'balt', dist == 1:\n");
         for (; it != itEnd; ++it)
-            printf("%s, dist: %lu\n", it->c_str(), it.decis().distance());
+            printf("%s, dist: %u\n", it->c_str(), it.decis().distance());
     }
     //
     printf("\n--- postorder_iterator\n\n");
@@ -189,12 +189,12 @@ int main(/*int argc, char *argv[]*/)
             itEnd = vtx_root.postorder_end(),
             it = itBeg;
         for (; it != itEnd; ++it)
-            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             --it;
-            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
     }
     //
@@ -208,13 +208,13 @@ int main(/*int argc, char *argv[]*/)
             it = itBeg;
         preorder_iterator_callback<typename StringSet::const_vertex> icb;
         for (; it != itEnd; /*++it*/it.increment(icb))
-            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         printf("---\n");
         while (it != itBeg)
         {
             //--it;
             it.decrement(icb);
-            printf("%d\t%s\n", (int)it->skip(), it->key().c_str());
+            printf("%d\t%s\n", it->skip(), it->key().c_str());
         }
     }
     //
@@ -222,24 +222,25 @@ int main(/*int argc, char *argv[]*/)
     //
     {
         const char *const X[] = {
-            "asm", "auto", "bool", "break", "case", "catch", "char", "class", "const", 
-            "const_cast", "continue", "default", "delete", "do", "double", 
+            "asm", "auto", "bool", "break", "case", "catch", "char", "class", "const",
+            "const_cast", "continue", "default", "delete", "do", "double",
             "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false",
             "float", "for", "friend", "goto", "if", "inline", "int", "long", "mutable",
-            "namespace", "new", "operator", "private", "protected", "public", 
+            "namespace", "new", "operator", "private", "protected", "public",
             "register", "reinterpret_cast", "return", "short", "signed", "sizeof",
             "static", "static_cast", "struct", "switch", "template", "this", "throw",
-            "true", "try", "typedef", "typeid", "typename", "union", "unsigned", 
-            "using", "virtual", "void", "volatile", "wchar_t", "while"};
-            //
-            typedef patl::trie_set<std::string> ReservSet;
-            typedef ReservSet::const_vertex const_vertex;
-            const ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
-            //
-            printf("*** Regexp:\n");
-            const_vertex vtx = rvset.root();
-            print_regexp(0, vtx.preorder_begin(8), vtx.preorder_end());
-            printf("\n");
+            "true", "try", "typedef", "typeid", "typename", "union", "unsigned",
+            "using", "virtual", "void", "volatile", "wchar_t", "while"
+        };
+        //
+        typedef patl::trie_set<std::string> ReservSet;
+        typedef ReservSet::const_vertex const_vertex;
+        const ReservSet rvset(X, X + sizeof(X) / sizeof(X[0]));
+        //
+        printf("*** Regexp:\n");
+        const_vertex vtx = rvset.root();
+        print_regexp(0, vtx.preorder_begin(8), vtx.preorder_end());
+        printf("\n");
     }
     //
     printf("\n--- [super_]maxrep_iterator\n\n");
@@ -262,12 +263,12 @@ int main(/*int argc, char *argv[]*/)
         {
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
-                (int)mrit.freq());
+                mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
-                printf(" at %lu", suffix.index_of(
+                printf(" at %u", suffix.index_of(
                     static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
@@ -278,12 +279,12 @@ int main(/*int argc, char *argv[]*/)
         {
             printf("'%s' x %d:",
                 std::string(mrit->key(), mrit->length()).c_str(),
-                (int)mrit.freq());
+                mrit.freq());
             const SuffixSet::const_vertex vtx = mrit->get_vertex();
             for (SuffixSet::const_iterator it = vtx.begin()
                 ; it != vtx.end()
                 ; ++it)
-                printf(" at %u", (unsigned)suffix.index_of(
+                printf(" at %u", suffix.index_of(
                     static_cast<const SuffixSet::const_vertex&>(it)));
             printf("\n");
         }
@@ -313,7 +314,7 @@ int main(/*int argc, char *argv[]*/)
                     count = skip / delta + 1;
                 if (count > 1)
                 {
-                    printf("begin: %lu, length: %lu, count: %lu\n",
+                    printf("begin: %u, length: %u, count: %u\n",
                         sibl.key() - arr,
                         delta,
                         count);
@@ -385,15 +386,15 @@ int main(/*int argc, char *argv[]*/)
     {
         typedef patl::trie_set<char*, 0, patl::bit_comparator_0<char> > char_star_trie;
         char_star_trie trie;
-        trie.insert((char*)"balon");
-        trie.insert((char*)"balka");
-        trie.insert((char*)"balet");
-        trie.insert((char*)"bulat");
-        trie.insert((char*)"bulka");
-        trie.insert((char*)"bal");
-        trie.insert((char*)"balet");
-        trie.insert((char*)"bal");
-        trie.insert((char*)"baton");
+        trie.insert("balon");
+        trie.insert("balka");
+        trie.insert("balet");
+        trie.insert("bulat");
+        trie.insert("bulka");
+        trie.insert("bal");
+        trie.insert("balet");
+        trie.insert("bal");
+        trie.insert("baton");
         printf("*** before show:\n");
         for (char_star_trie::const_iterator it = trie.begin()
             ; it != trie.end()
@@ -404,7 +405,7 @@ int main(/*int argc, char *argv[]*/)
         //
         printf("\n*** serialized data:\n");
         for (word_t i = 0; i != vec.size(); ++i)
-            printf("0x%08lx ", vec[i]);
+            printf("0x%08x ", vec[i]);
         printf("\n");
         //
         trie.read(vec.begin(), vec.end());

@@ -45,7 +45,7 @@ int main()
         const vertex v = lca(
             leaf(pals + i),
             leaf(pals + 2 * n + 1 - i));
-        const int q = v.prefix_length() / 8;
+        const int q = v.get_prefix_length() / 8;
         if (q)
             printf("% 4d %s\n", i, std::string(pals + i - q, 2 * q).c_str());
     }
@@ -75,7 +75,7 @@ int main()
         const vertex v = lca(
             leaf(pals + i),
             leaf(pals + 2 * n - i));
-        const int q = v.prefix_length() / 8 - 1;
+        const int q = v.get_prefix_length() / 8 - 1;
         if (q)
             printf("% 4d %s\n", i, std::string(pals + i - q, 2 * q + 1).c_str());
     }

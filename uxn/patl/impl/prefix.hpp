@@ -109,7 +109,7 @@ public:
         return skip() / bit_compare::bit_size;
     }
 
-    const_key_reference key() const
+    const_key_reference get_key() const
     {
         return cont_->get_key(q_);
     }

@@ -36,8 +36,8 @@ static inline unsigned searchInFile(
         for (unsigned i = 0; i != N; ++i, ++mit)
         {
             const char
-                *pattern = mit->key(),
-                *str = mit.key();
+                *pattern = mit->get_key(),
+                *str = mit.get_key();
             //
             if (*str == '\n')
             {

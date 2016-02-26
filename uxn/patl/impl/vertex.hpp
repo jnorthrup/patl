@@ -15,6 +15,7 @@ namespace impl
 
 template <typename Algorithm>
 class const_vertex_generic
+    : public Algorithm
 {
 protected:
     typedef const_vertex_generic<Algorithm> this_t;
@@ -43,27 +44,18 @@ public:
     typedef typename algorithm::value_type value_type;
 
     explicit const_vertex_generic(const algorithm &pal = algorithm())
-        : pal_(pal)
+        : algorithm(pal)
     {
     }
 
     const_vertex_generic(const cont_type *cont, const node_type *q, word_t qid)
-        : pal_(cont, q, qid)
+        : algorithm(cont, q, qid)
     {
     }
 
     const_vertex_generic(const cont_type *cont, word_t qq)
-        : pal_(cont, qq)
+        : algorithm(cont, qq)
     {
-    }
-
-    bool operator==(const this_t &r) const
-    {
-        return pal_ == r.pal_;
-    }
-    bool operator!=(const this_t &r) const
-    {
-        return !(*this == r);
     }
 
     bool operator<(const this_t &r) const
@@ -71,29 +63,19 @@ public:
         return compact() < r.compact();
     }
 
-    operator const algorithm&() const
-    {
-        return pal_;
-    }
-
     prefix get_prefix() const
     {
-        return prefix(pal_.cont(), pal_.get_q());
-    }
-
-    word_t compact() const
-    {
-        return pal_.compact();
+        return prefix(cont(), get_q());
     }
 
     word_t node_q_uid() const
     {
-        return reinterpret_cast<word_t>(pal_.get_q());
+        return reinterpret_cast<word_t>(get_q());
     }
 
     word_t node_p_uid() const
     {
-        return reinterpret_cast<word_t>(pal_.get_p());
+        return reinterpret_cast<word_t>(get_p());
     }
 
     const_iterator begin() const
@@ -129,7 +111,7 @@ public:
     const_postorder_iterator postorder_end() const
     {
         this_t vtx(*this);
-        if (pal_.get_q())
+        if (get_q())
             vtx.move<1>();
         else
             vtx.toggle();
@@ -138,7 +120,7 @@ public:
 
     const_preorder_iterator preorder_begin() const
     {
-        const node_type *q = pal_.get_q();
+        const node_type *q = get_q();
         return const_preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
     }
     const_preorder_iterator preorder_begin(word_t limit) const
@@ -153,7 +135,7 @@ public:
 
     const_preorder_iterator preorder_end() const
     {
-        if (pal_.get_q())
+        if (get_q())
         {
             const_preorder_iterator pit(*this);
             pit.next_subtree();
@@ -167,50 +149,25 @@ public:
         }
     }
 
-    bool the_end() const
-    {
-        return pal_.the_end();
-    }
-
-    const_key_reference key() const
-    {
-        return pal_.get_key();
-    }
-
     const_key_reference parent_key() const
     {
-        return pal_.get_key(pal_.get_q());
-    }
-
-    word_t prefix_length() const
-    {
-        return pal_.get_prefix_length();
-    }
-
-    const value_type &value() const
-    {
-        return pal_.get_value();
+        return get_key(get_q());
     }
 
     const value_type &parent_value() const
     {
-        return pal_.get_value(pal_.get_q());
+        return get_value(get_q());
     }
 
     word_t skip() const
     {
-        return pal_.get_q()->get_skip();
+        return get_q()->get_skip();
     }
 
     /// only for !leaf()
     word_t next_skip() const
     {
-        return pal_.get_p()->get_skip();
-    }
-
-    this_t sibling() const
-    {
-        return this_t(pal_.sibling());
+        return get_p()->get_skip();
     }
 
     bool limited(word_t limit) const
@@ -281,65 +238,10 @@ public:
 
     // low-level functions
 
-    word_t mismatch(
-        const key_type &key,
-        word_t prefixLen = ~word_t(0))
-    {
-        return pal_.mismatch(key, prefixLen);
-    }
-
-    word_t get_qid() const
-    {
-        return pal_.get_qid();
-    }
-
-    word_t get_qtag() const
-    {
-        return pal_.get_qtag();
-    }
-
     word_t get_parent_id() const
     {
-        return pal_.get_q()->get_parent_id();
+        return get_q()->get_parent_id();
     }
-
-    void toggle()
-    {
-        pal_.toggle();
-    }
-
-    void iterate(word_t id)
-    {
-        pal_.iterate(id);
-    }
-
-    void ascend()
-    {
-        pal_.ascend();
-    }
-
-    void ascend(sword_t prefixLen)
-    {
-        pal_.ascend(prefixLen);
-    }
-
-    void ascend_less(sword_t prefixLen)
-    {
-        pal_.ascend_less(prefixLen);
-    }
-
-    const cont_type *cont() const
-    {
-        return pal_.cont();
-    }
-
-    bit_compare bit_comp() const
-    {
-        return pal_.bit_comp();
-    }
-
-protected:
-    algorithm pal_;
 };
 
 template <typename Algorithm>
@@ -397,11 +299,6 @@ public:
         return *this;
     }
 
-    operator algorithm&()
-    {
-        return this->pal_;
-    }
-
     iterator begin()
     {
         return iterator(*postorder_begin());
@@ -435,8 +332,8 @@ public:
     postorder_iterator postorder_end()
     {
         this_t vtx(*this);
-        if (this->pal_.get_q())
-            vtx.template move<1>();
+        if (get_q())
+            vtx.move<1>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -444,8 +341,8 @@ public:
 
     preorder_iterator preorder_begin()
     {
-        const node_type *q = this->pal_.get_q();
-        return preorder_iterator(this_t(this->cont(), q, q ? this->get_qid() : 1));
+        const node_type *q = get_q();
+        return preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
     }
     preorder_iterator preorder_begin(word_t limit)
     {
@@ -459,7 +356,7 @@ public:
 
     preorder_iterator preorder_end()
     {
-        if (this->pal_.get_q())
+        if (get_q())
         {
             preorder_iterator pit(*this);
             pit.next_subtree();
@@ -471,21 +368,11 @@ public:
             vtx.toggle();
             return preorder_iterator(vtx);
         }
-    }
-
-    value_type &value()
-    {
-        return this->pal_.get_value();
-    }
+    }, cur->key().substr(l
 
     value_type &parent_value()
     {
-        return this->pal_.get_value(this->pal_.get_q());
-    }
-
-    this_t sibling()
-    {
-        return this_t(this->pal_.sibling());
+        return this->get_value(get_q());
     }
 };
 
