@@ -93,8 +93,19 @@ class algorithm_generic<T, This, Container, 0>
 public:
     using cont_type = Container;
     using key_type = typename T::key_type;
+    using const_key_reference = typename T::const_key_reference;
     using value_type = typename T::value_type;
     using node_type = typename T::node_type;
+    // from vertex
+    using prefix = typename cont_type::prefix;
+    using const_preorder_iterator = typename cont_type::const_preorder_iterator;
+    using const_postorder_iterator = typename cont_type::const_postorder_iterator;
+    using preorder_iterator = typename cont_type::preorder_iterator;
+    using postorder_iterator = typename cont_type::postorder_iterator;
+    using const_iterator = typename cont_type::const_iterator;
+    using iterator = typename cont_type::iterator;
+    using const_reverse_iterator = typename cont_type::const_reverse_iterator;
+    using reverse_iterator = typename cont_type::reverse_iterator;
 
 private:
     using const_pointer = const value_type*;
@@ -164,6 +175,264 @@ public:
         return !(*this == pal);
     }
 
+    bool operator<(const this_t &r) const
+    {
+        return compact() < r.compact();
+    }
+
+    prefix get_prefix() const
+    {
+        return prefix(cont(), get_q());
+    }
+
+    word_t node_q_uid() const
+    {
+        return reinterpret_cast<word_t>(get_q());
+    }
+
+    word_t node_p_uid() const
+    {
+        return reinterpret_cast<word_t>(get_p());
+    }
+
+    const_iterator begin() const
+    {
+        return const_iterator(*postorder_begin());
+    }
+
+    const_iterator end() const
+    {
+        return const_iterator(*postorder_end());
+    }
+
+    const_reverse_iterator rbegin() const
+    {
+        return const_reverse_iterator(end());
+    }
+
+    const_reverse_iterator rend() const
+    {
+        return const_reverse_iterator(begin());
+    }
+
+    const_postorder_iterator postorder_begin() const
+    {
+        this_t pal(*this);
+        if (compact())
+            pal.descend<0>();
+        else
+            pal.toggle();
+        return const_postorder_iterator(pal);
+    }
+
+    const_postorder_iterator postorder_end() const
+    {
+        this_t pal(*this);
+        if (get_q())
+            pal.move<1>();
+        else
+            pal.toggle();
+        return const_postorder_iterator(pal);
+    }
+
+    const_preorder_iterator preorder_begin() const
+    {
+        const node_type *q = get_q();
+        return const_preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+    }
+    const_preorder_iterator preorder_begin(word_t limit) const
+    {
+        this_t pal(*this);
+        if (compact())
+            pal.template descend<0>(limit);
+        else
+            pal.toggle();
+        return const_preorder_iterator(pal);
+    }
+
+    const_preorder_iterator preorder_end() const
+    {
+        if (get_q())
+        {
+            const_preorder_iterator pit(*this);
+            pit.next_subtree();
+            return pit;
+        }
+        else
+        {
+            this_t pal(*this);
+            pal.toggle();
+            return const_preorder_iterator(pal);
+        }
+    }
+
+    const_key_reference parent_key() const
+    {
+        return get_key(get_q());
+    }
+
+    const value_type &parent_value() const
+    {
+        return get_value(get_q());
+    }
+
+    word_t skip() const
+    {
+        return get_q()->get_skip();
+    }
+
+    /// only for !leaf()
+    word_t next_skip() const
+    {
+        return get_p()->get_skip();
+    }
+
+    bool limited(word_t limit) const
+    {
+        return get_qtag() || next_skip() >= limit;
+    }
+
+    /// trie descend to the leaves
+    template <word_t Side>
+    void descend()
+    {
+        while (!get_qtag())
+            iterate(Side);
+    }
+    template <word_t Side, typename Callback>
+    void descend(Callback &cb)
+    {
+        while (!get_qtag())
+        {
+            cb(this);
+            iterate(Side);
+        }
+    }
+
+    /// trie descend to the leaves limited by
+    template <word_t Side>
+    void descend(word_t limit)
+    {
+        while (!limited(limit))
+            iterate(Side);
+    }
+    template <word_t Side, typename Callback>
+    void descend(word_t limit, Callback &cb)
+    {
+        while (!limited(limit))
+        {
+            cb(this);
+            iterate(Side);
+        }
+    }
+
+    /// generic part of all move functions
+    template <word_t Side>
+    void move_subtree()
+    {
+        while (get_qid() == Side)
+            ascend();
+        toggle();
+    }
+    template <word_t Side, typename Callback>
+    void move_subtree(Callback &cb)
+    {
+        while (get_qid() == Side)
+        {
+            ascend();
+            cb(this);
+        }
+        toggle();
+    }
+
+    /// move to the next leaf
+    template <word_t Side>
+    void move()
+    {
+        move_subtree<Side>();
+        descend<word_t(1) ^ Side>();
+    }
+
+    word_t get_parent_id() const
+    {
+        return get_q()->get_parent_id();
+    }
+
+    // from vertex (non-const)
+
+    iterator begin()
+    {
+        return iterator(*postorder_begin());
+    }
+
+    iterator end()
+    {
+        return iterator(*postorder_end());
+    }
+
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(end());
+    }
+
+    reverse_iterator rend()
+    {
+        return reverse_iterator(begin());
+    }
+
+    postorder_iterator postorder_begin()
+    {
+        this_t vtx(*this);
+        if (compact())
+            vtx.descend<0>();
+        else
+            vtx.toggle();
+        return postorder_iterator(vtx);
+    }
+
+    postorder_iterator postorder_end()
+    {
+        this_t vtx(*this);
+        if (pal_.get_q())
+            vtx.move<1>();
+        else
+            vtx.toggle();
+        return postorder_iterator(vtx);
+    }
+
+    preorder_iterator preorder_begin()
+    {
+        const node_type *q = pal_.get_q();
+        return preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+    }
+    preorder_iterator preorder_begin(word_t limit)
+    {
+        this_t vtx(*this);
+        if (compact())
+            vtx.template descend<0>(limit);
+        else
+            vtx.toggle();
+        return preorder_iterator(vtx);
+    }
+
+    preorder_iterator preorder_end()
+    {
+        if (pal_.get_q())
+        {
+            preorder_iterator pit(*this);
+            pit.next_subtree();
+            return pit;
+        }
+        else
+        {
+            this_t vtx(*this);
+            vtx.toggle();
+            return preorder_iterator(vtx);
+        }
+    }
+
+    //
+
     this_t sibling() const
     {
         return CSELF->construct(get_q(), word_t(1) ^ get_qid());
@@ -215,7 +484,7 @@ public:
             }
             iterate_by_key(key);
         }
-        return align_down<bit_compare::bit_size>(skip) +
+        return impl::align_down<bit_compare::bit_size>(skip) +
             bcmp.bit_mismatch(
                 key + skip / bit_compare::bit_size,
                 CSELF->get_key() + skip / bit_compare::bit_size);
@@ -304,7 +573,7 @@ public:
         word_t prefixLen = ~word_t(0))
     {
         const bit_compare bcmp(bit_comp());
-        const word_t len = get_min(prefixLen, bcmp.bit_length(key));
+        const word_t len = impl::get_min(prefixLen, bcmp.bit_length(key));
         if (len == ~word_t(0))
             run(key);
         else

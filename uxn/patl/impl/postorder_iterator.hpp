@@ -6,7 +6,7 @@
 #ifndef PATL_IMPL_POSTORDER_ITERATOR_HPP
 #define PATL_IMPL_POSTORDER_ITERATOR_HPP
 
-#include "vertex.hpp"
+#include "algorithm.hpp"
 #include <iterator>
 
 namespace uxn
@@ -16,29 +16,27 @@ namespace patl
 namespace impl
 {
 
-template <typename Vertex>
+template <typename Algorithm>
 class const_postorder_iterator_generic
-    : public std::iterator<
-        std::bidirectional_iterator_tag,
-        Vertex>
+    : public std::iterator<std::bidirectional_iterator_tag, Algorithm>
 {
-    typedef const_postorder_iterator_generic<Vertex> this_t;
+    typedef const_postorder_iterator_generic<Algorithm> this_t;
 
 public:
-    typedef Vertex vertex;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
+    typedef Algorithm algorithm;
+    typedef const algorithm *const_pointer;
+    typedef const algorithm &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-    explicit const_postorder_iterator_generic(const vertex &vtx = vertex())
-        : vtx_(vtx)
+    explicit const_postorder_iterator_generic(const algorithm &pal = algorithm())
+        : pal_(pal)
     {
     }
 
     bool operator==(const this_t &it) const
     {
-        return vtx_ == it.vtx_;
+        return pal_ == it.pal_;
     }
     bool operator!=(const this_t &it) const
     {
@@ -51,17 +49,17 @@ public:
     }
     const_reference operator*() const
     {
-        return vtx_;
+        return pal_;
     }
 
     this_t &operator++()
     {
-        if (vtx_.get_qid())
-            vtx_.ascend();
+        if (pal_.get_qid())
+            pal_.ascend();
         else
         {
-            vtx_.toggle();
-            vtx_.template descend<0>();
+            pal_.toggle();
+            pal_.template descend<0>();
         }
         return *this;
     }
@@ -74,14 +72,14 @@ public:
 
     this_t &operator--()
     {
-        if (vtx_.get_qtag())
+        if (pal_.get_qtag())
         {
-            if (!vtx_.get_qid())
-                vtx_.ascend();
-            vtx_.toggle();
+            if (!pal_.get_qid())
+                pal_.ascend();
+            pal_.toggle();
         }
         else
-            vtx_.iterate(1);
+            pal_.iterate(1);
         return *this;
     }
     this_t operator--(int)
@@ -92,33 +90,32 @@ public:
     }
 
 protected:
-    vertex vtx_; // const_vertex OR vertex actually
+    vertex pal_; // const_vertex OR vertex actually
 };
 
-template <typename Vertex>
+template <typename Algorithm>
 class postorder_iterator_generic
-    : public const_postorder_iterator_generic<Vertex>
+    : public const_postorder_iterator_generic<Algorithm>
 {
-    typedef const_postorder_iterator_generic<Vertex> super;
-    typedef postorder_iterator_generic<Vertex> this_t;
+    typedef const_postorder_iterator_generic<Algorithm> super;
+    typedef postorder_iterator_generic<Algorithm> this_t;
 
 public:
-    typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
+    typedef Algorithm algorithm;
     typedef const_postorder_iterator_generic<const_vertex> const_postorder_iterator;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
-    typedef vertex *pointer;
-    typedef vertex &reference;
+    typedef const algorithm *const_pointer;
+    typedef const algorithm &const_reference;
+    typedef algorithm *pointer;
+    typedef algorithm &reference;
 
-    explicit postorder_iterator_generic(const vertex &vtx = vertex())
-        : super(vtx)
+    explicit postorder_iterator_generic(const algorithm &pal = algorithm())
+        : super(pal)
     {
     }
 
     operator const_postorder_iterator() const
     {
-        return const_postorder_iterator(this->vtx_);
+        return const_postorder_iterator(this->pal_);
     }
 
     const_pointer operator->() const
@@ -127,7 +124,7 @@ public:
     }
     const_reference operator*() const
     {
-        return this->vtx_;
+        return this->pal_;
     }
 
     pointer operator->()
@@ -136,7 +133,7 @@ public:
     }
     reference operator*()
     {
-        return this->vtx_;
+        return this->pal_;
     }
 
     this_t &operator++()

@@ -9,9 +9,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="impl\algorithm.hpp">
-      <Filter>impl</Filter>
-    </ClInclude>
     <ClInclude Include="impl\assoc_generic.hpp">
       <Filter>impl</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
     <ClInclude Include="impl\trivial.hpp">
       <Filter>impl</Filter>
     </ClInclude>
-    <ClInclude Include="impl\vertex.hpp">
-      <Filter>impl</Filter>
-    </ClInclude>
     <ClInclude Include="aux_\bitwise_io.hpp">
       <Filter>aux</Filter>
     </ClInclude>
@@ -108,5 +102,8 @@
     <ClInclude Include="trie_map.hpp" />
     <ClInclude Include="trie_set.hpp" />
     <ClInclude Include="unordered.hpp" />
+    <ClInclude Include="impl\algorithm.hpp">
+      <Filter>impl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

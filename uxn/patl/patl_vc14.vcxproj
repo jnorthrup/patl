@@ -39,7 +39,6 @@
     <ClInclude Include="impl\suffix_generic.hpp" />
     <ClInclude Include="impl\trie_generic.hpp" />
     <ClInclude Include="impl\trivial.hpp" />
-    <ClInclude Include="impl\vertex.hpp" />
     <ClInclude Include="lca_oracle.hpp" />
     <ClInclude Include="leaf_oracle.hpp" />
     <ClInclude Include="levenshtein.hpp" />

@@ -6,7 +6,7 @@
 #ifndef PATL_IMPL_PREORDER_ITERATOR_HPP
 #define PATL_IMPL_PREORDER_ITERATOR_HPP
 
-#include "vertex.hpp"
+#include "algorithm.hpp"
 #include <iterator>
 
 namespace uxn
@@ -16,29 +16,27 @@ namespace patl
 namespace impl
 {
 
-template <typename Vertex>
+template <typename Algorithm>
 class const_preorder_iterator_generic
-    : public std::iterator<
-        std::bidirectional_iterator_tag,
-        Vertex>
+    : public std::iterator<std::bidirectional_iterator_tag, Algorithm>
 {
-    typedef const_preorder_iterator_generic<Vertex> this_t;
+    typedef const_preorder_iterator_generic<Algorithm> this_t;
 
 public:
-    typedef Vertex vertex;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
+    typedef Algorithm algorithm;
+    typedef const algorithm *const_pointer;
+    typedef const algorithm &const_reference;
     typedef const_pointer pointer;
     typedef const_reference reference;
 
-    explicit const_preorder_iterator_generic(const vertex &vtx = vertex())
-        : vtx_(vtx)
+    explicit const_preorder_iterator_generic(const algorithm &pal = algorithm())
+        : pal_(pal)
     {
     }
 
     bool operator==(const this_t &it) const
     {
-        return vtx_ == it.vtx_;
+        return pal_ == it.pal_;
     }
     bool operator!=(const this_t &it) const
     {
@@ -51,15 +49,15 @@ public:
     }
     const_reference operator*() const
     {
-        return vtx_;
+        return pal_;
     }
 
     this_t &operator++()
     {
-        if (vtx_.get_qtag())
+        if (pal_.get_qtag())
             next_subtree();
         else
-            vtx_.iterate(0);
+            pal_.iterate(0);
         return *this;
     }
     this_t operator++(int)
@@ -71,13 +69,13 @@ public:
 
     this_t &operator--()
     {
-        if (vtx_.get_qid())
+        if (pal_.get_qid())
         {
-            vtx_.toggle();
-            vtx_.template descend<1>();
+            pal_.toggle();
+            pal_.template descend<1>();
         }
         else
-            vtx_.ascend();
+            pal_.ascend();
         return *this;
     }
     this_t operator--(int)
@@ -89,99 +87,98 @@ public:
 
     void next_subtree()
     {
-        vtx_.template move_subtree<1>();
+        pal_.template move_subtree<1>();
     }
     template <typename Callback>
     void next_subtree(Callback &cb)
     {
-        vtx_.template move_subtree<1>(cb);
+        pal_.template move_subtree<1>(cb);
     }
 
     void increment(word_t limit)
     {
-        if (vtx_.limited(limit))
+        if (pal_.limited(limit))
             next_subtree();
         else
-            vtx_.iterate(0);
+            pal_.iterate(0);
     }
     template <typename Callback>
     void increment(Callback &cb)
     {
-        if (vtx_.get_qtag())
+        if (pal_.get_qtag())
             next_subtree(cb);
         else
-            vtx_.iterate(0);
+            pal_.iterate(0);
     }
     template <typename Callback>
     void increment(word_t limit, Callback &cb)
     {
-        if (vtx_.limited(limit))
+        if (pal_.limited(limit))
             next_subtree(cb);
         else
-            vtx_.iterate(0);
+            pal_.iterate(0);
     }
 
     void decrement(word_t limit)
     {
-        if (vtx_.get_qid())
+        if (pal_.get_qid())
         {
-            vtx_.toggle();
-            vtx_.template descend<1>(limit);
+            pal_.toggle();
+            pal_.template descend<1>(limit);
         }
         else
-            vtx_.ascend();
+            pal_.ascend();
     }
     template <typename Callback>
     void decrement(Callback &cb)
     {
-        if (vtx_.get_qid())
+        if (pal_.get_qid())
         {
-            vtx_.toggle();
-            vtx_.template descend<1>(cb);
+            pal_.toggle();
+            pal_.template descend<1>(cb);
         }
         else
-            vtx_.ascend();
+            pal_.ascend();
     }
     template <typename Callback>
     void decrement(word_t limit, Callback &cb)
     {
-        if (vtx_.get_qid())
+        if (pal_.get_qid())
         {
-            vtx_.toggle();
-            vtx_.template descend<1>(limit, cb);
+            pal_.toggle();
+            pal_.template descend<1>(limit, cb);
         }
         else
-            vtx_.ascend();
+            pal_.ascend();
     }
 
 protected:
-    vertex vtx_;
+    algorithm pal_;
 };
 
-template <typename Vertex>
+template <typename Algorithm>
 class preorder_iterator_generic
-    : public const_preorder_iterator_generic<Vertex>
+    : public const_preorder_iterator_generic<Algorithm>
 {
-    typedef const_preorder_iterator_generic<Vertex> super;
-    typedef preorder_iterator_generic<Vertex> this_t;
+    typedef const_preorder_iterator_generic<Algorithm> super;
+    typedef preorder_iterator_generic<Algorithm> this_t;
 
 public:
-    typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef const_preorder_iterator_generic<const_vertex> const_preorder_iterator;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
-    typedef vertex *pointer;
-    typedef vertex &reference;
+    typedef Algorithm algorithm;
+    typedef const_preorder_iterator_generic<algorithm> const_preorder_iterator;
+    typedef const algorithm *const_pointer;
+    typedef const algorithm &const_reference;
+    typedef algorithm *pointer;
+    typedef algorithm &reference;
 
-    explicit preorder_iterator_generic(const vertex &vtx = vertex())
-        : super(vtx)
+    explicit preorder_iterator_generic(const algorithm &pal = algorithm())
+        : super(pal)
     {
     }
 
     operator const_preorder_iterator() const
     {
-        return const_preorder_iterator(this->vtx_);
+        return const_preorder_iterator(this->pal_);
     }
 
     const_pointer operator->() const
@@ -190,7 +187,7 @@ public:
     }
     const_reference operator*() const
     {
-        return this->vtx_;
+        return this->pal_;
     }
 
     pointer operator->()
@@ -199,7 +196,7 @@ public:
     }
     reference operator*()
     {
-        return this->vtx_;
+        return this->pal_;
     }
 
     this_t &operator++()

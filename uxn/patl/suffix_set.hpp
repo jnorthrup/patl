@@ -59,6 +59,7 @@ public:
     static const word_t delta = Delta;
 
     typedef Type key_type;
+    typedef const key_type &const_key_reference;
     typedef Type value_type;
     typedef BitComp bit_compare;
     typedef Allocator allocator_type;

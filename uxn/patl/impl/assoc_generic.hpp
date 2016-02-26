@@ -10,7 +10,6 @@
 #include "postorder_iterator.hpp"
 #include "iterator.hpp"
 #include "partimator.hpp"
-#include "vertex.hpp"
 #include <map>
 
 namespace uxn
@@ -37,12 +36,11 @@ class assoc_generic
     using super = assoc_generic<This, T, 0>;
 
 protected:
-    using algorithm = typename T::algorithm;
     using node_type = typename T::node_type;
 
 public:
+    using algorithm = typename T::algorithm;
     using prefix = typename T::prefix;
-    using vertex = vertex_generic<algorithm>;
     using preorder_iterator = preorder_iterator_generic<vertex>;
     using postorder_iterator = postorder_iterator_generic<vertex>;
     using key_type = typename T::key_type;
