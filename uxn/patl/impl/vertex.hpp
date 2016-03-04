@@ -60,22 +60,22 @@ public:
 
     bool operator<(const this_t &r) const
     {
-        return compact() < r.compact();
+        return algorithm::compact() < r.compact();
     }
 
     prefix get_prefix() const
     {
-        return prefix(cont(), get_q());
+        return prefix(algorithm::cont(), algorithm::get_q());
     }
 
     word_t node_q_uid() const
     {
-        return reinterpret_cast<word_t>(get_q());
+        return reinterpret_cast<word_t>(algorithm::get_q());
     }
 
     word_t node_p_uid() const
     {
-        return reinterpret_cast<word_t>(get_p());
+        return reinterpret_cast<word_t>(algorithm::get_p());
     }
 
     const_iterator begin() const
@@ -101,7 +101,7 @@ public:
     const_postorder_iterator postorder_begin() const
     {
         this_t vtx(*this);
-        if (compact())
+        if (algorithm::compact())
             vtx.descend<0>();
         else
             vtx.toggle();
@@ -111,7 +111,7 @@ public:
     const_postorder_iterator postorder_end() const
     {
         this_t vtx(*this);
-        if (get_q())
+        if (algorithm::get_q())
             vtx.move<1>();
         else
             vtx.toggle();
@@ -120,13 +120,13 @@ public:
 
     const_preorder_iterator preorder_begin() const
     {
-        const node_type *q = get_q();
-        return const_preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+        const node_type *q = algorithm::get_q();
+        return const_preorder_iterator(this_t(algorithm::cont(), q, q ? algorithm::get_qid() : 1));
     }
     const_preorder_iterator preorder_begin(word_t limit) const
     {
         this_t vtx(*this);
-        if (compact())
+        if (algorithm::compact())
             vtx.template descend<0>(limit);
         else
             vtx.toggle();
@@ -135,7 +135,7 @@ public:
 
     const_preorder_iterator preorder_end() const
     {
-        if (get_q())
+        if (algorithm::get_q())
         {
             const_preorder_iterator pit(*this);
             pit.next_subtree();
@@ -151,7 +151,7 @@ public:
 
     const_key_reference parent_key() const
     {
-        return get_key(get_q());
+        return algorithm::get_key(algorithm::get_q());
     }
 
     const value_type &parent_value() const
@@ -161,34 +161,34 @@ public:
 
     word_t skip() const
     {
-        return get_q()->get_skip();
+        return algorithm::get_q()->get_skip();
     }
 
     /// only for !leaf()
     word_t next_skip() const
     {
-        return get_p()->get_skip();
+        return algorithm::get_p()->get_skip();
     }
 
     bool limited(word_t limit) const
     {
-        return get_qtag() || next_skip() >= limit;
+        return algorithm::get_qtag() || next_skip() >= limit;
     }
 
     /// trie descend to the leaves
     template <word_t Side>
     void descend()
     {
-        while (!get_qtag())
-            iterate(Side);
+        while (!algorithm::get_qtag())
+            algorithm::iterate(Side);
     }
     template <word_t Side, typename Callback>
     void descend(Callback &cb)
     {
-        while (!get_qtag())
+        while (!algorithm::get_qtag())
         {
             cb(this);
-            iterate(Side);
+            algorithm::iterate(Side);
         }
     }
 
@@ -197,7 +197,7 @@ public:
     void descend(word_t limit)
     {
         while (!limited(limit))
-            iterate(Side);
+            algorithm::iterate(Side);
     }
     template <word_t Side, typename Callback>
     void descend(word_t limit, Callback &cb)
@@ -213,19 +213,19 @@ public:
     template <word_t Side>
     void move_subtree()
     {
-        while (get_qid() == Side)
-            ascend();
-        toggle();
+        while (algorithm::get_qid() == Side)
+            algorithm::ascend();
+        algorithm::toggle();
     }
     template <word_t Side, typename Callback>
     void move_subtree(Callback &cb)
     {
-        while (get_qid() == Side)
+        while (algorithm::get_qid() == Side)
         {
-            ascend();
+            algorithm::ascend();
             cb(this);
         }
-        toggle();
+        algorithm::toggle();
     }
 
     /// move to the next leaf
@@ -240,7 +240,7 @@ public:
 
     word_t get_parent_id() const
     {
-        return get_q()->get_parent_id();
+        return algorithm::get_q()->get_parent_id();
     }
 };
 
@@ -322,8 +322,8 @@ public:
     postorder_iterator postorder_begin()
     {
         this_t vtx(*this);
-        if (compact())
-            vtx.descend<0>();
+        if (algorithm::compact())
+            vtx.template descend<0>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -332,8 +332,8 @@ public:
     postorder_iterator postorder_end()
     {
         this_t vtx(*this);
-        if (get_q())
-            vtx.move<1>();
+        if (algorithm::get_q())
+            vtx.template move<1>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);

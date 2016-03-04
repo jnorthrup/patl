@@ -128,8 +128,8 @@ public:
     }
 
     explicit assoc_generic(const bit_compare &bit_comp)
-        : bit_comp_(bit_comp)
-        , root_(0)
+        : root_(0)
+        , bit_comp_(bit_comp)
     {
     }
 

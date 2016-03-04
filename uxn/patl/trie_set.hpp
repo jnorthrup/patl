@@ -64,7 +64,7 @@ public:
         const Allocator &alloc = Allocator())
         : super(bit_comp, alloc)
     {
-        insert(first, last);
+        super::insert(first, last);
     }
 };
 
