@@ -38,8 +38,11 @@ public:
     void init()
     {
         // deallocate old
-        unsigned_alloc_.deallocate(leaf_map_, leaf_size_);
-        leaf_map_ = 0;
+        if (leaf_map_)
+        {
+            unsigned_alloc_.deallocate(leaf_map_, leaf_size_);
+            leaf_map_ = 0;
+        }
         //
         if (!cont_->size())
             return;

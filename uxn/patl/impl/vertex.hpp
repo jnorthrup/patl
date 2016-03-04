@@ -18,30 +18,30 @@ class const_vertex_generic
     : public Algorithm
 {
 protected:
-    typedef const_vertex_generic<Algorithm> this_t;
-    typedef Algorithm algorithm;
+    using this_t = const_vertex_generic<Algorithm>;
+    using algorithm = Algorithm;
 
 public:
-    typedef this_t const_vertex;
-    typedef typename algorithm::cont_type cont_type;
+    using const_vertex = this_t;
+    using cont_type = typename algorithm::cont_type;
 
 protected:
-    typedef typename algorithm::node_type node_type;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename cont_type::prefix prefix;
-    typedef typename cont_type::const_preorder_iterator const_preorder_iterator;
-    typedef typename cont_type::const_postorder_iterator const_postorder_iterator;
-    typedef typename cont_type::preorder_iterator preorder_iterator;
-    typedef typename cont_type::postorder_iterator postorder_iterator;
-    typedef typename cont_type::const_iterator const_iterator;
-    typedef typename cont_type::iterator iterator;
-    typedef typename cont_type::const_reverse_iterator const_reverse_iterator;
-    typedef typename cont_type::reverse_iterator reverse_iterator;
+    using node_type = typename algorithm::node_type;
+    using bit_compare = typename cont_type::bit_compare;
+    using prefix = typename cont_type::prefix;
+    using const_preorder_iterator = typename cont_type::const_preorder_iterator;
+    using const_postorder_iterator = typename cont_type::const_postorder_iterator;
+    using preorder_iterator = typename cont_type::preorder_iterator;
+    using postorder_iterator = typename cont_type::postorder_iterator;
+    using const_iterator = typename cont_type::const_iterator;
+    using iterator = typename cont_type::iterator;
+    using const_reverse_iterator = typename cont_type::const_reverse_iterator;
+    using reverse_iterator = typename cont_type::reverse_iterator;
 
 public:
-    typedef typename algorithm::key_type key_type;
-    typedef typename algorithm::const_key_reference const_key_reference;
-    typedef typename algorithm::value_type value_type;
+    using key_type = typename algorithm::key_type;
+    using const_key_reference = typename algorithm::const_key_reference;
+    using value_type = typename algorithm::value_type;
 
     explicit const_vertex_generic(const algorithm &pal = algorithm())
         : algorithm(pal)
@@ -60,22 +60,22 @@ public:
 
     bool operator<(const this_t &r) const
     {
-        return compact() < r.compact();
+        return algorithm::compact() < r.compact();
     }
 
     prefix get_prefix() const
     {
-        return prefix(cont(), get_q());
+        return prefix(algorithm::cont(), algorithm::get_q());
     }
 
     word_t node_q_uid() const
     {
-        return reinterpret_cast<word_t>(get_q());
+        return reinterpret_cast<word_t>(algorithm::get_q());
     }
 
     word_t node_p_uid() const
     {
-        return reinterpret_cast<word_t>(get_p());
+        return reinterpret_cast<word_t>(algorithm::get_p());
     }
 
     const_iterator begin() const
@@ -101,7 +101,7 @@ public:
     const_postorder_iterator postorder_begin() const
     {
         this_t vtx(*this);
-        if (compact())
+        if (algorithm::compact())
             vtx.descend<0>();
         else
             vtx.toggle();
@@ -111,7 +111,7 @@ public:
     const_postorder_iterator postorder_end() const
     {
         this_t vtx(*this);
-        if (get_q())
+        if (algorithm::get_q())
             vtx.move<1>();
         else
             vtx.toggle();
@@ -120,13 +120,13 @@ public:
 
     const_preorder_iterator preorder_begin() const
     {
-        const node_type *q = get_q();
-        return const_preorder_iterator(this_t(cont(), q, q ? get_qid() : 1));
+        const node_type *q = algorithm::get_q();
+        return const_preorder_iterator(this_t(algorithm::cont(), q, q ? algorithm::get_qid() : 1));
     }
     const_preorder_iterator preorder_begin(word_t limit) const
     {
         this_t vtx(*this);
-        if (compact())
+        if (algorithm::compact())
             vtx.template descend<0>(limit);
         else
             vtx.toggle();
@@ -135,7 +135,7 @@ public:
 
     const_preorder_iterator preorder_end() const
     {
-        if (get_q())
+        if (algorithm::get_q())
         {
             const_preorder_iterator pit(*this);
             pit.next_subtree();
@@ -151,7 +151,7 @@ public:
 
     const_key_reference parent_key() const
     {
-        return get_key(get_q());
+        return algorithm::get_key(algorithm::get_q());
     }
 
     const value_type &parent_value() const
@@ -161,34 +161,34 @@ public:
 
     word_t skip() const
     {
-        return get_q()->get_skip();
+        return algorithm::get_q()->get_skip();
     }
 
     /// only for !leaf()
     word_t next_skip() const
     {
-        return get_p()->get_skip();
+        return algorithm::get_p()->get_skip();
     }
 
     bool limited(word_t limit) const
     {
-        return get_qtag() || next_skip() >= limit;
+        return algorithm::get_qtag() || next_skip() >= limit;
     }
 
     /// trie descend to the leaves
     template <word_t Side>
     void descend()
     {
-        while (!get_qtag())
-            iterate(Side);
+        while (!algorithm::get_qtag())
+            algorithm::iterate(Side);
     }
     template <word_t Side, typename Callback>
     void descend(Callback &cb)
     {
-        while (!get_qtag())
+        while (!algorithm::get_qtag())
         {
             cb(this);
-            iterate(Side);
+            algorithm::iterate(Side);
         }
     }
 
@@ -197,7 +197,7 @@ public:
     void descend(word_t limit)
     {
         while (!limited(limit))
-            iterate(Side);
+            algorithm::iterate(Side);
     }
     template <word_t Side, typename Callback>
     void descend(word_t limit, Callback &cb)
@@ -213,19 +213,19 @@ public:
     template <word_t Side>
     void move_subtree()
     {
-        while (get_qid() == Side)
-            ascend();
-        toggle();
+        while (algorithm::get_qid() == Side)
+            algorithm::ascend();
+        algorithm::toggle();
     }
     template <word_t Side, typename Callback>
     void move_subtree(Callback &cb)
     {
-        while (get_qid() == Side)
+        while (algorithm::get_qid() == Side)
         {
-            ascend();
+            algorithm::ascend();
             cb(this);
         }
-        toggle();
+        algorithm::toggle();
     }
 
     /// move to the next leaf
@@ -240,7 +240,7 @@ public:
 
     word_t get_parent_id() const
     {
-        return get_q()->get_parent_id();
+        return algorithm::get_q()->get_parent_id();
     }
 };
 
@@ -249,26 +249,26 @@ class vertex_generic
     : public const_vertex_generic<Algorithm>
 {
 protected:
-    typedef const_vertex_generic<Algorithm> super;
-    typedef vertex_generic<Algorithm> this_t;
-    typedef Algorithm algorithm;
+    using super = const_vertex_generic<Algorithm>;
+    using this_t = vertex_generic<Algorithm>;
+    using algorithm = Algorithm;
 
 public:
-    typedef super const_vertex;
-    typedef typename algorithm::cont_type cont_type;
+    using const_vertex = super;
+    using cont_type = typename algorithm::cont_type;
 
 protected:
-    typedef typename algorithm::node_type node_type;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename cont_type::prefix prefix;
-    typedef typename cont_type::preorder_iterator preorder_iterator;
-    typedef typename cont_type::postorder_iterator postorder_iterator;
-    typedef typename cont_type::iterator iterator;
-    typedef typename cont_type::reverse_iterator reverse_iterator;
+    using node_type = typename algorithm::node_type;
+    using bit_compare = typename cont_type::bit_compare;
+    using prefix = typename cont_type::prefix;
+    using preorder_iterator = typename cont_type::preorder_iterator;
+    using postorder_iterator = typename cont_type::postorder_iterator;
+    using iterator = typename cont_type::iterator;
+    using reverse_iterator = typename cont_type::reverse_iterator;
 
 public:
-    typedef typename algorithm::key_type key_type;
-    typedef typename algorithm::value_type value_type;
+    using key_type = typename algorithm::key_type;
+    using value_type = typename algorithm::value_type;
 
     explicit vertex_generic(const algorithm &pal = algorithm())
         : super(pal)
@@ -322,7 +322,7 @@ public:
     postorder_iterator postorder_begin()
     {
         this_t vtx(*this);
-        if (this->compact())
+        if (algorithm::compact())
             vtx.template descend<0>();
         else
             vtx.toggle();
@@ -332,8 +332,8 @@ public:
     postorder_iterator postorder_end()
     {
         this_t vtx(*this);
-        if (get_q())
-            vtx.move<1>();
+        if (algorithm::get_q())
+            vtx.template move<1>();
         else
             vtx.toggle();
         return postorder_iterator(vtx);
@@ -347,7 +347,7 @@ public:
     preorder_iterator preorder_begin(word_t limit)
     {
         this_t vtx(*this);
-        if (this->compact())
+        if (compact())
             vtx.template descend<0>(limit);
         else
             vtx.toggle();
@@ -368,7 +368,7 @@ public:
             vtx.toggle();
             return preorder_iterator(vtx);
         }
-    }, cur->key().substr(l
+    }
 
     value_type &parent_value()
     {
