@@ -51,9 +51,6 @@
     <ClInclude Include="impl\preorder_iterator.hpp">
       <Filter>impl</Filter>
     </ClInclude>
-    <ClInclude Include="impl\primes.hpp">
-      <Filter>impl</Filter>
-    </ClInclude>
     <ClInclude Include="impl\ring_buffer.hpp">
       <Filter>impl</Filter>
     </ClInclude>
@@ -99,14 +96,11 @@
     <ClInclude Include="ngram_stat.hpp" />
     <ClInclude Include="partial.hpp" />
     <ClInclude Include="patricia_dot_creator.hpp" />
-    <ClInclude Include="priority.hpp" />
-    <ClInclude Include="range_coder.hpp" />
     <ClInclude Include="suffix_map.hpp" />
     <ClInclude Include="suffix_set.hpp" />
     <ClInclude Include="suffix_utils.hpp" />
     <ClInclude Include="super_maxrep_iterator.hpp" />
     <ClInclude Include="trie_map.hpp" />
     <ClInclude Include="trie_set.hpp" />
-    <ClInclude Include="unordered.hpp" />
   </ItemGroup>
 </Project>
