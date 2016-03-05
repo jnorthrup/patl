@@ -34,7 +34,6 @@
     <ClInclude Include="impl\postorder_iterator.hpp" />
     <ClInclude Include="impl\prefix.hpp" />
     <ClInclude Include="impl\preorder_iterator.hpp" />
-    <ClInclude Include="impl\primes.hpp" />
     <ClInclude Include="impl\ring_buffer.hpp" />
     <ClInclude Include="impl\suffix_generic.hpp" />
     <ClInclude Include="impl\trie_generic.hpp" />
@@ -47,15 +46,12 @@
     <ClInclude Include="ngram_stat.hpp" />
     <ClInclude Include="partial.hpp" />
     <ClInclude Include="patricia_dot_creator.hpp" />
-    <ClInclude Include="priority.hpp" />
-    <ClInclude Include="range_coder.hpp" />
     <ClInclude Include="suffix_map.hpp" />
     <ClInclude Include="suffix_set.hpp" />
     <ClInclude Include="suffix_utils.hpp" />
     <ClInclude Include="super_maxrep_iterator.hpp" />
     <ClInclude Include="trie_map.hpp" />
     <ClInclude Include="trie_set.hpp" />
-    <ClInclude Include="unordered.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGUID>{92196235-55AE-4D48-A877-2BB12E3106AA}</ProjectGUID>
