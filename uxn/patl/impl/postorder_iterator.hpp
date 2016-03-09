@@ -18,18 +18,16 @@ namespace impl
 
 template <typename Vertex>
 class const_postorder_iterator_generic
-    : public std::iterator<
-        std::bidirectional_iterator_tag,
-        Vertex>
+    : public std::iterator<std::bidirectional_iterator_tag, Vertex>
 {
-    typedef const_postorder_iterator_generic<Vertex> this_t;
+    using this_t = const_postorder_iterator_generic<Vertex>;
 
 public:
-    typedef Vertex vertex;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
-    typedef const_pointer pointer;
-    typedef const_reference reference;
+    using vertex = Vertex;
+    using const_pointer = const vertex*;
+    using const_reference = const vertex&;
+    using pointer = const_pointer;
+    using reference = const_reference;
 
     explicit const_postorder_iterator_generic(const vertex &vtx = vertex())
         : vtx_(vtx)
@@ -99,17 +97,17 @@ template <typename Vertex>
 class postorder_iterator_generic
     : public const_postorder_iterator_generic<Vertex>
 {
-    typedef const_postorder_iterator_generic<Vertex> super;
-    typedef postorder_iterator_generic<Vertex> this_t;
+    using super = const_postorder_iterator_generic<Vertex>;
+    using this_t = postorder_iterator_generic<Vertex>;
 
 public:
-    typedef Vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef const_postorder_iterator_generic<const_vertex> const_postorder_iterator;
-    typedef const vertex *const_pointer;
-    typedef const vertex &const_reference;
-    typedef vertex *pointer;
-    typedef vertex &reference;
+    using vertex = Vertex;
+    using const_vertex = typename vertex::const_vertex;
+    using const_postorder_iterator = const_postorder_iterator_generic<const_vertex>;
+    using const_pointer = const vertex*;
+    using const_reference = const vertex&;
+    using pointer = vertex*;
+    using reference = vertex&;
 
     explicit postorder_iterator_generic(const vertex &vtx = vertex())
         : super(vtx)

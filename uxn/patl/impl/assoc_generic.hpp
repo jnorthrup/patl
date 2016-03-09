@@ -277,7 +277,6 @@ public:
         return partimator<Decision>(decis, vtx);
     }
 
-    // find(const key_type&) declarations
     const_iterator find(const key_type &key) const
     {
         const_vertex vtx(root());
@@ -354,8 +353,8 @@ public:
     }
 
 private:
-    typedef std::pair<const_iterator, const_iterator> const_iter_range;
-    typedef std::pair<iterator, iterator> iter_range;
+    using const_iter_range = std::pair<const_iterator, const_iterator>;
+    using iter_range = std::pair<iterator, iterator>;
 
 public:
     const_iter_range equal_range(
@@ -409,7 +408,6 @@ public:
         return std::distance(pcc.first, pcc.second);
     }
 
-    // change root
     void change_root(vertex &vtx)
     {
         node_type *p = static_cast<algorithm&>(vtx).get_p();

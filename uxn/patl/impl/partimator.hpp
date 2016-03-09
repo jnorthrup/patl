@@ -22,26 +22,24 @@ namespace impl
 /// NOTE символ-ориентирован, так же как и partimator engine
 template <typename PreorderIter, typename Decision>
 class const_partimator_generic
-    : public std::iterator<
-        std::forward_iterator_tag,
-        typename PreorderIter::vertex::value_type>
+    : public std::iterator<std::forward_iterator_tag, typename PreorderIter::vertex::value_type>
 {
-    typedef const_partimator_generic<PreorderIter, Decision> this_t;
+    using this_t = const_partimator_generic<PreorderIter, Decision>;
 
 protected:
-    typedef PreorderIter preorder_iterator;
-    typedef typename preorder_iterator::vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
-    typedef typename vertex::cont_type cont_type;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename vertex::key_type key_type;
+    using preorder_iterator = PreorderIter;
+    using vertex = typename preorder_iterator::vertex;
+    using const_vertex = typename vertex::const_vertex;
+    using cont_type = typename vertex::cont_type;
+    using bit_compare = typename cont_type::bit_compare;
+    using key_type = typename vertex::key_type;
 
 public:
-    typedef typename vertex::value_type value_type;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef const_pointer pointer;
-    typedef const_reference reference;
+    using value_type = typename vertex::value_type;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = const_pointer;
+    using reference = const_reference;
 
     explicit const_partimator_generic(
         const Decision &decis = Decision(),
@@ -167,20 +165,20 @@ template <typename PreorderIter, typename Decision>
 class partimator_generic
     : public const_partimator_generic<PreorderIter, Decision>
 {
-    typedef const_partimator_generic<PreorderIter, Decision> super;
-    typedef partimator_generic<PreorderIter, Decision> this_t;
+    using super = const_partimator_generic<PreorderIter, Decision>;
+    using this_t = partimator_generic<PreorderIter, Decision>;
 
 protected:
-    typedef PreorderIter preorder_iterator;
-    typedef typename preorder_iterator::const_preorder_iterator const_preorder_iterator;
-    typedef typename preorder_iterator::vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
+    using preorder_iterator = PreorderIter;
+    using const_preorder_iterator = typename preorder_iterator::const_preorder_iterator;
+    using vertex = typename preorder_iterator::vertex;
+    using const_vertex = typename vertex::const_vertex;
 
 public:
-    typedef typename super::value_type value_type;
-    typedef const_partimator_generic<const_preorder_iterator, Decision> const_partimator;
-    typedef value_type *pointer;
-    typedef value_type &reference;
+    using value_type = typename super::value_type;
+    using const_partimator = const_partimator_generic<const_preorder_iterator, Decision>;
+    using pointer = value_type*;
+    using reference = value_type&;
 
     explicit partimator_generic(
         const Decision &decis = Decision(),

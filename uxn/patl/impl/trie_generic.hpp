@@ -56,15 +56,15 @@ template <typename T, typename Container>
 class algorithm_gen
     : public core_algorithm_generic<T, algorithm_gen<T, Container>, Container>
 {
-    typedef algorithm_gen<T, Container> this_t;
-    typedef core_algorithm_generic<T, this_t, Container> super;
+    using this_t = algorithm_gen<T, Container>;
+    using super = core_algorithm_generic<T, this_t, Container>;
 
 public:
-    typedef Container cont_type;
-    typedef typename T::node_type node_type;
-    typedef typename T::key_type key_type;
-    typedef typename T::const_key_reference const_key_reference;
-    typedef typename T::value_type value_type;
+    using cont_type = Container;
+    using node_type = typename T::node_type;
+    using key_type = typename T::key_type;
+    using const_key_reference = typename T::const_key_reference;
+    using value_type = typename T::value_type;
 
     explicit algorithm_gen(const cont_type *cont = 0)
         : super(cont)
@@ -120,10 +120,10 @@ template <typename T, template <typename> class Node>
 struct algorithm_gen_traits
     : public T
 {
-    typedef Node<T> node_type;
+    using node_type = Node<T>;
 
-    typedef typename T::key_type key_type;
-    typedef const key_type &const_key_reference;
+    using key_type = typename T::key_type;
+    using const_key_reference = const key_type&;
 };
 
 template <
@@ -135,8 +135,8 @@ template <
 struct trie_generic_traits
     : public algorithm_gen_traits<T, Node>
 {
-    typedef Algorithm<algorithm_gen_traits<T, Node>, Container> algorithm;
-    typedef Prefix<Container, Node<T> > prefix;
+    using algorithm = Algorithm<algorithm_gen_traits<T, Node>, Container>;
+    using prefix = Prefix<Container, Node<T> >;
 };
 
 #define SELF static_cast<this_t*>(this)
@@ -146,27 +146,27 @@ template <typename T, word_t N = 0>
 class trie_generic
     : public trie_generic<T, 0>
 {
-    typedef trie_generic<T, N> this_t;
-    typedef trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t> traits;
-    typedef assoc_generic<trie_generic<T, N>, traits, N> super;
+    using this_t = trie_generic<T, N>;
+    using traits = trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t>;
+    using super = assoc_generic<trie_generic<T, N>, traits, N>;
 
 protected:
-    typedef typename traits::node_type node_type;
-    typedef typename traits::algorithm algorithm;
+    using node_type = typename traits::node_type;
+    using algorithm = typename traits::algorithm;
 
 public:
-    typedef typename super::key_type key_type;
-    typedef typename super::value_type value_type;
-    typedef typename super::bit_compare bit_compare;
-    typedef typename super::allocator_type allocator_type;
-    typedef typename super::size_type size_type;
-    typedef typename super::const_iterator const_iterator;
-    typedef typename super::iterator iterator;
-    typedef typename super::vertex vertex;
-    typedef typename super::preorder_iterator preorder_iterator;
-    typedef typename super::postorder_iterator postorder_iterator;
+    using key_type = typename super::key_type;
+    using value_type = typename super::value_type;
+    using bit_compare = typename super::bit_compare;
+    using allocator_type = typename super::allocator_type;
+    using size_type = typename super::size_type;
+    using const_iterator = typename super::const_iterator;
+    using iterator = typename super::iterator;
+    using vertex = typename super::vertex;
+    using preorder_iterator = typename super::preorder_iterator;
+    using postorder_iterator = typename super::postorder_iterator;
 
-    typedef typename algorithm::const_key_reference const_key_reference;
+    using const_key_reference = typename algorithm::const_key_reference;
 
     static const word_t N_ = N;
 
@@ -190,7 +190,7 @@ public:
     }
 
 private:
-    typedef std::pair<iterator, bool> iter_bool_pair;
+    using iter_bool_pair = std::pair<iterator, bool>;
 
 public:
     iter_bool_pair insert(const value_type &val)
@@ -258,30 +258,30 @@ class trie_generic<T, 0>
         trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, trie_generic<T, T::N_> >,
         T::N_>
 {
-    typedef trie_generic<T, T::N_> this_t;
-    typedef trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t> traits;
-    typedef assoc_generic<trie_generic<T, T::N_>, traits, T::N_> super;
+    using this_t = trie_generic<T, T::N_>;
+    using traits = trie_generic_traits<T, node_gen, algorithm_gen, core_prefix_generic, this_t>;
+    using super = assoc_generic<trie_generic<T, T::N_>, traits, T::N_>;
 
 protected:
-    typedef typename traits::node_type node_type;
-    typedef typename traits::algorithm algorithm;
+    using node_type = typename traits::node_type;
+    using algorithm = typename traits::algorithm;
 
 public:
-    typedef typename super::key_type key_type;
-    typedef typename super::value_type value_type;
-    typedef typename super::bit_compare bit_compare;
-    typedef typename super::allocator_type allocator_type;
-    typedef typename super::size_type size_type;
-    typedef typename super::const_iterator const_iterator;
-    typedef typename super::iterator iterator;
-    typedef typename super::const_vertex const_vertex;
-    typedef typename super::vertex vertex;
-    typedef typename super::const_preorder_iterator const_preorder_iterator;
-    typedef typename super::const_postorder_iterator const_postorder_iterator;
-    typedef typename super::preorder_iterator preorder_iterator;
-    typedef typename super::postorder_iterator postorder_iterator;
+    using key_type = typename super::key_type;
+    using value_type = typename super::value_type;
+    using bit_compare = typename super::bit_compare;
+    using allocator_type = typename super::allocator_type;
+    using size_type = typename super::size_type;
+    using const_iterator = typename super::const_iterator;
+    using iterator = typename super::iterator;
+    using const_vertex = typename super::const_vertex;
+    using vertex = typename super::vertex;
+    using const_preorder_iterator = typename super::const_preorder_iterator;
+    using const_postorder_iterator = typename super::const_postorder_iterator;
+    using preorder_iterator = typename super::preorder_iterator;
+    using postorder_iterator = typename super::postorder_iterator;
 
-    typedef typename algorithm::const_key_reference const_key_reference;
+    using const_key_reference = typename algorithm::const_key_reference;
 
     static const word_t N_ = T::N_;
 
@@ -358,7 +358,7 @@ public:
     }
 
 private:
-    typedef std::pair<iterator, bool> iter_bool_pair;
+    using iter_bool_pair = std::pair<iterator, bool>;
 
 public:
     iter_bool_pair insert(const value_type &val)
@@ -398,8 +398,7 @@ public:
                 else
                     pal.run(key, len);
             }
-            const word_t l =
-                this->bit_comp_.bit_mismatch(key, pal.get_key(), skip);
+            const word_t l = this->bit_comp_.bit_mismatch(key, pal.get_key(), skip);
             // if this number end at infinity
             if (~word_t(0) == l)
                 // then this key already in trie
@@ -422,14 +421,6 @@ public:
         for (; first != last; ++first)
             insert(*first);
     }
-
-    struct void_merge_handler
-        : public std::binary_function<iterator, const_iterator, void>
-    {
-        void operator()(iterator, const_iterator) const
-        {
-        }
-    };
 
     /// merge two identical tries (instances of bit_compare must be equal)
     template <typename Handler>
@@ -470,18 +461,8 @@ public:
 
     void merge(const_iterator first, const_iterator last)
     {
-        merge(first, last, void_merge_handler());
+        merge(first, last, [](auto it, auto cit){ });
     }
-
-    template <typename OutIter>
-    struct default_show_value
-        : public std::binary_function<OutIter, value_type, void>
-    {
-        void operator()(OutIter &oit, const value_type &val) const
-        {
-            *oit++ = reinterpret_cast<word_t>(val);
-        }
-    };
 
     /// serialize trie
     template <typename OutIter, typename ShowValue>
@@ -514,18 +495,8 @@ public:
     template <typename OutIter>
     void show(OutIter oit) const
     {
-        show(oit, default_show_value<OutIter>());
+        show(oit, [](OutIter &oit, const auto &val){ *oit++ = reinterpret_cast<word_t>(val); });
     }
-
-    template <typename InIter>
-    struct default_read_value
-        : public std::unary_function<InIter, value_type>
-    {
-        value_type operator()(InIter &iit) const
-        {
-            return reinterpret_cast<value_type>(*iit++);
-        }
-    };
 
     /// deserialize trie
     template <typename InIter, typename ReadValue>
@@ -553,13 +524,12 @@ public:
     template <typename InIter>
     void read(InIter iit, InIter iit_end)
     {
-        read(iit, iit_end, default_read_value<InIter>());
+        read(iit, iit_end, [](InIter & iit){ return reinterpret_cast<value_type>(*iit++); });
     }
 
     void erase(iterator del_it)
     {
-        // retrieve algorithm structure from iterator
-        erase_node(static_cast<algorithm&>(static_cast<vertex&>(del_it)));
+        erase_node(del_it);
     }
 
     /// erase all values with specified prefix
@@ -657,7 +627,6 @@ protected:
         return algorithm(CSELF, r, b);
     }
 
-    // data members
     typename allocator_type::template rebind<node_type>::other alloc_;
     size_type size_;
 };
