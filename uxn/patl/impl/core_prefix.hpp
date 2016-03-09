@@ -19,13 +19,13 @@ template <typename Container, typename Node>
 class core_prefix_generic
     : public prefix_generic<core_prefix_generic<Container, Node>, Container, Node>
 {
-    typedef prefix_generic<core_prefix_generic<Container, Node>, Container, Node> super;
+    using super = prefix_generic<core_prefix_generic<Container, Node>, Container, Node>;
 
 protected:
-    typedef typename super::node_type node_type;
+    using node_type = typename super::node_type;
 
 public:
-    typedef typename super::cont_type cont_type;
+    using cont_type = typename super::cont_type;
 
     core_prefix_generic(const cont_type *cont, const node_type *q)
         : super(cont, q)

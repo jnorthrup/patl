@@ -17,22 +17,20 @@ namespace impl
 
 template <typename PostorderIter>
 class const_iterator_generic
-    : public std::iterator<
-        std::bidirectional_iterator_tag,
-        typename PostorderIter::vertex::value_type>
+    : public std::iterator<std::bidirectional_iterator_tag, typename PostorderIter::vertex::value_type>
 {
-    typedef const_iterator_generic<PostorderIter> this_t;
+    using this_t = const_iterator_generic<PostorderIter>;
 
 protected:
-    typedef PostorderIter postorder_iterator;
-    typedef typename postorder_iterator::vertex vertex;
+    using postorder_iterator = PostorderIter;
+    using vertex = typename postorder_iterator::vertex;
 
 public:
-    typedef typename vertex::value_type value_type;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef const_pointer pointer;
-    typedef const_reference reference;
+    using value_type = typename vertex::value_type;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = const_pointer;
+    using reference = const_reference;
 
     explicit const_iterator_generic(const vertex &vtx = vertex())
         : pit_(vtx)
@@ -102,20 +100,20 @@ template <typename PostorderIter>
 class iterator_generic
     : public const_iterator_generic<PostorderIter>
 {
-    typedef const_iterator_generic<PostorderIter> super;
-    typedef iterator_generic<PostorderIter> this_t;
-    typedef PostorderIter postorder_iterator;
-    typedef typename postorder_iterator::const_postorder_iterator const_postorder_iterator;
-    typedef typename postorder_iterator::vertex vertex;
-    typedef typename vertex::const_vertex const_vertex;
+    using super = const_iterator_generic<PostorderIter>;
+    using this_t = iterator_generic<PostorderIter>;
+    using postorder_iterator = PostorderIter;
+    using const_postorder_iterator = typename postorder_iterator::const_postorder_iterator;
+    using vertex = typename postorder_iterator::vertex;
+    using const_vertex = typename vertex::const_vertex;
 
 public:
-    typedef typename super::value_type value_type;
-    typedef const_iterator_generic<const_postorder_iterator> const_iterator;
-    typedef const value_type *const_pointer;
-    typedef const value_type &const_reference;
-    typedef value_type *pointer;
-    typedef value_type &reference;
+    using value_type = typename super::value_type;
+    using const_iterator = const_iterator_generic<const_postorder_iterator>;
+    using const_pointer = const value_type*;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using reference = value_type&;
 
     explicit iterator_generic(const vertex &vtx = vertex())
         : super(vtx)

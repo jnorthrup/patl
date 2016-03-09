@@ -18,17 +18,17 @@ namespace impl
 template <typename This, typename Container, typename Node>
 class prefix_generic
 {
-    typedef This this_t;
+    using this_t = This;
 
 protected:
-    typedef Node node_type;
+    using node_type = Node;
 
 public:
-    typedef Container cont_type;
-    typedef typename cont_type::key_type key_type;
-    typedef typename cont_type::const_key_reference const_key_reference;
-    typedef typename cont_type::bit_compare bit_compare;
-    typedef typename cont_type::vertex vertex;
+    using cont_type = Container;
+    using key_type = typename cont_type::key_type;
+    using const_key_reference = typename cont_type::const_key_reference;
+    using bit_compare = typename cont_type::bit_compare;
+    using vertex = typename cont_type::vertex;
 
     prefix_generic(const cont_type *cont, const node_type *q)
         : cont_(cont)
