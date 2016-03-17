@@ -103,7 +103,7 @@ void multiple_common_substring(
         for (suffix_t::const_iterator it = suf.begin(); it != suf.end(); ++it)
         {
             const word_t k = ids[*it - suf.keys()];
-            const const_vertex &vtx = static_cast<const const_vertex&>(it);
+            const const_vertex &vtx = it;
             if (last_vtx[k].compact())
                 ++h[suf.vertex_index_of(lca(last_vtx[k], vtx))];
             last_vtx[k] = vtx;

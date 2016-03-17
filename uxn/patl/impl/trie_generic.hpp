@@ -195,45 +195,43 @@ private:
 public:
     iter_bool_pair insert(const value_type &val)
     {
-        if (this->root_)
-        {
-            algorithm pal(CSELF, this->root_, 0);
-            // find a number of first mismatching bit
-            const word_t l = pal.mismatch(T::ref_key(val));
-            // if this number end at infinity
-            if (~word_t(0) == l)
-                // then this key already in trie
-                return iter_bool_pair(iterator(vertex(pal)), false);
-            // поднимаемся до ближайшего раздела по N
-            algorithm pal2(pal);
-            word_t diff = 0;
-            while (pal2.get_p()->get_skip() == pal2.get_q()->get_skip())
-            {
-                pal2.ascend();
-                ++diff;
-            }
-            word_t *sh = get_shortcut(pal2.compact());
-            if (sh)
-            {
-                // обновить шорткат
-            }
-            else if (diff >= N / 2)
-            {
-                // создать шорткат
-                create_shortcut(pal2.compact());
-                // пройтись по поддереву levelorder_iterator'ом и инициализировать шорткат
-                vertex vtx(pal2);
-                const word_t next = max0(vtx.skip()) + N;
-                /*levelorder_iterator
-                    lit(vtx.levelorder_begin(next)),
-                    lit_end(vtx.levelorder_end(next));*/
-                //for (; lit != lit_end; ++lit)
-            }
-            // add new node for value with unique key
-            return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
-        }
         // if trie is empty then add root
-        return iter_bool_pair(iterator(vertex(add_root(val))), true);
+        if (!this->root_)
+            return iter_bool_pair(iterator(vertex(add_root(val))), true);
+        algorithm pal(CSELF, this->root_, 0);
+        // find a number of first mismatching bit
+        const word_t l = pal.mismatch(T::ref_key(val));
+        // if this number end at infinity
+        if (~word_t(0) == l)
+            // then this key already in trie
+            return iter_bool_pair(iterator(vertex(pal)), false);
+        // поднимаемся до ближайшего раздела по N
+        algorithm pal2(pal);
+        word_t diff = 0;
+        while (pal2.get_p()->get_skip() == pal2.get_q()->get_skip())
+        {
+            pal2.ascend();
+            ++diff;
+        }
+        word_t *sh = get_shortcut(pal2.compact());
+        if (sh)
+        {
+            // обновить шорткат
+        }
+        else if (diff >= N / 2)
+        {
+            // создать шорткат
+            create_shortcut(pal2.compact());
+            // пройтись по поддереву levelorder_iterator'ом и инициализировать шорткат
+            vertex vtx(pal2);
+            const word_t next = max0(vtx.skip()) + N;
+            /*levelorder_iterator
+                lit(vtx.levelorder_begin(next)),
+                lit_end(vtx.levelorder_end(next));*/
+                //for (; lit != lit_end; ++lit)
+        }
+        // add new node for value with unique key
+        return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
     }
 
     /// just for backward compatibility with std assoc containers
@@ -363,55 +361,51 @@ private:
 public:
     iter_bool_pair insert(const value_type &val)
     {
-        if (this->root_)
-        {
-            algorithm pal(CSELF, this->root_, 0);
-            // find a number of first mismatching bit
-            const word_t l = pal.mismatch(T::ref_key(val));
-            // if this number end at infinity
-            if (~word_t(0) == l)
-                // then this key already in trie
-                return iter_bool_pair(iterator(vertex(pal)), false);
-            // add new node for value with unique key
-            return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
-        }
         // if trie is empty then add root
-        return iter_bool_pair(iterator(vertex(add_root(val))), true);
+        if (!this->root_)
+            return iter_bool_pair(iterator(vertex(add_root(val))), true);
+        algorithm pal(CSELF, this->root_, 0);
+        // find a number of first mismatching bit
+        const word_t l = pal.mismatch(T::ref_key(val));
+        // if this number end at infinity
+        if (~word_t(0) == l)
+            // then this key already in trie
+            return iter_bool_pair(iterator(vertex(pal)), false);
+        // add new node for value with unique key
+        return iter_bool_pair(iterator(vertex(add(val, pal, l))), true);
     }
 
     /// hinted insertion method
     iterator insert(iterator hint, const value_type &val)
     {
-        if (this->root_)
-        {
-            algorithm &pal = static_cast<algorithm&>(static_cast<vertex&>(hint));
-            const key_type &key = T::ref_key(val);
-            const word_t skip = this->bit_comp_.bit_mismatch(key, pal.get_key());
-            if (~word_t(0) == skip)
-                return iterator(vertex(pal));
-            pal.ascend_less(skip);
-            // find a number of first mismatching bit
-            {
-                const word_t len = this->bit_comp_.bit_length(key);
-                if (len == ~word_t(0))
-                    pal.run(key);
-                else
-                    pal.run(key, len);
-            }
-            const word_t l = this->bit_comp_.bit_mismatch(key, pal.get_key(), skip);
-            // if this number end at infinity
-            if (~word_t(0) == l)
-                // then this key already in trie
-                return iterator(vertex(pal));
-            else
-            {
-                pal.ascend(l);
-                // add new node for value with unique key
-                return iterator(vertex(add(val, pal, l)));
-            }
-        }
         // if trie is empty then add root
-        return iterator(vertex(add_root(val)));
+        if (!this->root_)
+            return iterator(vertex(add_root(val)));
+        algorithm &pal = hint;
+        const key_type &key = T::ref_key(val);
+        const word_t skip = this->bit_comp_.bit_mismatch(key, pal.get_key());
+        if (~word_t(0) == skip)
+            return hint;
+        pal.ascend_less(skip);
+        // find a number of first mismatching bit
+        {
+            const word_t len = this->bit_comp_.bit_length(key);
+            if (len == ~word_t(0))
+                pal.run(key);
+            else
+                pal.run(key, len);
+        }
+        const word_t l = this->bit_comp_.bit_mismatch(key, pal.get_key(), skip);
+        // if this number end at infinity
+        if (~word_t(0) == l)
+            // then this key already in trie
+            return hint;
+        else
+        {
+            pal.ascend(l);
+            // add new node for value with unique key
+            return iterator(vertex(add(val, pal, l)));
+        }
     }
 
     /// template of insert range
@@ -434,9 +428,8 @@ public:
         }
         algorithm pal_cur(this, this->root_, 0);
         const_vertex vtx(first);
-        const algorithm &pal_end(static_cast<const const_vertex&>(last));
         word_t skip = 0;
-        while (static_cast<const algorithm&>(vtx) != pal_end)
+        while (vtx != last)
         {
             pal_cur.ascend_less(skip);
             const word_t l = pal_cur.mismatch(vtx.get_key());
@@ -448,13 +441,13 @@ public:
             // move to the next
             if (vtx.get_qid())
             {
-                const node_type *cur = static_cast<const algorithm&>(vtx).get_q();
+                const node_type *cur = vtx.get_q();
                 for (; cur->get_parent_id(); cur = cur->get_parent()) ;
                 vtx = vertex(this, cur->get_parent(), 1);
             }
             else
                 vtx.toggle();
-            skip = static_cast<const algorithm&>(vtx).get_q()->get_skip();
+            skip = vtx.get_q()->get_skip();
             vtx.template descend<0>();
         }
     }
@@ -513,8 +506,7 @@ public:
                 std::advance(pit, bits_but_highest(skip));
             else
             {
-                static_cast<algorithm&>(*pit) =
-                    add(read_val(iit), *pit, skip);
+                static_cast<algorithm&>(*pit) = add(read_val(iit), *pit, skip);
                 if (pit->get_qid())
                     pit->toggle();
             }
@@ -565,7 +557,7 @@ private:
                 ; ++pit)
             {
                 if (!pit->get_qtag())
-                    del_node(static_cast<algorithm&>(*pit).get_p());
+                    del_node(pit->get_p());
             }
             del_node(node);
         }
