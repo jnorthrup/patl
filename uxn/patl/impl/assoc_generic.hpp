@@ -410,7 +410,7 @@ public:
 
     void change_root(vertex &vtx)
     {
-        node_type *p = static_cast<algorithm&>(vtx).get_p();
+        node_type *p = vtx.get_p();
         if (p != root_)
         {
             p->make_root(root_);

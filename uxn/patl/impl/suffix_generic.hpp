@@ -175,13 +175,13 @@ public:
     word_t vertex_index_of(const const_vertex &vtx) const
     {
         return
-            trie_.index_of(static_cast<const algorithm&>(vtx).get_q()) * 2 |
+            trie_.index_of(vtx.get_q()) * 2 |
             vtx.get_qid();
     }
 
     word_t index_of(const const_vertex &vtx) const
     {
-        return trie_.index_of(static_cast<const algorithm&>(vtx).get_p());
+        return trie_.index_of(vtx.get_p());
     }
 
     word_t index_of(const prefix &pref) const
@@ -261,7 +261,7 @@ public:
             , skip_(0)
             , vtx_(cont, cont->root_, 0)
         {
-            skip_ = static_cast<algorithm&>(vtx_).mismatch_suffix(key_, skip_);
+            skip_ = vtx_.mismatch_suffix(key_, skip_);
         }
 
         bool operator==(const match_iterator &it) const
@@ -311,26 +311,25 @@ public:
             skip_ = max0(static_cast<sword_t>(skip_) - delta * bit_size);
             key_ += delta;
             const this_t *cont = vtx_.cont();
-            algorithm &pal = static_cast<algorithm&>(vtx_);
             if (skip_)
             {
                 const node_type
-                    *palP = pal.get_p(),
+                    *palP = vtx_.get_p(),
                     *nextQ = palP == cont->trie_.back()
                         ? cont->root_
                         : cont->trie_.following(palP);
-                pal.init(nextQ, 0);
-                pal.ascend(skip_);
-                const node_type *pretender = pal.get_q();
+                vtx_.init(nextQ, 0);
+                vtx_.ascend(skip_);
+                const node_type *pretender = vtx_.get_q();
                 if (pretender != cont->root_)
-                    pal.init(
+                    vtx_.init(
                         pretender,
                         cont->bit_comp_.get_bit(key_, pretender->get_skip()));
             }
             else
-                pal.init(cont->root_, 0);
+                vtx_.init(cont->root_, 0);
             //
-            skip_ = pal.mismatch_suffix(key_, skip_);
+            skip_ = vtx_.mismatch_suffix(key_, skip_);
             return *this;
         }
 
