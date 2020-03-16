@@ -7,6 +7,7 @@
 #define PATL_IMPL_TRIVIAL_HPP
 
 #include "../config.hpp"
+#include <type_traits>
 #include <cassert>
 
 #ifdef PATL_INTRINSIC
@@ -112,7 +113,7 @@ inline word_t get_binary_lca(word_t rootH, word_t i, word_t j)
 {
     if (i == j)
         return i;
-    //sort_2(i, j); // а нужно ли?
+    //sort_2(i, j); // Г  Г­ГіГ¦Г­Г® Г«ГЁ?
     const word_t
         iDeep = rootH - get_lowest_bit_id(i),
         jDeep = rootH - get_lowest_bit_id(j),
@@ -144,8 +145,7 @@ inline word_t max0(sword_t x)
 template <typename Source>
 inline word_t unsigned_cast(Source val)
 {
-    return *reinterpret_cast<word_t*>(&val) &
-        ~word_t(0) >> (sizeof(word_t) - sizeof(Source)) * 8;
+    return static_cast<word_t>(static_cast<typename std::make_unsigned<Source>::type>(val));
 }
 
 inline word_t unsigned_cast(word_t val)
