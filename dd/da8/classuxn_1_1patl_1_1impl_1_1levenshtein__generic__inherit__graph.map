@@ -1,0 +1,10 @@
+<map id="uxn::patl::impl::levenshtein_generic&lt; This, Container, SameLength &gt;" name="uxn::patl::impl::levenshtein_generic&lt; This, Container, SameLength &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="311,381,541,693"/>
+<area shape="rect" id="node3" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="5,793,287,1105"/>
+<area shape="rect" id="node5" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="311,785,541,1112"/>
+<area shape="rect" id="node7" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="565,785,796,1112"/>
+<area shape="rect" id="node2" href="$d6/d28/classuxn_1_1patl_1_1impl_1_1partial__base.html" title=" " alt="" coords="305,5,547,332"/>
+<area shape="rect" id="node4" href="$d8/dfe/classuxn_1_1patl_1_1levenshtein__distance.html" title=" " alt="" coords="42,1161,250,1415"/>
+<area shape="rect" id="node6" href="$d7/d2a/classuxn_1_1patl_1_1levenshtein__ms__distance.html" title="Levenshtein distance with merges and splits decision functor." alt="" coords="322,1161,530,1415"/>
+<area shape="rect" id="node8" href="$d5/dbf/classuxn_1_1patl_1_1levenshtein__tp__distance.html" title="Levenshtein distance with transpositions decision functor." alt="" coords="577,1161,785,1415"/>
+</map>

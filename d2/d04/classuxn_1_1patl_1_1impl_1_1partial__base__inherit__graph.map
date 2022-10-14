@@ -1,0 +1,13 @@
+<map id="uxn::patl::impl::partial_base&lt; Container, SameLength &gt;" name="uxn::patl::impl::partial_base&lt; Container, SameLength &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="703,5,946,332"/>
+<area shape="rect" id="node2" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="5,821,287,1133"/>
+<area shape="rect" id="node4" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="633,813,864,1140"/>
+<area shape="rect" id="node6" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="356,813,587,1140"/>
+<area shape="rect" id="node8" href="$d9/db8/classuxn_1_1patl_1_1impl_1_1levenshtein__generic.html" title=" " alt="" coords="349,402,580,714"/>
+<area shape="rect" id="node9" href="$d6/d28/classuxn_1_1patl_1_1impl_1_1partial__base.html" title=" " alt="" coords="913,395,1129,721"/>
+<area shape="rect" id="node3" href="$d8/dfe/classuxn_1_1patl_1_1levenshtein__distance.html" title=" " alt="" coords="42,1189,250,1443"/>
+<area shape="rect" id="node5" href="$d7/d2a/classuxn_1_1patl_1_1levenshtein__ms__distance.html" title="Levenshtein distance with merges and splits decision functor." alt="" coords="645,1189,853,1443"/>
+<area shape="rect" id="node7" href="$d5/dbf/classuxn_1_1patl_1_1levenshtein__tp__distance.html" title="Levenshtein distance with transpositions decision functor." alt="" coords="367,1189,575,1443"/>
+<area shape="rect" id="node10" href="$d1/df9/classuxn_1_1patl_1_1hamming__distance.html" title="Hamming distance decision functor." alt="" coords="900,813,1117,1140"/>
+<area shape="rect" id="node11" href="$d8/d38/classuxn_1_1patl_1_1partial__match.html" title=" " alt="" coords="1141,835,1404,1118"/>
+</map>

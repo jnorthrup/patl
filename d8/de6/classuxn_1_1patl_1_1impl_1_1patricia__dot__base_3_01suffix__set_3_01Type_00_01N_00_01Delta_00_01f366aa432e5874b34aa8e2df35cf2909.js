@@ -1,0 +1,6 @@
+var classuxn_1_1patl_1_1impl_1_1patricia__dot__base_3_01suffix__set_3_01Type_00_01N_00_01Delta_00_01f366aa432e5874b34aa8e2df35cf2909 =
+[
+    [ "bit_compare", "d8/de6/classuxn_1_1patl_1_1impl_1_1patricia__dot__base_3_01suffix__set_3_01Type_00_01N_00_01Delta_00_01f366aa432e5874b34aa8e2df35cf2909.html#a3732b9998f34cd40b5193315cebeac82", null ],
+    [ "cont_type", "d8/de6/classuxn_1_1patl_1_1impl_1_1patricia__dot__base_3_01suffix__set_3_01Type_00_01N_00_01Delta_00_01f366aa432e5874b34aa8e2df35cf2909.html#ae16125b340a3bebd6e92b2f40a37bff3", null ],
+    [ "vertex", "d8/de6/classuxn_1_1patl_1_1impl_1_1patricia__dot__base_3_01suffix__set_3_01Type_00_01N_00_01Delta_00_01f366aa432e5874b34aa8e2df35cf2909.html#ac7f62ab77ea91e9dde8a77b44e32dc07", null ]
+];

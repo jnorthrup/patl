@@ -1,0 +1,30 @@
+<map id="main" name="main">
+<area shape="rect" id="node1" title=" " alt="" coords="5,575,60,602"/>
+<area shape="rect" id="node2" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a6b5ce975ed960d22158f993ac18729cc" title=" " alt="" coords="108,68,268,109"/>
+<area shape="rect" id="node6" href="$d3/de9/classuxn_1_1patl_1_1patricia__dot__creator.html#a716cc8895d276b9480e251127334d0cd" title=" " alt="" coords="112,211,264,252"/>
+<area shape="rect" id="node10" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a19845a4d480875e2b697c49d19bfa1ce" title="return true if suffix_cont is empty OR full" alt="" coords="335,720,495,761"/>
+<area shape="rect" id="node12" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#ae4ec39b298848d45053d53fb222d5d21" title=" " alt="" coords="108,305,268,347"/>
+<area shape="rect" id="node14" href="$db/dcd/classuxn_1_1patl_1_1impl_1_1trie__generic.html#a49134514a564c6c69cfbb52268ba45ae" title=" " alt="" coords="115,415,261,456"/>
+<area shape="rect" id="node17" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a755ff4d1ad4df54f258c3e09d32f23f0" title=" " alt="" coords="335,655,495,696"/>
+<area shape="rect" id="node18" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a571add68de0b08a9c3e375d4c3dd8ea6" title="erase front suffix" alt="" coords="108,503,268,544"/>
+<area shape="rect" id="node21" href="$d1/db2/insider_8cpp.html#a470d6a4cde9e5eeee1e5716b937ec443" title=" " alt="" coords="136,709,240,735"/>
+<area shape="rect" id="node22" href="$dd/dbb/classuxn_1_1patl_1_1suffix__set.html#ae50776c104b736774600b2977c86cc5a" title=" " alt="" coords="113,939,263,980"/>
+<area shape="rect" id="node27" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#aa40451084d31ec23114745757ca30371" title=" " alt="" coords="322,1281,509,1381"/>
+<area shape="rect" id="node28" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a4911ef44eacdb8fd9169fa7327941b3b" title=" " alt="" coords="108,568,268,609"/>
+<area shape="rect" id="node3" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#a2eb00ee56651ba51dbba4ead8547ea6f" title=" " alt="" coords="341,5,490,47"/>
+<area shape="rect" id="node4" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#abde8c78c58d86d1f1b222608c1cb0323" title=" " alt="" coords="563,5,712,47"/>
+<area shape="rect" id="node5" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#ad17b73a9b9df7e9be22cc93006afbcb5" title=" " alt="" coords="563,268,712,309"/>
+<area shape="rect" id="node7" href="$d3/de9/classuxn_1_1patl_1_1patricia__dot__creator.html#aa3f10e15f9934fbd9c96fdb091756cd9" title=" " alt="" coords="324,225,507,267"/>
+<area shape="rect" id="node8" href="$d3/de9/classuxn_1_1patl_1_1patricia__dot__creator.html#a530f1ed6d8b237536f13e9c61c4d6a99" title=" " alt="" coords="330,71,501,112"/>
+<area shape="rect" id="node9" href="$d3/de9/classuxn_1_1patl_1_1patricia__dot__creator.html#af434dfc7f6e99faea9c765f01855524a" title=" " alt="" coords="330,136,501,177"/>
+<area shape="rect" id="node11" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#a3cca6b23bc6d2da06c113e892af24d2c" title=" " alt="" coords="563,720,712,761"/>
+<area shape="rect" id="node13" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#a0cb9f62a800a2b3f636ef598d5547df9" title=" " alt="" coords="341,291,490,332"/>
+<area shape="rect" id="node15" href="$dd/d0e/namespaceuxn_1_1patl_1_1impl.html#ab90f63027d43b408cc70d2f0db94c9fc" title=" " alt="" coords="335,422,496,449"/>
+<area shape="rect" id="node16" href="$d3/d81/classuxn_1_1patl_1_1impl_1_1const__vertex__generic.html#aea777dfc1baa0c2ccc8566c7e613a91d" title=" " alt="" coords="335,356,496,397"/>
+<area shape="rect" id="node19" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a571330e184188a382f424ee06908bb1b" title=" " alt="" coords="335,524,495,565"/>
+<area shape="rect" id="node20" href="$d7/ddc/classuxn_1_1patl_1_1impl_1_1ring__buffer.html#ae46bef720f3ea4f608af0c0a0946ca9b" title=" " alt="" coords="341,589,490,631"/>
+<area shape="rect" id="node23" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a5f1a79ec8899f0e12680cb343470cc11" title=" " alt="" coords="322,909,509,1009"/>
+<area shape="rect" id="node24" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a3758d1f5bf1e70bd5f67a7edb7d7971f" title=" " alt="" coords="316,1033,515,1133"/>
+<area shape="rect" id="node25" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a52f5d589814ab7cf08b9840cb90f1377" title=" " alt="" coords="322,1157,509,1257"/>
+<area shape="rect" id="node26" href="$db/db7/classuxn_1_1patl_1_1impl_1_1suffix__generic.html#a3a8ccdc542ec789f363fbfacb3d3e344" title=" " alt="" coords="322,785,509,885"/>
+</map>

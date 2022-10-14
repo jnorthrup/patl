@@ -1,0 +1,9 @@
+<map id="uxn::patl::impl::unsigned_cast" name="uxn::patl::impl::unsigned_cast">
+<area shape="rect" id="node1" title=" " alt="" coords="475,111,692,138"/>
+<area shape="rect" id="node2" href="$dd/d0e/namespaceuxn_1_1patl_1_1impl.html#acbcc8d4c2223361c247be1441ccfe37d" title=" " alt="" coords="263,5,404,47"/>
+<area shape="rect" id="node4" href="$de/d77/classuxn_1_1patl_1_1bit__comparator_3_01T_00_010_01_4.html#a6c7136457b43dd12a776b1269cb51829" title="return bit by id in key (must be 0 or 1)" alt="" coords="240,71,427,112"/>
+<area shape="rect" id="node5" href="$d2/d6e/classuxn_1_1patl_1_1bit__comparator_3_01T_00_018_01_4.html#a7211841d90618f50d05c753b70e18eb2" title=" " alt="" coords="240,136,427,177"/>
+<area shape="rect" id="node6" href="$d3/d87/lz77_8cpp.html#a96bf5c98cb36266e461ecf6f31ac3aa7" title=" " alt="" coords="282,202,385,229"/>
+<area shape="rect" id="node3" href="$de/d77/classuxn_1_1patl_1_1bit__comparator_3_01T_00_010_01_4.html#ae1dded46b4aef36a44547577ade90d28" title="return id of first mismatch bit, ~word_t(0) if keys are equal" alt="" coords="5,5,192,47"/>
+<area shape="rect" id="node7" href="$d3/d87/lz77_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="71,202,126,229"/>
+</map>

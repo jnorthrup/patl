@@ -1,0 +1,9 @@
+<map id="uxn::patl::impl::node_generic::realloc" name="uxn::patl::impl::node_generic::realloc">
+<area shape="rect" id="node1" title=" " alt="" coords="5,169,161,211"/>
+<area shape="rect" id="node2" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#a31d507e721477bedcab98461bf54d8bb" title="return parent node" alt="" coords="219,5,375,47"/>
+<area shape="rect" id="node3" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#ad87bc233b9749aa28297eeeb575cd646" title="return node id relate to parent" alt="" coords="209,71,384,112"/>
+<area shape="rect" id="node4" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#a89b31e9a02d712d4ef13ded3379b46e5" title="return child node by id" alt="" coords="219,136,375,177"/>
+<area shape="rect" id="node5" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#afcde5ba4df8605af68dda6485a4f7a4c" title="return tag of child node by id" alt="" coords="219,201,375,243"/>
+<area shape="rect" id="node6" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#ad6d1ca9258bfe3526bf08b619adf4c8d" title="set parent info" alt="" coords="213,267,380,308"/>
+<area shape="rect" id="node7" href="$d2/d2c/classuxn_1_1patl_1_1impl_1_1node__generic.html#a656e982c02f72e2ed752228793358c9c" title="set child info by id" alt="" coords="214,332,379,373"/>
+</map>

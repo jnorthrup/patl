@@ -1,0 +1,4 @@
+<map id="uxn::patl::impl::bit_mismatch_scalar" name="uxn::patl::impl::bit_mismatch_scalar">
+<area shape="rect" id="node1" title=" " alt="" coords="240,5,381,47"/>
+<area shape="rect" id="node2" href="$de/d77/classuxn_1_1patl_1_1bit__comparator_3_01T_00_010_01_4.html#ae1dded46b4aef36a44547577ade90d28" title="return id of first mismatch bit, ~word_t(0) if keys are equal" alt="" coords="5,5,192,47"/>
+</map>
